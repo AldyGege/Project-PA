@@ -1,0 +1,149 @@
+:root {
+    --primary-color: #025589;
+    --white-color: #fff;
+    --gray-color: #666666;
+}
+h1 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h3 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h4 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h5 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+a {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+p {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+}
+
+.btn-outline-category {
+    color: var(--primary-color);
+    border-color:var(--primary-color); 
+}
+
+.btn-outline-category:hover{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+.garis-vertical {
+    margin-right: 20px;
+    border-left: 1px solid grey;
+    height: 25px;
+    opacity: 50%;
+}
+
+.container-fluid-latar{
+    background-color: #EBF1F3;
+}
+
+.sidebar {
+    height: 100vh;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    padding-top: 20px;
+}
+.sidebar img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+.sidebar h4 {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.sidebar ul {
+    padding-left: 0;
+}
+.sidebar ul li {
+    list-style: none;
+    margin-bottom: 15px;
+}
+.sidebar ul li a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+}
+.sidebar ul li a.active, .sidebar ul li a:hover {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+/* Main content styling */
+.main-content {
+    background-color: #ffffff;
+    padding: 30px;
+
+}
+.main-content .header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    margin: -28px;
+}
+.main-content .header h3 {
+    margin: 0;
+}
+.main-content .header p {
+    margin: 0;
+    font-size: 14px;
+}
+.main-content form {
+    margin-top: 30px;
+}
+.file-info {
+    font-size: 12px;
+}
+.btn-simpan {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+input[type="file"] {
+    display: none;
+}
+.custom-file-label {
+    padding: 8px 15px;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+}

@@ -1,0 +1,91 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include('../partials/__nav.ejs') %>
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Data Siswa</h4>
+                                <a href="/siswa/create" class="btn btn-sm btn-success mb-3">Tambah Siswa</a>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama</th>
+                                                <th>NIK</th>
+                                                <th>Alamat</th>
+                                                <th>TTL</th>
+                                                <th>Gender</th>
+                                                <th>Jalur Daftar</th>
+                                                <th>Nama Ortu</th>
+                                                <th>Pekerjaan Ortu</th>
+                                                <th>Alamat Ortu</th>
+                                                <th>Gambar</th>
+                                                <th colspan="2">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (data.length > 0) { %>
+                                                <% data.forEach((siswa, i) => { %>
+                                                <tr>
+                                                    <th scope="row"><%= i + 1 %></th>
+                                                    <td><%= siswa.nama_siswa %></td>
+                                                    <td><%= siswa.nik %></td>
+                                                    <td><%= siswa.alamat_siswa %></td>
+                                                    <td><%= siswa.ttl %></td>
+                                                    <td><%= siswa.gender %></td>
+                                                    <td><%= siswa.jalur_daftar %></td>
+                                                    <td><%= siswa.nama_ortu_siswa %></td>
+                                                    <td><%= siswa.pekerjaan_ortu_siswa %></td>
+                                                    <td><%= siswa.alamat_ortu_siswa %></td>
+                                                    <td class="py-1">
+                                                        <% if (siswa.gambar_siswa) { %>
+                                                          <img 
+                                                            src="/images/<%= siswa.jalur_daftar === 'online' ? 'pendaftaran' : 'siswa' %>/<%= siswa.gambar_siswa %>" 
+                                                            height="80" width="80" 
+                                                            style="object-fit: cover; border-radius: 6px;" 
+                                                            alt="Foto Siswa"/>
+                                                        <% } else { %>
+                                                          <span class="text-muted">Tidak ada foto</span>
+                                                        <% } %>
+                                                      </td>
+                                                      
+                                                      <td>
+                                                        <a href="/siswa/edit/<%= siswa.id_siswa %>" class="btn btn-sm btn-warning">Edit</a>
+                                                        
+                                                        <% if (siswa.jalur_daftar === 'offline') { %>
+                                                          <a href="/siswa/delete/<%= siswa.id_siswa %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data siswa ini?')">Hapus</a>
+                                                        <% } else { %>
+                                                          <a href="/siswa/delete/<%= siswa.id_siswa %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin membatalkan pendaftaran ini?')">Batalkan</a>
+                                                        <% } %>
+                                                      </td>
+                                                      
+                                                </tr>
+                                                <% }) %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="13" class="text-center text-muted">Tidak ada data siswa</td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>

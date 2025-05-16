@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <%- include('../partials/__head.ejs') %>
+    <style>
+        :root {
+            --primary-color: #8B6F1A;
+            --button-color: #8B6F1A;
+            --background-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header .home-icon {
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header .cancel-button {
+            background: #E6D5B8;
+            color: red;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .branding {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Tengah secara horizontal */
+            padding: 15px;
+        }
+        
+        .logo {
+            height: 50px; /* Sesuaikan ukuran logo */
+            margin-right: 10px;
+        }
+        
+        .branding-title {
+            color: #8B6F1A;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+
+        .form-container {
+            max-width: 900px;
+            background: #FDF8F2;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 40px auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+    
+        .checkbox-container label {
+            font-size: 14px;
+            color: #333;
+        }
+    
+        .submit-button {
+            background-color: var(--button-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            margin-left: auto;
+        }
+    
+        .submit-button:hover {
+            background-color: #6E550F;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/users" class="home-icon">&#8962;</a>
+        <button class="cancel-button">Batalkan</button>
+    </div>
+
+    <!-- Tambahkan bagian baru untuk logo & teks -->
+<div class="branding">
+    <img src="../../images/logo-madrasah.png" alt="" class="logo">
+    <h2 class="branding-title">Portal Pendaftaran Mandiri Online Madrasah At-Taqwa</h2>
+</div>
+
+    
+    <div class="form-container">
+        <form action="/daftar_ulang/store" method="POST" enctype="multipart/form-data" class="pt-3" <%= data2.length === 0 ? 'style="pointer-events: none; opacity: 0.6;"' : '' %>>
+            <div class="form-group">
+                <%- include('../partials/__messagess.ejs') %>
+                <label for="exampleFormControlSelect2">Nama Pendaftar</label>
+                <select class="form-control" id="exampleFormControlSelect2" name="id_pendaftaran" required>
+                    <option selected disabled>Pilih Nama Pendaftar</option>
+                    <% if (data2.length === 0) { %>
+                        <option disabled>Anda belum melakukan pendaftaran.</option>
+                    <% } else { %>
+                        <% for (var i = 0; i < data2.length; i++) { %>
+                            <option 
+                                value="<%= data2[i].id_pendaftaran %>" 
+                                data-status="<%= data2[i].status_pendaftaran %>" 
+                                data-nama="<%= data2[i].nama_pendaftar %>" 
+                                data-nik="<%= data2[i].nik %>"
+                            >
+                                <%= data2[i].nama_pendaftar %>
+                            </option>
+                        <% } %>
+                    <% } %>
+                </select>
+                
+                
+                <div id="alert-status" style="display: none; color: red; margin-top: 10px; font-weight: bold;">
+                    Pendaftaran belum diterima. Silakan tunggu konfirmasi dari admin.
+            </div>
+            </div>
+            <div id="form-detail" style="display: none;">
+                <br>
+                <h5><b>Informasi Pribadi</b></h5>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" placeholder="Nama Lengkap" id="input-nama">
+                    </div>
+                    <input type="hidden" name="id_users" value="<%= data.id_users %>">
+                    <div class="form-group">
+                        <input type="text" placeholder="No Induk Keluarga" id="input-nik">
+                    </div>
+                </div>
+
+                <!-- Kolom upload KK dan Akta -->
+                <div class="form-group">
+                    <label for="file_kk">Upload Kartu Keluarga (Wajib)</label>
+                    <input type="file" name="file_kk" id="file_kk" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="file_akta">Upload Akta Kelahiran (Opsional)</label>
+                    <input type="file" name="file_akta" id="file_akta" class="form-control">
+                </div>
+                
+
+                <input type="hidden" id="waktu_daftar_ulang" name="waktu_daftar_ulang">
+                <div class="checkbox-container">
+                    <div>
+                        <input type="checkbox" id="agree" required>
+                        <label for="agree">Saya Menyatakan bahwa Data yang diisikan Adalah Benar</label>
+                    </div>
+                    <% if (data2.length > 0) { %>
+                        <button type="submit" class="submit-button">Daftar</button>
+                    <% } %>
+                    
+                </div>
+              </div>
+              
+        </form>
+        <% if (data2.length === 0) { %>
+            <div style="color: red; font-weight: bold; text-align: center; margin-bottom: 20px;">
+                Semua peserta yang Anda daftarkan sudah melakukan daftar ulang.
+            </div>
+        <% } %>
+        
+    </div>
+
+    <script>
+        const daftarUlangSudahAda = <%- JSON.stringify(sudahDaftarUlangIds) %>;
+    </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Auto set waktu_daftar_ulang
+            let now = new Date();
+            let formattedDate = now.toLocaleString("en-CA", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            }).replace(",", "");
+            document.getElementById("waktu_daftar_ulang").value = formattedDate;
+        
+            const select = document.getElementById("exampleFormControlSelect2");
+            const formDetail = document.getElementById("form-detail");
+            const inputNama = document.getElementById("input-nama");
+            const inputNik = document.getElementById("input-nik");
+            const alertStatus = document.getElementById("alert-status");
+        
+function handleSelectChange() {
+    const selectedOption = select.options[select.selectedIndex];
+    const status = selectedOption.getAttribute("data-status");
+    const nama = selectedOption.getAttribute("data-nama");
+    const nik = selectedOption.getAttribute("data-nik");
+    const idPendaftaran = selectedOption.value;
+
+    // Jika tidak ada status, reset semuanya
+    if (!status) {
+        formDetail.style.display = "none";
+        alertStatus.style.display = "none";
+        inputNama.value = "";
+        inputNik.value = "";
+        return;
+    }
+
+    // Cek apakah sudah daftar ulang
+    if (daftarUlangSudahAda.includes(parseInt(idPendaftaran))) {
+        formDetail.style.display = "none";
+        alertStatus.style.display = "block";
+        alertStatus.textContent = `Peserta atas nama ${nama} sudah melakukan daftar ulang.`;
+        return;
+    }
+
+    // Cek status pendaftaran
+    if (status === "diterima") {
+        formDetail.style.display = "block";
+        alertStatus.style.display = "none";
+        inputNama.value = nama;
+        inputNik.value = nik;
+    } else {
+        formDetail.style.display = "none";
+        inputNama.value = "";
+        inputNik.value = "";
+
+        alertStatus.style.display = "block";
+        if (status === "proses") {
+            alertStatus.textContent = `Pendaftaran atas nama ${nama} masih dalam proses. Silakan tunggu konfirmasi dari admin.`;
+        } else if (status === "ditolak") {
+            alertStatus.textContent = `Peserta ${nama} tidak dapat melakukan daftar ulang karena ditolak, mohon gunakan Nama peserta yang diterima.`;
+        } else {
+            alertStatus.textContent = `Pendaftaran atas nama ${nama} belum diterima. Silakan tunggu konfirmasi dari admin.`;
+        }
+    }
+}
+
+        
+            // Trigger pertama kali (jika default selected tidak "diterima")
+            handleSelectChange();
+        
+            // Trigger saat berubah
+            select.addEventListener("change", handleSelectChange);
+        });
+        </script>
+        
+        
+</body>
+</html>

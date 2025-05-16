@@ -1,0 +1,525 @@
+<%- include('../partials_view/__head.ejs') %>
+<style>
+  /* Menghilangkan efek pudar pada gambar */
+  .hero-image {
+      opacity: 1 !important;
+      filter: none !important;
+  }
+  
+  /* Jika ada overlay yang menyebabkan gambar pudar */
+  .hero::before {
+      background: none !important;
+  }
+
+  .circle-img {
+    width: 70px;  
+    height: 70px;  
+    border-radius: 50%;  
+    object-fit: cover; /* Pastikan gambar menyesuaikan dalam lingkaran */
+    border: 3px solid #fff; /* Opsional: Tambahkan border putih */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Opsional: Tambahkan bayangan */
+    
+  }
+
+  /* Warna teks navbar menjadi hitam */
+.navmenu a {
+  color: black !important;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+
+/* Warna teks saat hover menjadi coklat */
+.navmenu a:hover {
+  color: brown !important;
+}
+
+/* Warna teks dropdown juga hitam */
+.navmenu .dropdown a {
+  color: black !important;
+}
+
+/* Hover pada dropdown juga menjadi coklat */
+.navmenu .dropdown a:hover {
+  color: brown !important;
+}
+
+.card-link {
+  text-decoration: none; /* Hilangkan garis bawah */
+  color: inherit; /* Gunakan warna default */
+  display: block; /* Pastikan area klik penuh */
+}
+
+.card-link:hover {
+  text-decoration: none; /* Hindari efek hover biru */
+  color: inherit;
+}
+
+.icon-box {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: block;
+  padding: 20px; /* Opsional, agar lebih proporsional */
+  border-radius: 8px; /* Opsional, jika ingin sudut membulat */
+  transition: background 0.3s ease-in-out;
+}
+
+.icon-box:hover {
+  background: #f4f4f4; /* Warna latar saat hover */
+}
+
+
+.icon-box:hover .title a {
+  color: #8E6A07 !important; /* Warna sesuai dengan ikon */
+  transition: color 0.3s ease-in-out;
+}
+
+.icon-box:hover .icon {
+  color: #8E6A07 !important; /* Warna ikon tetap sama saat hover */
+  transition: color 0.3s ease-in-out;
+}
+
+.team-member .member-img {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* bikin gambar selalu kotak */
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .service-item p {
+    display: none;
+  }
+}
+
+.team-member .member-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0; /* kotak tanpa lengkungan */
+  display: block;
+}
+
+#album-filters li {
+  cursor: pointer;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: #555;
+  transition: all 0.3s ease-in-out;
+}
+
+#album-filters .filter-active {
+  color: #fff;
+  background-color: #8E6A07;
+  border-radius: 20px;
+}
+
+.portfolio-item {
+  margin-bottom: 1.5rem; /* jarak antar gambar */
+}
+
+@media (max-width: 576px) {
+  .icon-box .description {
+    display: none;
+  }
+}
+
+
+.service-item {
+  text-decoration: none !important;
+  color: inherit !important;
+  display: block;
+  padding: 20px;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+}
+
+.service-item:hover {
+  background: #f4f4f4; /* Warna latar saat hover */
+}
+
+.btn-brown {
+  background-color: #8B4513; /* warna coklat */
+  color: #fff;
+  border: none;
+}
+
+.btn-brown:hover {
+  background-color: #5c3317;
+  color: #fff;
+}
+
+
+
+.btn-primary:hover {
+  background-color: #A77F0B;
+  border-color: #A77F0B;
+}
+
+  .card-contact {
+    background-color: #d6c4a4;
+    color: #222;
+  width: 100%; /* Tambahkan agar isi col penuh */
+  height: auto; /* Biarkan tinggi menyesuaikan */
+  min-height: 200px; /* Optional: batas minimum */
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .card-contact:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-contact i {
+    font-size: 2.5rem;
+    color: #3c2e14;
+    margin-bottom: 15px;
+  }
+
+  .card-contact h4 {
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .card-contact p {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .card-contact {
+      width: 100%;
+    }
+  }
+
+footer .social-links a {
+  border: 2px solid #8E6A07 !important;
+  color: #8E6A07 !important;
+}
+
+footer .social-links a:hover {
+  background-color: #8E6A07 !important;
+  color: white !important;
+}
+
+  
+</style>
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+  
+      <div class="logo d-flex align-items-center me-auto">
+        <img src="../../images/logo-madrasah2.png" alt="" style="height: 50px; margin-right: 10px;">
+        <h1 class="sitename">Madrasah At-Taqwa</h1>
+      </div>
+  
+      <%- include('../partials_view/__nav.ejs') %>
+  
+      <!-- Box Profil User -->
+      <!-- <div class="dropdown ms-3">
+        <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+          style="font-weight: bold; color: #8E6A07; border: none; background: transparent;">
+          <%= data1[0].nama_users %>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          <li><a class="dropdown-item" href="/users/profil">Profil</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="/logout_users">Logout</a></li>
+        </ul>
+      </div>
+   -->
+    </div>
+  </header>
+  
+
+  <main>
+
+   <!-- Hero Section -->
+   <section id="hero" class="hero section">
+    <img src="images/beranda_foto.png" alt="" data-aos="fade-in" class="hero-image">
+
+    <div class="container">
+      <div class="row justify-content-center" data-aos="zoom-out">
+        <div class="col-xl-7 col-lg-9 text-center">
+          <h1 class="text-white">Selamat Datang di Madrasah At-Taqwa</h1>
+          <p class="text-white">lembaga pendidikan Islam yang berkomitmen untuk membentuk generasi yang berakhlak mulia dan berwawasan luas</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-3" data-aos="zoom-out" data-aos-delay="100">
+        <!-- Tombol Selengkapnya -->
+        <a href="#about" class="btn"
+           style="background-color: #4F4533; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; margin-right: 10px;"
+           onmouseover="this.style.backgroundColor='#3D3628'"
+           onmouseout="this.style.backgroundColor='#4F4533'">
+           Selengkapnya
+        </a>
+      
+        <!-- Tombol Daftar Sekarang -->
+        <a href="pendaftaran/create" class="btn"
+           style="background-color: #F4F1E6; color: black; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;"
+           onmouseover="this.style.backgroundColor='#D9D2C0'"
+           onmouseout="this.style.backgroundColor='#F4F1E6'">
+           Daftar Sekarang
+        </a>
+      </div>
+      
+      <div class="row gy-4 mt-5">
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="100">
+          <a href="#mapel" class="card-link">
+            <div class="icon-box">
+              <div class="icon" style="color: #8E6A07;"><i class="bi bi-easel"></i></div>
+              <h4 class="title">Program Pendidikan</h4>
+              <p class="description">Komitmen Menuju Generasi Berakhlak Mulia</p>
+            </div>
+          </a>
+        </div><!--End Icon Box -->
+
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="200">
+          <a href="#guru" class="icon-box text-decoration-none">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-person"></i></div>
+            <h4 class="title">Pengajar</h4>
+            <p class="description">Tim Pengajar Berkualitas dan Berpengalaman</p>
+          </a>
+        </div><!--End Icon Box -->
+        
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="300">
+          <a href="" class="icon-box text-decoration-none">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-image"></i></div>
+            <h4 class="title">Album</h4>
+            <p class="description">Momen Tak Terlupakan Bersama Madrasah</p>
+          </a>
+        </div><!--End Icon Box -->
+        
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="400">
+          <a href="#kontak" class="icon-box text-decoration-none">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-geo-alt"></i></div>
+            <h4 class="title">Lokasi & Kontak</h4>
+            <p class="description">Temukan Kami dengan Mudah</p>
+          </a>
+        </div><!--End Icon Box -->
+        
+      </div>
+    </div>
+
+  </section><!-- /Hero Section -->
+  
+
+<!-- Mata Pelajaran Section -->
+<section id="mapel" class="services section light-background">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Program Pendidikan</h2>
+    <p>Pilih mata pelajaran yang ingin Anda pelajari</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4 gx-3">
+      <% data2.forEach((mapel, index) => { %>
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+          <a href="/mapel/details/<%= mapel.id_mapel %>" class="service-item item-cyan position-relative text-decoration-none">
+            <!-- Gambar Mapel dalam Lingkaran -->
+            <div class="icon">
+              <img src="/images/mapel/<%= mapel.gambar_mapel %>" height="70" width="70" class="circle-img">
+            </div>
+            <h3><%= mapel.nama_mapel %></h3>
+            <p><%= mapel.deskripsi_mapel %></p>
+          </a>
+        </div><!-- End Mata Pelajaran -->
+      <% }); %>
+    </div>
+    
+  </div>
+
+</section><!-- /Mata Pelajaran Section -->
+
+<section id="guru" class="team section light-background">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Guru</h2>
+    <p>Berikut adalah Daftar Pengajar di Madrasah At-Taqwa</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4 gx-3">
+      <% data3.slice(0, 4).forEach((item, index) => { %>
+        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+          <div class="team-member">
+            <div class="member-img">
+              <img src="/images/guru/<%= item.gambar_guru %>" class="img-fluid" alt="<%= item.nama_guru %>">
+            </div>
+            <div class="member-info">
+              <h4><%= item.nama_guru %></h4>
+              <span><%= item.nama_mapel %></span>
+            </div>
+          </div>
+        </div><!-- End Team Member -->
+      <% }) %>
+    </div>
+
+    <!-- Tombol Lihat Selengkapnya -->
+    <div class="text-center mt-4">
+<a href="/guru/users" class="btn" 
+   style="background-color: #8E6A07; color: #fff; border: none; padding: 10px 20px; border-radius: 5px;">
+   Lihat Selengkapnya
+</a>
+
+    </div>
+  </div>
+
+</section><!-- /Team Section -->
+
+<!-- <section id="album" class="portfolio sections-bg">
+  <div class="container" data-aos="fade-up">
+    <div class="section-title text-center" data-aos="fade-up">
+      <h2>ALBUM</h2>
+      <p>Kumpulan dokumentasi kegiatan dan momen spesial kami</p>
+    <div class="text-center mb-4">
+      <ul id="album-filters" class="list-inline">
+        <li class="list-inline-item filter-active" data-filter="*">Semua</li>
+        <li class="list-inline-item" data-filter=".perkumpulan">Perkumpulan</li>
+        <li class="list-inline-item" data-filter=".ramadhan">Ramadhan</li>
+        <li class="list-inline-item" data-filter=".pembelajaran">Pembelajaran</li>
+        <li class="list-inline-item" data-filter=".acara">Acara</li>
+      </ul>
+    </div>
+    </div>
+    <div class="row portfolio-container">
+      <% data4.forEach((item) => { %>
+        <div class="col-lg-4 col-md-6 portfolio-item <%= item.jenis_album %>">
+          <div class="portfolio-wrap">
+            <a href="/images/album/<%= item.gambar_album %>" class="glightbox">
+              <img src="/images/album/<%= item.gambar_album %>" class="img-fluid" alt="<%= item.nama_album %>">
+            </a>
+            <div class="portfolio-info">
+              <h4><%= item.nama_album %></h4>
+              <p><%= item.deskripsi_album %></p>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+  </div>
+</section> -->
+
+<section id="kontak" class="contact section" style="padding: 60px 0; background: #f9f9f9;">
+  <div class="container text-center" data-aos="fade-up">
+    <h2 style="color: #5a4d1c; font-weight: 700;">Lokasi Dan Kontak</h2>
+    <p style="margin-top: 10px; color: #555;">
+      Berikut adalah Informasi Lokasi dan Kontak di Madrasah At-Taqwa
+    </p>
+  </div>
+
+  <div class="container" data-aos="fade-up" style="margin-top: 30px;">
+    <!-- Embedded Google Maps -->
+    <div style="overflow: hidden; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <iframe 
+        src="https://www.google.com/maps?q=Jalan+Panji+Waji+no+30,+Kalianget,+Sumenep&output=embed" 
+        width="100%" height="300" style="border:0;" 
+        allowfullscreen="" loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Contact Info Cards -->
+  <div class="container" data-aos="fade-up" style="margin-top: 50px;">
+    <div class="contact-cards" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+      
+      <!-- Card Template -->
+<div class="row gy-4 gx-3">
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-geo-alt-fill"></i>
+      <h4>Alamat</h4>
+      <p>Jalan Panji Waji no 30,<br>Kalianget, Sumenep</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-telephone-fill"></i>
+      <h4>Telepon</h4>
+      <p>+62-823-2344-4324</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-envelope-fill"></i>
+      <h4>Email</h4>
+      <p>example8688@gmail.com</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-clock-fill"></i>
+      <h4>Jam Operasional</h4>
+      <p>
+        Senin - Jumat: 07.00 - 15.00<br>
+        Sabtu: 07.00 - 12.00
+      </p>
+    </div>
+  </div>
+
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Floating Action Button -->
+<a href="https://api.whatsapp.com/send?phone=6282332172543" class="float" target="_blank">
+  <i class="fab fa-whatsapp my-float"></i>
+</a>
+
+<%- include('../partials_view/__foot.ejs') %>
+  </main>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+
+  <!-- JavaScript Filter Album -->
+  <!-- <script>
+    const filters = document.querySelectorAll('#album-filters li');
+    const items = document.querySelectorAll('.portfolio-item');
+  
+    filters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const filterValue = filter.getAttribute('data-filter');
+  
+        filters.forEach(el => el.classList.remove('filter-active'));
+        filter.classList.add('filter-active');
+  
+        items.forEach(item => {
+          if (filterValue === '*' || item.classList.contains(filterValue.substring(1))) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script> -->
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
+
+<script type="text/javascript" src="js/mdb.min.js"></script>
+<!-- Custom scripts -->
+<script type="text/javascript" src="js/script.js"></script>
+</body>
+
+</html>

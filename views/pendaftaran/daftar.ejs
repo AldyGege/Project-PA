@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <%- include('../partials/__head.ejs') %>
+    <style>
+        :root {
+            --primary-color: #8B6F1A;
+            --button-color: #8B6F1A;
+            --background-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header .home-icon {
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header .cancel-button {
+            background: #E6D5B8;
+            color: red;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .branding {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Tengah secara horizontal */
+            padding: 15px;
+        }
+        
+        .logo {
+            height: 50px; /* Sesuaikan ukuran logo */
+            margin-right: 10px;
+        }
+        
+        .branding-title {
+            color: #8B6F1A;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+
+        .form-container {
+            max-width: 900px;
+            background: #FDF8F2;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 40px auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+    
+        .checkbox-container label {
+            font-size: 14px;
+            color: #333;
+        }
+    
+        .submit-button {
+            background-color: var(--button-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            margin-left: auto;
+        }
+    
+        .submit-button:hover {
+            background-color: #6E550F;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="home-icon">&#8962;</a>
+        <button class="cancel-button">Batalkan</button>
+    </div>
+
+    <!-- Tambahkan bagian baru untuk logo & teks -->
+<div class="branding">
+    <img src="../../images/logo-madrasah.png" alt="" class="logo">
+    <h2 class="branding-title">Portal Pendaftaran Mandiri Online Madrasah At-Taqwa</h2>
+</div>
+
+    
+    <div class="form-container">
+        <form action="/pendaftaran/store" method="POST" enctype="multipart/form-data" class="pt-3">
+            <h5><b>Informasi Pribadi</b></h5>
+            <%- include('../partials/__messagess.ejs') %>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="Nama Lengkap" name="nama_pendaftar" required>
+                </div>
+                <input type="hidden" name="id_users" value="<%= data2.id_users %>">
+                <div class="form-group">
+                    <input type="file" name="gambar_pendaftar" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="Tempat, Tanggal Lahir" name="ttl" required>
+                </div>
+                <div class="form-group">
+                    <select name="gender" required>
+                        <option value="">Jenis Kelamin</option>
+                        <option value="Pria">Laki-laki</option>
+                        <option value="Wanita">Perempuan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="No induk keluarga" name="nik" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Alamat Lengkap" name="alamat_pendaftar" required>
+                </div>
+            </div>
+            
+            <h5><b>Informasi Orang Tua/Wali</b></h5>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="Nama Lengkap" name="nama_ortu_pendaftar" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Pekerjaan" name="pekerjaan_ortu_pendaftar" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="No Telepon" name="no_telp_ortu_pendaftar" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Alamat (Jika Berbeda)" name="alamat_ortu_pendaftar">
+                </div>
+            </div>
+             <!-- Input waktu_pendaftaran (hidden) -->
+             <input type="hidden" id="waktu_pendaftaran" name="waktu_pendaftaran">
+            <div class="checkbox-container">
+                <div>
+                    <input type="checkbox" id="agree" required>
+                    <label for="agree">Saya Menyatakan bahwa Data yang diisikan Adalah Benar</label>
+                </div>
+                <button type="submit" class="submit-button">Daftar</button>
+            </div>
+        </form>
+        
+    </div>
+    <script>
+        // Mengisi waktu_pendaftaran secara otomatis
+        document.addEventListener("DOMContentLoaded", function () {
+            let now = new Date();
+            let formattedDate = now.toLocaleString("en-CA", { 
+                year: "numeric", 
+                month: "2-digit", 
+                day: "2-digit", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                second: "2-digit",
+                hour12: false 
+            }).replace(",", ""); // Menghilangkan koma antara tanggal & waktu
+        
+            document.getElementById("waktu_pendaftaran").value = formattedDate;
+        });
+        
+    </script>
+</body>
+</html>

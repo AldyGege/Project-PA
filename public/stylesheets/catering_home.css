@@ -1,0 +1,328 @@
+:root {
+    --primary-color: #025589;
+    --white-color: #fff;
+    --gray-color: #666666;
+}
+h1 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h3 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h4 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h5 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+a {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+p {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+}
+
+.btn-outline-category {
+    color: var(--primary-color);
+    border-color:var(--primary-color); 
+}
+
+.btn-outline-category:hover{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+.garis-vertical {
+    margin-right: 20px;
+    border-left: 1px solid grey;
+    height: 25px;
+    opacity: 50%;
+}
+
+.container-fluid-latar{
+    background-color: #EBF1F3;
+}
+
+/* Custom style for circular indicators */
+.carousel-indicators [data-bs-target] {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    /* Make the indicators circular */
+    background-color: #666666;
+    /* Default color */
+}
+.carousel-indicators .active {
+    background-color: #fff;
+    /* Active indicator color */
+}
+
+/* KATEGORI MENU */
+.category-title {
+    background-color: var(--primary-color); /* Biru tua */
+    border-radius: 8px 8px 0 0;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-left:-12px;
+    margin-right: -12px;
+  }
+  .nav-category button {
+    margin: 5px;
+  }
+  .card-kategori {
+    margin-bottom: 20px;
+  }
+  .card-menu{
+    height: 14.2rem;
+    width: 11rem;
+  }
+  .card-body-menu{
+    padding: 5px 10px 0 10px;
+  }
+  .card-body-menu .d-md-flex{
+    margin-top: -20px;
+  }
+  .card-img-top {
+    height: 140px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  .hidden {
+    display: none;
+  }
+  .container-card {
+    max-height: calc(2 * (14rem + 40px)); /* 15rem tinggi kartu + margin bawah 20px */
+    overflow-y: scroll; /* Scroll tapi scrollbar tidak terlihat */
+    -ms-overflow-style: none; /* Untuk Internet Explorer dan Edge */
+    scrollbar-width: none; /* Untuk Firefox */
+}
+/* Hilangkan scrollbar untuk browser berbasis WebKit */
+.container-card::-webkit-scrollbar {
+    display: none; /* Hilangkan scrollbar */
+}
+/* Smooth scrolling effect */
+.container-card {
+    scroll-behavior: smooth; /* Scroll dengan efek halus */
+}
+/* Styling untuk row */
+.row.row-cols-1.row-cols-md-4.g-4 {
+    flex-wrap: wrap; /* Agar kartu tersusun rapi dalam beberapa baris */
+}
+
+/* FLASH SALE */
+.flashsale {
+    max-height: 500px;
+    overflow-y: scroll; /* Scroll tapi scrollbar tidak terlihat */
+    -ms-overflow-style: none; /* Untuk Internet Explorer dan Edge */
+    scrollbar-width: none; /* Untuk Firefox */
+  }
+
+  .flashsale-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .card-flashsale {
+    display: flex;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+
+  .card-flashsale img {
+    width: 150px;
+    height: auto;
+    border-radius: 8px 0 0 8px;
+  }
+
+  .card-body-flashsale {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    width: 100%;
+    margin-left: 10px;
+  }
+
+  .flashsale-timer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px;
+    border-radius: 0 5px 0 0;
+    font-size: 0.8rem;
+    text-align: right;
+    margin-bottom: 10px;
+    margin-top: -15px;
+    
+  }
+
+  .flashsale-footer {
+    background-color: var(--primary-color);
+    height: 20px;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .price-original {
+    text-decoration: line-through;
+    color: black;
+    padding-right: 15px;
+  }
+
+  .price-discount {
+    color: red;
+    font-weight: bold;
+    padding-left: 50px;
+  }
+
+  .card-body-flashsale {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    width: 100%;
+}
+
+.input-group-wrapper {
+
+    margin-bottom: 10px; 
+    margin-left: 2rem;
+}
+
+.pesan {
+    max-width:100px;
+    padding-left: 10px;
+    
+}
+
+.btn-pesan {
+    background-color: var(--primary-color);
+    color: white;
+    width: 100px;
+
+}
+
+/* PRODUK TERLARIS */
+.card-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.card-price {
+    font-size: 0.85rem;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+.card-sold {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+.card-body-produk {
+    padding: 10px 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+#topProductsCarousel .carousel-control-prev {
+    left: -20px; /* Mengatur posisi tombol lebih ke kiri */
+}
+#topProductsCarousel .carousel-control-next {
+    right: -20px; /* Mengatur posisi tombol lebih ke kanan */
+}
+#topProductsCarousel .carousel-control-prev,
+#topProductsCarousel .carousel-control-next {
+    background-color: var(--primary-color);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* Style untuk tombol 'Pesan' menggunakan <a> */
+.card-produk .btn-pesan {
+    text-align: center;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #4E88AD; /* Warna tombol default */
+    color: white;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+/* Hover untuk tombol 'Pesan' */
+.card-produk .btn-pesan:hover {
+    background-color:var(--primary-color); /* Warna hover lebih gelap */
+}
+/* Overlay hitam transparan saat di-hover */
+.card-produk::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0); /* Tidak terlihat secara default */
+    transition: background-color 0.3s ease;
+    z-index: 1;
+    border-radius: 12px;
+}
+/* Saat card-produk di-hover, overlay hitam transparan muncul */
+.card-produk:hover::before {
+    background-color: rgba(72, 72, 72, 0.5); /* Warna hitam dengan transparansi 50% */
+    border-radius: 12px;
+}
+/* Menampilkan tombol 'Pesan' saat card-produk di-hover */
+.card-produk:hover .btn-pesan {
+    display: block;
+    z-index: 2; /* Pastikan tombol berada di atas overlay */
+}
+/* Menambahkan sedikit shadow dan animasi saat di-hover */
+.card-produk:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* Position relative untuk memastikan overlay dan tombol diatur dengan benar */
+.card-produk {
+    position: relative;
+    overflow: hidden;
+}
+

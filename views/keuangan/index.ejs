@@ -1,0 +1,67 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include('../partials/__nav.ejs') %>
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Data keuangan</h4>
+                                <a href="/keuangan/create" class="btn btn-sm btn-success mb-3">Tambah keuangan</a>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama keuangan</th>
+                                                <th>Jenis keuangan</th>
+                                                <th>Deskripsi keuangan</th>
+                                                <th>Nominal keuangan</th>
+                                                <th>Waktu keuangan</th>
+                                                <th>Uploader</th>
+                                                <th colspan="2">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i = 0; i < data.length; i++) { %>
+                                            <tr>
+                                                <th scope="row"><%= (i + 1) %></th>
+                                                <td><%= data[i].nama_keuangan %></td>
+                                                <td><%= data[i].jenis_keuangan %></td>
+                                                <td><%= data[i].deskripsi_keuangan.length > 100 ? data[i].deskripsi_keuangan.substring(0, 100) + '...' : data[i].deskripsi_keuangan %></td>
+                                                <td><%= data[i].nominal.toLocaleString('id-ID') %></td>
+                                                <td>
+                                                <% 
+                                                    const t = new Date(data[i].waktu_keuangan);
+                                                    const tanggal = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
+                                                %>
+                                                <%= tanggal %>
+                                                </td>
+                                                <td><%= data[i].nama_admin %></td>
+                                                <td>
+                                                    <a href="/keuangan/edit/<%= data[i].id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
+                                                    <a href="/keuangan/delete/<%= data[i].id_keuangan %>" class="btn btn-sm btn-danger">Delete</a>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>
+</html>

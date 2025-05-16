@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>RSI GARAM KALIANGET</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <!-- MDB -->
+  <link rel="stylesheet" href="css/mdb.min.css" />
+  <link rel="stylesheet" href="../../stylesheets/dokter.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+  <div class="wrapper sticky-top">
+    <div class="navbar-top ">
+      <span>Contact us: 082332632929 - rsi_garam@yahoo.co.id</span>
+    </div>
+
+    <nav class="navbar navbar-expand-lg bg-white">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="../images/logo-rsi.png" alt="Logo" class="d-inline-block align-text-top" style="height: 50px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav  mx-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="/"><small>BERANDA</small></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/"><small>DOKTER</small></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="../../layanan/users"><small>LAYANAN</small></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="../../artikel/users"><small>ARTIKEL</small></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " aria-current="page" href="../../tentang_kami/users"><small>TENTANG KAMI</small></a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <a class="btn btn-daftar" href="https://pmo.rsigaramkalianget.com/#daftar"
+              role="button"><small>Daftar</small></a>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+  </div>
+
+  <main>
+
+    <div class="awalan">
+      <div class="card-dokter mb-3 ">
+        <div class="card text-bg-dark mb-3">
+          <img src="../../images/home.png" class="card-img" alt="...">
+          <div class="card-img-overlay text-center">
+            <h3 class="card-title text-white mb-5">Selamat Datang di
+              RSI Garam Kalianget</h3>
+            <p class="card-text-desc">Kami dengan hangat menyambut Anda di RSI Garam Kalianget, tempat di mana kesehatan
+              dan
+              kesejahteraan Anda menjadi prioritas utama kami. Di sini, kami berkomitmen untuk memberikan pelayanan
+              medis terbaik dengan standar profesionalisme yang tinggi.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="text-center text-primary mb-3">
+            <h4><b>Cari Jadwal Dokter</b></h4>
+
+          </div>
+          <div class="cari-dokter px-5">
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <form action="/dokter/cari" method="GET" enctype="multipart/form-data" class="forms-sample">
+                  <select class="form-control" id="select-hari" name="hari" required>
+                    <option selected>Pilih Hari</option>
+                    <option value="senin">Senin</option>
+                    <option value="selasa">Selasa</option>
+                    <option value="rabu">Rabu</option>
+                    <option value="kamis">Kamis</option>
+                    <option value="jumat">Jumat</option>
+                    <option value="sabtu">Sabtu</option>
+                    <option value="minggu">Minggu</option>
+                  </select>
+              </div>
+              <div class="col-sm-6 mb-3">
+                <select class="form-control" id="select-keahlian" name="id_keahlian" required>
+                  <option selected>Pilih Keahlian</option>
+                  <% for(var i=0; i < data_keahlian.length; i++){ %>
+                    <option value="<%= data_keahlian[i].id_keahlian %>">
+                      <%= data_keahlian[i].keahlian %>
+                    </option>
+                    <% } %>
+                </select>
+              </div>
+              <div class="col-sm-11 mb-5">
+                <select class="form-control" id="select-dokter" name="nama_dokter" required>
+                  <option selected>Pilih Dokter</option>
+                </select>
+              </div>
+              <div class="col-sm mb-5">
+                <button type="submit" class="btn btn-primary">Cari</button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-sm">
+      <div class="row row-cols-1  g-4">
+        <% if (typeof dokter !='undefined' ) { %>
+          <% dokter.forEach(function(data) { %>
+            <div class="col">
+              <div class="card card-dokter mb-3 shadow-lg" style="max-width: 100%;">
+                <div class="row g-0">
+                  <div class="col-md-4 d-flex align-items-center justify-content-center" style="padding: 20px;">
+                    <img src="../../images/dokter/<%= data.gambar_dokter %>" class="img-fluid rounded dokter-img"
+                      alt="Dokter">
+                  </div>
+                  <div class="col-md-8 card-content">
+                    <div class="card-body">
+                      <h4 class="card-title">
+                        <%= data.nama_dokter %>
+                      </h4>
+
+                      <p class="card-text"><small class="btn btn-danger btn-sm text-white">
+                          <%= data.keahlian %>
+                        </small>
+                      </p>
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th scope="col">Senin</th>
+                              <th scope="col">Selasa</th>
+                              <th scope="col">Rabu</th>
+                              <th scope="col">Kamis</th>
+                              <th scope="col">Jumat</th>
+                              <th scope="col">Sabtu</th>
+                              <th scope="col">Minggu</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <%= data.senin %>
+                              </td>
+                              <td>
+                                <%= data.selasa %>
+                              </td>
+                              <td>
+                                <%= data.rabu %>
+                              </td>
+                              <td>
+                                <%= data.kamis %>
+                              </td>
+                              <td>
+                                <%= data.jumat %>
+                              </td>
+                              <td>
+                                <%= data.sabtu %>
+                              </td>
+                              <td>
+                                <%= data.minggu %>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+              <% } else { %>
+                <% data.forEach(function(data) { %>
+                  <div class="col">
+                    <div class="card card-dokter mb-3 shadow-lg" style="max-width: 100%;">
+                      <div class="row g-0">
+                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="padding: 20px;">
+                          <img src="../../images/dokter/<%= data.gambar_dokter %>" class="img-fluid rounded dokter-img"
+                            alt="Dokter">
+                        </div>
+                        <div class="col-md-8 card-content">
+                          <div class="card-body">
+                            <h4 class="card-title">
+                              <%= data.nama_dokter %>
+                            </h4>
+
+                            <p class="card-text"><small class="btn btn-danger btn-sm text-white">
+                                <%= data.keahlian %>
+                              </small>
+                            </p>
+                            <div class="table-responsive">
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Senin</th>
+                                    <th scope="col">Selasa</th>
+                                    <th scope="col">Rabu</th>
+                                    <th scope="col">Kamis</th>
+                                    <th scope="col">Jumat</th>
+                                    <th scope="col">Sabtu</th>
+                                    <th scope="col">Minggu</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <%= data.senin %>
+                                    </td>
+                                    <td>
+                                      <%= data.selasa %>
+                                    </td>
+                                    <td>
+                                      <%= data.rabu %>
+                                    </td>
+                                    <td>
+                                      <%= data.kamis %>
+                                    </td>
+                                    <td>
+                                      <%= data.jumat %>
+                                    </td>
+                                    <td>
+                                      <%= data.sabtu %>
+                                    </td>
+                                    <td>
+                                      <%= data.minggu %>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+                    <% } %>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- Floating Action Button -->
+    <a href="https://api.whatsapp.com/send?phone=6282332172543" class="float" target="_blank">
+      <i class="fab fa-whatsapp my-float"></i>
+    </a>
+
+    <footer class="text-primary text-center text-lg-start  mt-5">
+      <!-- Grid container -->
+      <div class="container p-4">
+        <!--Grid row-->
+        <div class="row mb-5">
+          <!--Grid column-->
+          <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+            <img src="../images/logo-rsi.png" alt="Logo" class="logo logo-align" style="height: 100px;">
+
+
+            <div class="mt-4">
+              <!-- Facebook -->
+              <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-facebook-f"></i></a>
+              <!-- Dribbble -->
+              <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-dribbble"></i></a>
+              <!-- Twitter -->
+              <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-twitter"></i></a>
+              <!-- Google + -->
+              <a type="button" class="btn btn-floating btn-primary btn-lg"><i class="fab fa-google-plus-g"></i></a>
+              <!-- Linkedin -->
+            </div>
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+
+
+
+
+            <ul class="fa-ul" style="margin-left: 1.65em;">
+              <h5 class="text-uppercase mb-4">Hubungi Kami</h5>
+
+              <li class="mb-3">
+                <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">Pusat Panggilan
+                  (08233263292)</span>
+              </li>
+              <li class="mb-3">
+                <span class="fa-li"><i class="fas fa-ambulance"></i></span><span class="ms-2">IGD/Ambulance
+                  (085334367221)</span>
+              </li>
+              <li class="mb-3">
+                <span class="fa-li"><i class="fas fa-user-plus"></i></span><span class="ms-2">Pendaftaran
+                  (085257098307)</span>
+              </li>
+              <li class="mb-3">
+                <span class="fa-li"><i class="fas fa-headphones"></i></span><span class="ms-2">Humas/Customer Service
+                  (082332632929)</span>
+              </li>
+              <li class="mb-3">
+                <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2"
+                  href="rsi_garam@yahoo.co.id">rsi_garam@yahoo.co.id</span>
+              </li>
+            </ul>
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+            <h5 class="text-uppercase mb-4">Jam Kunjung</h5>
+            <p>SIANG : JAM 10.00 WIB s/d 12.00 WIB</p>
+            <p>SORE  : JAM 14.00 WIB s/d 18.00 WIB</p>
+          </div>
+          <!--Grid column-->
+        </div>
+        <!--Grid row-->
+      </div>
+      <!-- Grid container -->
+
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2024 Copyright:
+        <a class="text-primary" href="https://rsi_garam@yahoo.co.id/">RSI GARAM KALIANGET</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
+
+  <script type="text/javascript" src="js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <script type="text/javascript" src="js/script.js"></script>
+</body>
+
+<script>
+  $(document).ready(function () {
+    $('#select-hari, #select-keahlian').on('change', function () {
+      console.log('Dropdown changed');
+      var hari = $('#select-hari').val();
+      var keahlian = $('#select-keahlian').val();
+
+      console.log('Selected Hari:', hari);
+      console.log('Selected Keahlian:', keahlian);
+
+      if (hari && keahlian) {
+        console.log('Making AJAX request...');
+        // Lakukan panggilan AJAX untuk mendapatkan daftar dokter yang sesuai
+        $.ajax({
+          url: '/dokter/get-dokter',  // Ganti dengan endpoint yang sesuai
+          type: 'GET',
+          data: {
+            hari: hari.toLowerCase(), // Menyesuaikan dengan nama kolom di tabel jadwal
+            id_keahlian: keahlian
+          },
+          success: function (response) {
+            console.log('AJAX success:', response);
+            // Kosongkan list dokter sebelumnya
+            $('#select-dokter').empty();
+
+            // Tambahkan opsi dokter yang didapat dari response
+            $('#select-dokter').append('<option selected>Pilih Dokter</option>');
+            $.each(response.dokter, function (index, dokter) {
+              $('#select-dokter').append('<option value="' + dokter.id_dokter + '">' + dokter.nama_dokter + '</option>');
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error("AJAX Error:", error);
+          }
+        });
+      }
+    });
+  });
+
+  $('#select-hari').on('change', function () {
+    console.log("Changed!");
+  });
+
+  // Function to remove query parameters from the URL
+  function removeQueryParameters() {
+    const url = new URL(window.location.href);
+    url.search = ''; // Clears all query parameters
+    window.history.replaceState({}, document.title, url.href);
+  }
+
+  // Call the function to remove query parameters
+  removeQueryParameters();
+
+
+</script>
+
+
+
+
+</html>

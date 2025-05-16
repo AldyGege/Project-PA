@@ -1,0 +1,53 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <!-- partial:partials/_navbar.html -->
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Tambah Album</h4>
+                        <p class="card-description">Form untuk menambahkan album baru</p>
+                        <form action="/album/store" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <div class="form-group">
+                                <label for="gambar_album">Gambar Album</label>
+                                <input type="file" class="form-control" id="gambar_album" name="gambar_album" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_album">Nama Album</label>
+                                <input type="text" class="form-control" id="nama_album" name="nama_album" placeholder="Nama Album" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect2">Jenis Album</label>
+                                <select class="form-control" id="exampleFormControlSelect2" name="jenis_album" required>
+                                    <option selected>Pilih Album</option>
+                                        <option value="perkumpulan">Perkumpulan</option>
+                                        <option value="ramadhan">Ramadhan</option>
+                                        <option value="pembelajaran">Pembelajaran</option>
+                                        <option value="prestasi">Prestasi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsi_album">Deskripsi Album</label>
+                                <textarea class="form-control" id="deskripsi_album" name="deskripsi_album" placeholder="Deskripsi" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" id="nama_admin" name="nama_admin" value="<%= data2.nama_admin %>" readonly>
+                            </div>
+                            <input type="hidden" name="id_admin" value="<%= data2.id_admin %>">
+                            <button type="submit" class="btn btn-primary mr-2">Simpan</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()">Batal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<!-- <%- include('../partials/__foot.ejs') %> -->
+</body>
+</html>

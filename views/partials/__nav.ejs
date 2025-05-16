@@ -1,0 +1,126 @@
+<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+  <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+    <a class="navbar-brand d-flex align-items-center" href="index.html">
+      <img src="../../images/logo-madrasah2.png" alt="logo" style="height: 50px; margin-right: 10px;">
+      <span style="font-size: 20px; font-weight: bold; color: #8E6A07;">At-Taqwa</span>
+    </a>
+  </div>
+  
+  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+      <span class="icon-menu"></span>
+    </button>
+    <ul class="navbar-nav mr-lg-2">
+      <li class="nav-item nav-search d-none d-lg-block">
+      </li>
+    </ul>
+    <ul class="navbar-nav navbar-nav-right">
+      <li class="nav-item nav-profile dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+          <img src="/images/users/<%= data2[0].gambar_admin %>" alt="profile"/>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+          <a class="dropdown-item">
+            <i class="ti-settings text-primary"></i>
+            Settings
+          </a>
+          <a class="dropdown-item" href="/logout">
+            <i class="ti-power-off text-primary"></i>
+            Logout
+        </a>        
+        </div>
+      </li>
+    </ul>
+    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+      <span class="icon-menu"></span>
+    </button>
+  </div>
+</nav>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+  <!-- partial:partials/_settings-panel.html -->
+  <div class="theme-setting-wrapper">
+    <div id="settings-trigger"><i class="ti-settings"></i></div>
+    <div id="theme-settings" class="settings-panel">
+      <i class="settings-close ti-close"></i>
+      <p class="settings-heading">SIDEBAR SKINS</p>
+      <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+      <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+      <p class="settings-heading mt-2">HEADER SKINS</p>
+      <div class="color-tiles mx-0 px-4">
+        <div class="tiles success"></div>
+        <div class="tiles warning"></div>
+        <div class="tiles danger"></div>
+        <div class="tiles info"></div>
+        <div class="tiles dark"></div>
+        <div class="tiles default"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- partial -->
+  <!-- partial:partials/_sidebar.html -->
+  <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="superusers">
+          <i class="icon-grid menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+          <i class="icon-layout menu-icon"></i>
+          <span class="menu-title">Informasi</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="ui-basic">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="mapel">Mata Pelajaran</a></li>
+            <li class="nav-item"> <a class="nav-link" href="guru">Guru</a></li>
+            <li class="nav-item"> <a class="nav-link" href="fasilitas">Fasilitas</a></li>
+            <li class="nav-item"> <a class="nav-link" href="keuangan">Keuangan</a></li>
+            <!-- <li class="nav-item"> <a class="nav-link" href="jadwal">Jadwal</a></li>
+            <li class="nav-item"> <a class="nav-link" href="keahlian">Keahlian</a></li>
+            <li class="nav-item"> <a class="nav-link" href="layanan">Layanan</a></li> -->
+          </ul>
+        </div>
+      </li>
+
+<!-- Dropdown untuk Artikel -->
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href="#artikel-menu" aria-expanded="false" aria-controls="artikel-menu">
+    <i class="icon-columns menu-icon"></i>
+    <span class="menu-title">Artikel</span>
+    <i class="menu-arrow"></i>
+  </a>
+  <div class="collapse" id="artikel-menu">
+    <ul class="nav flex-column sub-menu">
+      <li class="nav-item"><a class="nav-link" href="berita">Berita</a></li>
+      <li class="nav-item"><a class="nav-link" href="album">Album</a></li>
+    </ul>
+  </div>
+</li>
+
+<!-- Dropdown untuk Daftar -->
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href="#daftar-menu" aria-expanded="false" aria-controls="daftar-menu">
+    <i class="icon-contract menu-icon"></i>
+    <span class="menu-title">Daftar</span>
+    <i class="menu-arrow"></i>
+  </a>
+  <div class="collapse" id="daftar-menu">
+    <ul class="nav flex-column sub-menu">
+      <li class="nav-item"><a class="nav-link" href="pendaftaran">Pendaftaran</a></li>
+      <li class="nav-item"><a class="nav-link" href="daftar_ulang">Daftar Ulang</a></li>
+      <li class="nav-item"><a class="nav-link" href="siswa">Siswa</a></li>
+    </ul>
+  </div>
+</li>
+
+      
+
+      
+    </ul>
+  </nav>

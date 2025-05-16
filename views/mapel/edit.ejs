@@ -1,0 +1,46 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <!-- partial:partials/_navbar.html -->
+        <!-- partial -->
+        <div class="main-panel w-100">
+            <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Edit Data mapel</h4>
+                        <p class="card-description">
+                            Basic form layout for editing news
+                        </p>
+                        <form action="/mapel/update/<%= id %>" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <div class="form-group">
+                                <label for="gambar_mapel">Foto mapel</label>
+                                <input type="file" class="form-control" id="gambar_mapel" name="gambar_mapel">
+                                <img src="/images/mapel/<%= data.gambar_mapel %>" height="100" width="150" alt="Gambar album lama"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_mapel">Judul mapel</label>
+                                <input type="text" class="form-control" id="nama_mapel" name="nama_mapel" value="<%= data.nama_mapel %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsi_mapel">Deskripsi mapel</label>
+                                <textarea class="form-control" id="deskripsi_mapel" name="deskripsi_mapel" rows="4" required><%= data.deskripsi_mapel %></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_admin">Uploader</label>
+                                <input type="text" class="form-control" id="nama_admin" name="nama_admin" value="<%= data2.nama_admin %>" readonly>
+                            </div>
+                            <button type="submit" class="btn btn-primary mr-2">Simpan</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<%- include('../partials/__head.ejs') %>
+<style>
+  :root {
+    --dark-blue-color: #025589;
+    --secondary-color: #02894D;
+  }
+
+  .btn-primary {
+    background-color: var(--dark-blue-color);
+    border-color: var(--dark-blue-color);
+  }
+
+  .form-container {
+    max-width: 900px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .large-logo {
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+
+  .form-row .form-group {
+    flex: 1;
+  }
+
+</style>
+<body>
+  <div class="container-scroller d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="form-container">
+      <div class="text-center">
+        <img src="../../images/logo-madrasah.png" alt="logo" class="large-logo">
+        <h4>Baru Ingin Mendaftar?</h4>
+        <h6 class="font-weight-light">Mari gabung bersama kami Menjadi Admin</h6>
+      </div>
+      <%- include('../partials/__messagess.ejs') %>
+      <form action="/saveadmin" method="POST" enctype="multipart/form-data" class="pt-3">
+        
+        <div class="mb-3">
+          <small class="form-text text-muted">Pilih Foto Profil</small>
+          <input type="file" class="form-control" name="gambar_admin" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" class="form-control form-control-lg" placeholder="Nama" name="nama_admin" required>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control form-control-lg" placeholder="No Telp" name="no_telp_admin" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <input type="email" class="form-control form-control-lg" placeholder="Email" name="email_admin" required>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control form-control-lg" placeholder="Password" name="password_admin" required>
+          </div>
+        </div>
+
+        <!-- <div class="mb-4">
+            <div class="form-check">
+              <label class="form-check-label text-muted">
+                <input type="checkbox" class="form-check-input">
+                I agree to all Terms & Conditions
+              </label>
+            </div>
+          </div> -->
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-secondary btn-lg font-weight-medium w-100">SIGN UP</button>
+        </div>
+
+        <div class="text-center mt-3 font-weight-light">
+          Already have an account? <a href="login" class="text-primary">Login</a>
+        </div>
+
+      </form>
+    </div>
+  </div>

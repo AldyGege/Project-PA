@@ -1,0 +1,547 @@
+h1 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+
+}
+
+h2 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h3 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h4 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+h5 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+a {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+p {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.btn-primary {
+    background-color: #025589;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.btn-primary-disabled {
+    background-color: #025589;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.text-primary {
+    color: #025589 !important;
+}
+
+.bg-primary {
+    background-color: #025589;
+}
+
+.text-success {
+    color: #8AC441 !important;
+}
+
+.navbar-top {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #025589;
+    /* Warna latar belakang navbar top */
+    color: white;
+    /* Warna teks navbar top */
+    padding: 10px;
+    /* Padding navbar top */
+}
+
+.navbar-top span {
+    margin-left: auto;
+    /* Menempatkan teks di paling kanan */
+}
+
+.navbar-nav {
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 30px;
+    flex-direction: row; /* Tetap horizontal pada layar besar */
+}
+
+.nav-link {
+    display: inline-block; /* Membuat ukuran background mengikuti konten teks */
+    padding: 0.5rem 1rem; /* Atur padding sesuai kebutuhan */
+    width: auto; /* Lebar sesuai dengan konten teks */
+    text-align: center; /* Teks berada di tengah */
+}
+
+.nav-link.active {
+    background-color: #025589; /* Primary color */
+    color: white !important;
+    border-radius: 1rem;
+    width: auto; /* Pastikan hanya mengikuti teks */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.navbar-nav .nav-item {
+    margin: 0 15px; /* Memberikan jarak antar item navigasi */
+}
+
+.navbar-brand img {
+    height: 40px; /* Atur tinggi logo sesuai kebutuhan */
+}
+
+.container-fluid {
+    display: flex;
+    justify-content: space-between; /* Secara default, elemen berada di kedua sisi */
+    align-items: center; /* Menyelaraskan elemen secara vertikal */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar-brand {
+    margin: 0 auto;
+}
+
+.d-flex {
+    padding-right: 50px;
+}
+
+.btn-daftar {
+    background-color: #025589;
+    color: white;
+    border-radius: 0.5rem;
+}
+
+/* Tambahkan perbaikan untuk tampilan layar kecil */
+@media (max-width: 992px) {
+    .navbar-nav {
+        flex-direction: column; /* Elemen ditumpuk ke bawah */
+        align-items: flex-start; /* Menyelaraskan elemen di tengah */
+        margin: 0 auto;
+    }
+
+    .nav-item {
+        margin: 5px 0; /* Jarak antar item navigasi */
+    }
+
+    .nav-link {
+        width: auto; /* Background hanya mengikuti ukuran teks */
+        padding-top: 3px;
+    padding-bottom: 3px;
+    }
+    .btn-daftar {
+        margin-left: 20px;
+    }
+    .container-fluid {
+        justify-content: center; /* Memindahkan navbar-brand ke tengah */
+        position: relative; /* Memastikan elemen lain tidak mengganggu */
+    }
+
+    .navbar-toggler {
+        position: absolute; /* Agar toggle tetap terlihat */
+        right: 10px; /* Pastikan toggle tetap di kanan */
+        top: 50%; /* Selaraskan vertikal dengan navbar-brand */
+        transform: translateY(-50%);
+    }
+}
+
+.awalan{
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+@media (max-width: 768px) {
+    .card-text-desc {
+        display: none;
+    }
+}
+
+.library-container {
+    background-color: #025589;
+    color: white;
+    padding: 20px;
+    border-radius: 20px 0 0 20px;
+    z-index: 2;
+    /* Ensures it stays above swiper */
+    position: relative;
+    /* Makes z-index effective */
+    display: flex;
+    justify-content: center;
+    /* Pusatkan secara horizontal */
+    align-items: center
+}
+
+.library {
+    text-align: center;
+    /* Memastikan konten di dalam library juga terpusat */
+}
+
+.swiper-container-container {
+    padding: 0 50px;
+    /* This adds left and right padding to create space */
+}
+
+.swiper-container {
+    overflow: hidden;
+    padding: 0 20px;
+    /* Padding to create the left and right margin */
+}
+
+.card-berita {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* border-radius untuk mempercantik */
+    overflow: hidden; /* Menjaga konten di dalam card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Memberikan sedikit bayangan */
+}
+
+.card-berita img {
+    height: 180px; /* Ukuran gambar yang seragam */
+    object-fit: cover; /* Menjaga gambar agar tidak terdistorsi */
+    width: 100%;
+    border-bottom: 1px solid #ddd; /* Memberikan sedikit garis bawah pada gambar */
+}
+
+.card-berita .card-body {
+    padding: 15px;
+    flex-grow: 1; /* Membuat card-body mengisi ruang yang tersedia */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-berita .card-title {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.card-berita .card-text {
+    margin-bottom: 15px;
+    flex-grow: 1; /* Menjaga teks agar memenuhi ruang yang tersedia */
+}
+/* Atur card dalam 4 kolom pada layar besar */
+.carousel-item .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.carousel-item .col-lg-3,
+.carousel-item .col-md-4,
+.carousel-item .col-sm-6 {
+    flex: 1 0 25%; /* 4 kolom pada layar besar */
+    max-width: 25%;
+}
+
+/* Atur card menjadi 2 kolom pada layar kecil */
+@media (max-width: 768px) {
+    .carousel-item .col-lg-3,
+    .carousel-item .col-md-4,
+    .carousel-item .col-sm-6 {
+        flex: 1 0 50%; /* 2 kolom pada layar kecil */
+        max-width: 50%;
+    }
+
+    .card-berita img {
+        height: 120px; /* Sesuaikan tinggi gambar pada layar kecil */
+    }
+
+    .card-berita .card-title {
+        font-size: 1em; /* Perkecil ukuran teks pada layar kecil */
+    }
+
+    .card-berita .card-text {
+        font-size: 0.85em; /* Perkecil ukuran teks deskripsi pada layar kecil */
+    }
+}
+
+
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+}
+
+.card-img-overlay{
+    padding: 5%;
+    /* background-color: #025589; */
+
+}
+
+.garis-vertical {
+    margin: 20px;
+    border-left: 5px solid #025589;
+    height: 25px;
+}
+
+.garis-horizontal{
+
+    border-left: 150px solid #025589;
+    height: 5px;
+}
+
+
+
+.card-title-library {
+    font-weight: bold;
+
+    padding-left: 10px;
+}
+
+.card-img-library {
+    padding-left: 8%;
+    padding-right: 8%;
+    height: 200px;
+    object-fit: cover;
+}
+
+
+
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+}
+
+.carousel-control-prev {
+    right: 50px;
+}
+
+.carousel-control-next {
+    right: 10px;
+}
+
+.container-bg {
+    background-image: url('../images/hospital.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 50px 0;
+    width: 100%;
+  }
+
+  .nav-pills .nav-link-album {
+    color: white;
+    transition: all 0.3s ease;
+    border-radius: 5px; /* Default border-radius */
+    padding: 5px 10px; /* Default padding */
+    text-decoration: none; /* Menghilangkan garis bawah */
+    opacity: 1
+  }
+  
+  .nav-pills .nav-link-album.active {
+    background-color: white;
+    color: #025589;
+  }
+  
+  .nav-pills .nav-link-album.active, 
+  .nav-pills .nav-link-album:hover {
+    background-color: white;
+    color: #025589;
+    border-radius: 25px; /* Larger border-radius on hover */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+    transform: scale(1.1); /* Slightly increase size on hover */
+    padding: 5px 10px; /* Slightly increase padding on hover */
+  }
+  
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .gallery .photo {
+    position: relative;
+    flex: 1 0 21%; /* approximately 4 columns */
+    margin: 5px;
+    overflow: hidden;
+  }
+  .gallery img {
+    width: 100%;
+    height: 100%;
+  }
+  .photo:hover .overlay-half {
+    transform: translateY(0);
+  }
+  .photo:hover .overlay-full {
+    transform: translateY(0);
+  }
+  .overlay-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    z-index: 1;
+  }
+  .overlay-half {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    height: 50%;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Tambahkan ini untuk menampilkan elemen secara vertikal */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    z-index: 2;
+}
+
+.overlay-half h4, .overlay-half p {
+    margin: 0; /* Pastikan margin 0 untuk menghindari jarak tambahan */
+}
+
+  .more-photos {
+    display: none;
+  }
+
+  .deskripsi{
+    padding-left: 8%;
+    padding-right: 8%;
+  }
+
+  @media (max-width: 768px) {
+    .overlay-half p, .overlay-half b {
+        font-size: 10px; /* Smaller font size for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .overlay-half p, .overlay-half b {
+        font-size: 8px; /* Even smaller font size for extra small screens */
+    }
+}
+
+  .float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000;
+  }
+
+  .my-float {
+    margin-top: 14px;
+    font-size: 2em; 
+  }
+
+  .carousel-control-container {
+    position: absolute;
+    top: -50px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 2;
+}
+
+
+
+  
+/* footer */
+.logo-align {
+    display: inline-block;
+    margin-left: -185px; /* Sesuaikan nilai ini untuk memposisikan gambar lebih ke kiri */
+}
+
+.btn-floating {
+    margin-top: 15px; /* Sesuaikan nilai ini jika diperlukan untuk menjaga keselarasan vertikal */
+}
+
+.penghargaan {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #025589;
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+ .item {
+    text-align: center;
+    background-color: #025589;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 30px 70px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+ .item:hover {
+    background-color:#8AC441 ;
+  }
+
+ .item h2 {
+    font-size: 3rem;
+    margin-bottom: 5px;
+  }
+
+ .item p {
+    font-size: 1rem;
+  }
+
+    /* Aturan responsif untuk layar kecil */
+@media (max-width: 576px) {
+    .logo-align {
+        display: block;
+        margin-left: -90px;
+        text-align: center;
+    }
+    .footer .col-lg-4 {
+        text-align: center; /* Konten lainnya juga di tengah */
+    }
+    .btn-floating {
+        display: inline-block;
+        margin: 0 5px; /* Jarak antar tombol */
+    }
+  }

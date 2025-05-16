@@ -1,0 +1,124 @@
+:root {
+    --primary-color: #025589;
+    --white-color: #fff;
+    --gray-color: #666666;
+}
+h1 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h3 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h4 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h5 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+a {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+p {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+}
+
+.btn-outline-category {
+    color: var(--primary-color);
+    border-color:var(--primary-color); 
+}
+
+.btn-outline-category:hover{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+.garis-vertical {
+    margin-right: 20px;
+    border-left: 1px solid grey;
+    height: 25px;
+    opacity: 50%;
+}
+
+.container-fluid-latar{
+    background-color: #EBF1F3;
+}
+
+.alamat-title{
+    color: var(--primary-color);
+}
+
+.promo-section {
+    padding: 20px;
+}
+.promo-title {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+}
+.promo-title i {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+.promo-discount {
+    color: red;
+}
+.promo-total {
+    font-weight: bold;
+}
+.promo-section hr {
+    border: 1px solid #ccc;
+}
+.btn-custom {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+
+}
+
+/* Membatasi lebar tabel pada container dan menambahkan scrollbar horizontal */
+.table-responsive-container {
+    overflow-x: auto;  /* Aktifkan scroll horizontal jika konten melebihi lebar container */
+    max-width: 100%;   /* Pastikan lebar container tidak melebihi layar */
+    margin-bottom: 20px; /* Ruang bawah antara container dan elemen lainnya */
+}
+
+/* Tambahkan padding agar tampilan lebih rapi pada perangkat kecil */
+.table-responsive-container table {
+    min-width: 600px; /* Pastikan tabel memiliki lebar minimum */
+}
+
+.text-start {
+    text-align: left; /* Membuat teks dalam elemen ini rata kiri */
+}
+

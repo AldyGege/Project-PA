@@ -1,0 +1,53 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <!-- partial:partials/_navbar.html -->
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Input Data Dokter</h4>
+                        <p class="card-description">
+                            Basic form layout
+                        </p>
+                        <form action="/dokter/store" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <div class="form-group">
+                                <label for="gambar_dokter">Foto Menu</label>
+                                <input type="file" class="form-control" id="gambar_dokter" name="gambar_dokter" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_dokter">Nama</label>
+                                <input type="text" class="form-control" id="nama_dokter" name="nama_dokter" placeholder="Nama" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="alamat_dokter">Alamat</label>
+                                <input type="text" class="form-control" id="alamat_dokter" name="alamat_dokter" placeholder="Alamat" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="no_hp">No. Hp</label>
+                                <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="No. Hp" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect2">Default select</label>
+                                <select class="form-control" id="exampleFormControlSelect2" name="id_keahlian" required>
+                                    <option selected>Pilih Keahlian</option>
+                                    <% for(var i=0; i < data.length; i++){ %>
+                                        <option value="<%= data[i].id_keahlian %>"><%= data[i].keahlian %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()" >Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>

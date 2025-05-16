@@ -1,0 +1,55 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <!-- partial:partials/_navbar.html -->
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Tambah Album</h4>
+                        <p class="card-description">Form untuk menambahkan album baru</p>
+                        <form action="/keuangan/store" method="POST" class="forms-sample">
+                            <div class="form-group">
+                                <label for="nama_keuangan">Nama Keuangan</label>
+                                <input type="text" class="form-control" id="nama_keuangan" name="nama_keuangan" placeholder="Nama Keuangan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect2">Jenis Keuangan</label>
+                                <select class="form-control" id="exampleFormControlSelect2" name="jenis_keuangan" required>
+                                    <option selected>Pilih Jenis Keuangan</option>
+                                        <option value="pemasukan">Pemasukan</option>
+                                        <option value="pengeluaran">Pengeluaran</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsi_keuangan">Deskripsi Keuangan</label>
+                                <textarea class="form-control" id="deskripsi_keuangan" name="deskripsi_keuangan" placeholder="Deskripsi" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="nominal">Nominal</label>
+                                <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Nominal" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="waktu_keuangan">Waktu</label>
+                                <input type="date" class="form-control" id="waktu_keuangan" name="waktu_keuangan" placeholder="waktu keuangan" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" id="nama_admin" name="nama_admin" value="<%= data2.nama_admin %>" readonly>
+                            </div>
+                            <input type="hidden" name="id_admin" value="<%= data2.id_admin %>">
+                            <button type="submit" class="btn btn-primary mr-2">Simpan</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()">Batal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<!-- <%- include('../partials/__foot.ejs') %> -->
+</body>
+</html>

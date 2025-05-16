@@ -1,0 +1,173 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+<div class="container-scroller">
+    <%- include('../partials/__nav.ejs') %>
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Data Daftar Ulang</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Pendaftar</th>
+                                                <th>Nama Akun</th>
+                                                <th>NIK</th>
+                                                <th>File KK</th>
+                                                <th>File Akta</th>
+                                                <th>Waktu Daftar Ulang</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="daftar-ulang-list">
+                                            <% if (data.length > 0) { %>
+                                                <% for (let i = 0; i < data.length; i++) { %>
+                                                    <tr data-id="<%= data[i].id_daftar_ulang %>">
+                                                        <td><%= i + 1 %></td>
+                                                        <td><%= data[i].nama_pendaftar %></td>
+                                                        <td><%= data[i].nama_users %></td>
+                                                        <td><%= data[i].nik %></td>
+                                                        <td>
+                                                            <% if (data[i].file_kk) { %>
+                                                                <a href="/files/daftar_ulang_kk/<%= data[i].file_kk %>" target="_blank">Lihat KK</a>
+                                                            <% } else { %>
+                                                                <span class="text-muted">Tidak ada</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (data[i].file_akta) { %>
+                                                                <a href="/files/daftar_ulang_akta/<%= data[i].file_akta %>" target="_blank">Lihat Akta</a>
+                                                            <% } else { %>
+                                                                <span class="text-muted">Tidak ada</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td><%= data[i].waktu_daftar_ulang %></td>
+                                                        <td class="status-cell">
+                                                            <% if (data[i].status_daftar_ulang === "diterima") { %>
+                                                                <span class="badge badge-success">Diterima</span>
+                                                            <% } else if (data[i].status_daftar_ulang === "ditolak") { %>
+                                                                <span class="badge badge-danger">Ditolak</span>
+                                                            <% } else { %>
+                                                                <span class="badge badge-warning">Proses</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td class="action-cell">
+                                                            <% if (data[i].status_daftar_ulang === "proses") { %>
+                                                                <button class="btn btn-sm btn-success btn-update-status" data-id="<%= data[i].id_daftar_ulang %>" data-status="diterima">Diterima</button>
+                                                                <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= data[i].id_daftar_ulang %>" data-status="ditolak">Ditolak</button>
+                                                            <% } %>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="9" class="text-center">Tidak ada data daftar ulang</td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/__foot.ejs') %>
+
+<!-- Modal Alasan Penolakan -->
+<div class="modal fade" id="modalAlasan" tabindex="-1" role="dialog" aria-labelledby="modalAlasanLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="formAlasan" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAlasanLabel">Alasan Penolakan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idDaftarUlangModal">
+        <textarea id="alasanInput" class="form-control" placeholder="Tulis alasan penolakan di sini..." required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-danger">Kirim Penolakan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let selectedId = null;
+
+    document.getElementById("daftar-ulang-list").addEventListener("click", function (event) {
+        if (event.target.classList.contains("btn-update-status")) {
+            const id = event.target.dataset.id;
+            const status = event.target.dataset.status;
+
+            if (status === "ditolak") {
+                selectedId = id;
+                document.getElementById("idDaftarUlangModal").value = id;
+                document.getElementById("alasanInput").value = "";
+                $('#modalAlasan').modal('show');
+            } else {
+                if (confirm(`Yakin ingin ubah status menjadi "${status}"?`)) {
+                    updateStatus(id, status, "");
+                }
+            }
+        }
+    });
+
+    document.getElementById("formAlasan").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = document.getElementById("idDaftarUlangModal").value;
+        const alasan = document.getElementById("alasanInput").value.trim();
+
+        if (!alasan) {
+            alert("⚠️ Alasan tidak boleh kosong.");
+            return;
+        }
+
+        updateStatus(id, "ditolak", alasan);
+        $('#modalAlasan').modal('hide');
+    });
+
+    function updateStatus(id, status, alasan) {
+        fetch(`/daftar_ulang/update_status/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status_daftar_ulang: status, alasan: alasan })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("✅ Status berhasil diperbarui!");
+                const row = document.querySelector(`tr[data-id="${id}"]`);
+                row.querySelector(".status-cell").innerHTML = status === "diterima"
+                    ? '<span class="badge badge-success">Diterima</span>'
+                    : '<span class="badge badge-danger">Ditolak</span>';
+                row.querySelector(".action-cell").innerHTML = "";
+            } else {
+                alert("❌ Gagal memperbarui status: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Terjadi kesalahan saat update.");
+        });
+    }
+});
+</script>
+
+</body>

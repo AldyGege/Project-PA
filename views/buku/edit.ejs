@@ -1,0 +1,46 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <!-- partial:partials/_navbar.html -->
+        <!-- partial -->
+        <div class="main-panel w-100">
+            <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Edit Buku</h4>
+                        <p class="card-description">Form untuk mengedit data buku</p>
+                        <form action="/buku/update/<%= id %>" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <div class="form-group">
+                                <label for="gambar_buku">Gambar Buku</label>
+                                <input type="file" class="form-control" id="gambar_buku" name="gambar_buku">
+                                <img src="/images/buku/<%= data.gambar_buku %>" height="100" width="150" alt="Gambar buku lama"/>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="gambar_buku">File Buku</label>
+                                <input type="file" class="form-control" id="file_buku" name="file_buku">
+                                <label for="file_buku"><%= data.file_buku %></label>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_buku">Nama Buku</label>
+                                <input type="text" class="form-control" id="nama_buku" name="nama_buku" value="<%= data.nama_buku %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsi_buku">Deskripsi Buku</label>
+                                <textarea class="form-control" id="deskripsi_buku" name="deskripsi_buku" required><%= data.deskripsi_buku %></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mr-2">Simpan</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()">Batal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>
+</html>

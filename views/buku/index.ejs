@@ -1,0 +1,62 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <%- include('../partials/__nav.ejs') %>
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Data Buku</h4>
+                                <a href="/buku/create" class="btn btn-sm btn-success mb-3">Tambah Buku</a>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Gambar</th>
+                                                <th>File</th>
+                                                <th>Nama Buku</th>
+                                                <th>Deskripsi Buku</th>
+                                                <th colspan="2">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i = 0; i < data.length; i++) { %>
+                                            <tr>
+                                                <th scope="row"><%= (i + 1) %></th>
+                                                <td class="py-1">
+                                                    <img src="/images/buku/<%= data[i].gambar_buku %>" height="100" width="150" alt="Gambar buku"/>
+                                                </td>
+                                                <td class="py-1">
+                                                    <%= data[i].file_buku %>
+                                                </td>
+                                                <td><%= data[i].nama_buku %></td>
+                                                <td><%= data[i].deskripsi_buku.length > 20 ? data[i].deskripsi_buku.substring(0, 20) + '...' : data[i].deskripsi_buku %></td>
+
+                                                <td>
+                                                    <a href="/buku/edit/<%= data[i].id_buku %>" class="btn btn-sm btn-warning">Edit</a>
+                                                    <a href="/buku/delete/<%= data[i].id_buku %>" class="btn btn-sm btn-danger">Delete</a>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<%- include('../partials/__head.ejs') %>
+<body>
+    <div class="container-scroller d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <!-- partial:partials/_navbar.html -->
+        <!-- partial -->
+        <div class="main-panel w-100">
+            <div class="content-wrapper d-flex align-items-center justify-content-center">
+            <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Edit Data Berita</h4>
+                        <p class="card-description">
+                            Basic form layout for editing news
+                        </p>
+                        <form action="/berita/update/<%= id %>" method="POST" enctype="multipart/form-data" class="forms-sample">
+                            <div class="form-group">
+                                <label for="gambar_berita">Foto Berita</label>
+                                <input type="file" class="form-control" id="gambar_berita" name="gambar_berita">
+                                <img src="/images/berita/<%= data.gambar_berita %>" height="100" width="150" alt="Gambar album lama"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_berita">Judul Berita</label>
+                                <input type="text" class="form-control" id="nama_berita" name="nama_berita" value="<%= data.nama_berita %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsi_berita">Deskripsi Berita</label>
+                                <textarea class="form-control" id="deskripsi_berita" name="deskripsi_berita" rows="4" required><%= data.deskripsi_berita %></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mr-2">Simpan</button>
+                            <button type="button" class="btn btn-light" onclick="history.back()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+<%- include('../partials/__foot.ejs') %>
+</body>
+</html>
