@@ -36,59 +36,66 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6 grid-margin stretch-card">
-              <div class="card tale-bg">
-                <div class="card-body d-flex align-items-center justify-content-center p-0">
-                  <img src="../../images/madrasah_icon.jpg" alt="people" class="img-fluid w-100" style=" height: 100%;">
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-md-6 grid-margin transparent">
-              <div class="row">
-                <div class="col-md-6 mb-4 stretch-card transparent">
-                  <div class="card card-tale">
-                    <div class="card-body">
-                      <p class="mb-4">Total Pendaftar</p>
-                      <p class="fs-30 mb-2"><%= totalPendaftar %></p>
-                      <p>Orang</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-4 stretch-card transparent">
-                  <div class="card card-dark-blue">
-                    <div class="card-body">
-                      <p class="mb-4">Total Daftar Ulang</p>
-                      <p class="fs-30 mb-2"><%= totalDaftarUlang %></p>
-                      <p>Orang</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                  <div class="card card-light-blue">
-                    <div class="card-body">
-                      <p class="mb-4">Total Siswa</p>
-                      <p class="fs-30 mb-2"><%= totalSiswa %></p>
-                      <p>Orang</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 stretch-card transparent">
-                  <div class="card card-light-danger">
-                    <div class="card-body">
-                      <p class="mb-4">Keuangan saat ini</p>
-                      <p class="fs-30 mb-2"><%= saldo.toLocaleString('id-ID') %></p>
-                      <p>Rupiah</p>
+<div class="row">
+  <!-- Baris 1 -->
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-tale">
+      <div class="card-body">
+        <p class="mb-4">Total Pendaftar</p>
+        <p class="fs-30 mb-2"><%= totalPendaftar %></p>
+        <p>Orang</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-light-danger">
+      <div class="card-body">
+        <p class="mb-4">Total Daftar Ulang</p>
+        <p class="fs-30 mb-2"><%= totalDaftarUlang %></p>
+        <p>Orang</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-dark-blue">
+      <div class="card-body">
+        <p class="mb-4">Total Siswa</p>
+        <p class="fs-30 mb-2"><%= totalSiswa %></p>
+        <p>Orang</p>
+      </div>
+    </div>
+  </div>
 
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <!-- Baris 2 -->
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-light-blue">
+      <div class="card-body">
+        <p class="mb-4">Keuangan saat ini</p>
+        <p class="fs-30 mb-2"><%= saldo.toLocaleString('id-ID') %></p>
+        <p>Rupiah</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-dark-blue"> <!-- Warna hijau -->
+      <div class="card-body">
+        <p class="mb-4">Pendaftaran Baru</p>
+        <p class="fs-30 mb-2"><%= jumlahPendaftaranBaru %></p>
+        <p>Sedang diproses</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4 stretch-card transparent">
+    <div class="card card-light-danger"> <!-- Warna biru muda -->
+      <div class="card-body">
+        <p class="mb-4">Daftar Ulang Baru</p>
+        <p class="fs-30 mb-2"><%= jumlahDaftarUlangBaru %></p>
+        <p>Menunggu verifikasi</p>
+      </div>
+    </div>
+  </div>
+</div>
+
           <div class="row">
             <!-- <div class="col-md-6 grid-margin stretch-card">
               <div class="card">

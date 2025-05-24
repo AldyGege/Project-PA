@@ -5,8 +5,73 @@
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="container mt-5">
+                <!-- Baris Pertama - Tabel Proses -->
                 <div class="row">
-                    <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4 class="card-title">Daftar Ulang Dalam Proses</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Pendaftar</th>
+                                                <th>Nama Akun</th>
+                                                <th>NIK</th>
+                                                <th>File KK</th>
+                                                <th>File Akta</th>
+                                                <th>Waktu Daftar Ulang</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% 
+                                            const prosesData = data.filter(item => item.status_daftar_ulang === "proses");
+                                            if (prosesData.length > 0) { %>
+                                                <% for (let i = 0; i < prosesData.length; i++) { %>
+                                                    <tr data-id="<%= prosesData[i].id_daftar_ulang %>">
+                                                        <td><%= i + 1 %></td>
+                                                        <td><%= prosesData[i].nama_pendaftar %></td>
+                                                        <td><%= prosesData[i].nama_users %></td>
+                                                        <td><%= prosesData[i].nik %></td>
+                                                        <td>
+                                                            <% if (prosesData[i].file_kk) { %>
+                                                                <a href="/files/daftar_ulang_kk/<%= prosesData[i].file_kk %>" target="_blank">Lihat KK</a>
+                                                            <% } else { %>
+                                                                <span class="text-muted">Tidak ada</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (prosesData[i].file_akta) { %>
+                                                                <a href="/files/daftar_ulang_akta/<%= prosesData[i].file_akta %>" target="_blank">Lihat Akta</a>
+                                                            <% } else { %>
+                                                                <span class="text-muted">Tidak ada</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td><%= prosesData[i].waktu_daftar_ulang %></td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="diterima">Diterima</button>
+                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="ditolak">Ditolak</button>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="8" class="text-center">Tidak ada data dalam proses</td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baris Kedua - Tabel Semua Data -->
+                <div class="row">
+                    <div class="col-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">Data Daftar Ulang</h4>
@@ -76,7 +141,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
@@ -106,15 +171,16 @@
   </div>
 </div>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let selectedId = null;
 
-    document.getElementById("daftar-ulang-list").addEventListener("click", function (event) {
+    // Gunakan event delegation untuk seluruh dokumen
+    document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-update-status")) {
             const id = event.target.dataset.id;
             const status = event.target.dataset.status;
+            const row = event.target.closest("tr"); // Dapatkan baris yang diklik
 
             if (status === "ditolak") {
                 selectedId = id;
@@ -123,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $('#modalAlasan').modal('show');
             } else {
                 if (confirm(`Yakin ingin ubah status menjadi "${status}"?`)) {
-                    updateStatus(id, status, "");
+                    updateStatus(id, status, "", row); // Kirim referensi baris
                 }
             }
         }
@@ -133,17 +199,18 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         const id = document.getElementById("idDaftarUlangModal").value;
         const alasan = document.getElementById("alasanInput").value.trim();
+        const row = document.querySelector(`tr[data-id="${id}"]`); // Dapatkan baris dari modal
 
         if (!alasan) {
             alert("⚠️ Alasan tidak boleh kosong.");
             return;
         }
 
-        updateStatus(id, "ditolak", alasan);
+        updateStatus(id, "ditolak", alasan, row);
         $('#modalAlasan').modal('hide');
     });
 
-    function updateStatus(id, status, alasan) {
+    function updateStatus(id, status, alasan, row) {
         fetch(`/daftar_ulang/update_status/${id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -153,11 +220,29 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 alert("✅ Status berhasil diperbarui!");
-                const row = document.querySelector(`tr[data-id="${id}"]`);
-                row.querySelector(".status-cell").innerHTML = status === "diterima"
-                    ? '<span class="badge badge-success">Diterima</span>'
-                    : '<span class="badge badge-danger">Ditolak</span>';
-                row.querySelector(".action-cell").innerHTML = "";
+                
+                // Update semua baris dengan ID yang sama (untuk kedua tabel)
+                document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
+                    // Update status
+                    const statusCell = row.querySelector(".status-cell");
+                    if (statusCell) {
+                        statusCell.innerHTML = status === "diterima"
+                            ? '<span class="badge badge-success">Diterima</span>'
+                            : '<span class="badge badge-danger">Ditolak</span>';
+                    }
+                    
+                    // Hapus tombol aksi
+                    const actionCell = row.querySelector(".action-cell");
+                    if (actionCell) {
+                        actionCell.innerHTML = "";
+                    }
+                });
+
+                // Jika di tabel proses, sembunyikan baris setelah update
+                if (status !== "proses" && row.closest('.table-responsive')) {
+                    row.style.display = "none";
+                }
+                
             } else {
                 alert("❌ Gagal memperbarui status: " + data.message);
             }
@@ -169,5 +254,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
-
 </body>

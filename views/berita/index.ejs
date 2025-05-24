@@ -21,6 +21,8 @@
                                                 <th>Gambar</th>
                                                 <th>Judul Berita</th>
                                                 <th>Deskripsi Berita</th>
+                                                <th>Waktu Upload</th>
+                                                <th>Uploader</th>
                                                 <th colspan="2">Aksi</th>
                                             </tr>
                                         </thead>
@@ -33,6 +35,8 @@
                                                 </td>
                                                 <td><%= data[i].nama_berita %></td>
                                                 <td><%= data[i].deskripsi_berita.length > 20 ? data[i].deskripsi_berita.substring(0, 20) + '...' : data[i].deskripsi_berita %></td>
+                                                <td><%= data[i].tanggal_upload %></td>
+                                                <td><%= data[i].nama_admin %></td>
                                                 <td>
                                                     <a href="/berita/edit/<%= data[i].id_berita %>" class="btn btn-sm btn-warning">Edit</a>
                                                     <a href="/berita/delete/<%= data[i].id_berita %>" class="btn btn-sm btn-danger">Delete</a>

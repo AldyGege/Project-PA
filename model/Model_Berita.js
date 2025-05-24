@@ -1,10 +1,10 @@
-const connection = require('../config/database');
+const connection = require('../config/Database');
 
 class Model_Berita {
 
     static async getAll(){
         return new Promise((resolve, reject) => {
-            connection.query('select * from berita order by id_berita desc', (err, rows) => {
+            connection.query('SELECT berita.*, admin.nama_admin FROM berita INNER JOIN admin ON berita.id_admin = admin.id_admin ORDER BY berita.id_berita DESC', (err, rows) => {
                 if(err){
                     reject(err);
                 } else {
@@ -28,7 +28,8 @@ class Model_Berita {
 
     static async getId(id){
         return new Promise((resolve, reject) => {
-            connection.query('select * from berita where id_berita = ' + id, (err,rows) => {
+            connection.query('SELECT berita.*, admin.nama_admin FROM berita INNER JOIN admin ON berita.id_admin = admin.id_admin WHERE id_berita = ?',
+            [id], (err,rows) => {
                 if(err) {
                     reject(err);
                 } else {
@@ -63,18 +64,27 @@ class Model_Berita {
         });
     }
 
-    static async getLimited(limit, excludeId) {
-        return new Promise((resolve, reject) => {
-            const query = "SELECT * FROM berita WHERE id_berita != ? ORDER BY tanggal_upload DESC LIMIT ?";
-            connection.query(query, [excludeId, limit], (err, rows) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(rows);
-            });
+static async getLimited(limit, excludeId) {
+    return new Promise((resolve, reject) => {
+        const sanitizedLimit = parseInt(limit);
+        const query = `
+            SELECT berita.*, admin.nama_admin 
+            FROM berita 
+            INNER JOIN admin ON berita.id_admin = admin.id_admin 
+            WHERE berita.id_berita != ? 
+            ORDER BY tanggal_upload DESC 
+            LIMIT ?
+        `;
+        connection.query(query, [excludeId, sanitizedLimit], (err, rows) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
         });
-    }
-    
+    });
+}
+
+
     
 }
 

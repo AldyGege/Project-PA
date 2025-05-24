@@ -5,11 +5,66 @@
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="container mt-5">
+                <!-- Tabel Proses Pendaftaran -->
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4 class="card-title">Pendaftaran Dalam Proses</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Gambar</th>
+                                                <th>Nama Pendaftar</th>
+                                                <th>NIK</th>
+                                                <th>Waktu Pendaftaran</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="pendaftaran-proses-list">
+                                            <% 
+                                            const prosesData = data.filter(item => item.status_pendaftaran === "proses");
+                                            if (prosesData.length > 0) { %>
+                                                <% for(var i = 0; i < prosesData.length; i++) { %>
+                                                    <tr data-id="<%= prosesData[i].id_pendaftaran %>">
+                                                        <td><%= i + 1 %></td>
+                                                        <td class="py-1">
+                                                            <% if (prosesData[i].gambar_pendaftar) { %>
+                                                                <img src="/images/pendaftaran/<%= prosesData[i].gambar_pendaftar %>" height="60" width="80" alt="Gambar Pendaftar"/>
+                                                            <% } else { %>
+                                                                <span class="text-muted">-</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td><%= prosesData[i].nama_pendaftar %></td>
+                                                        <td><%= prosesData[i].nik %></td>
+                                                        <td><%= prosesData[i].waktu_pendaftaran %></td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="diterima">Diterima</button>
+                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="ditolak">Ditolak</button>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="6" class="text-center">Tidak ada data pendaftaran dalam proses</td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabel Semua Pendaftaran -->
                 <div class="row">
                     <div class="col-lg-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Data Pendaftaran</h4>
+                                <h4 class="card-title">Semua Data Pendaftaran</h4>
                                 <a href="/pendaftaran/create" class="btn btn-sm btn-success mb-3">Tambah Pendaftaran</a>
                                 <div class="table-responsive">
                                     <table class="table table-striped">
@@ -39,7 +94,7 @@
                                                         <th scope="row"><%= (i + 1) %></th>
                                                         <td class="py-1">
                                                             <% if (data[i].gambar_pendaftar) { %>
-                                                                <img src="/images/pendaftaran/<%= data[i].gambar_pendaftar %>" height="100" width="150" alt="Gambar Pendaftar"/>
+                                                                <img src="/images/pendaftaran/<%= data[i].gambar_pendaftar %>" height="60" width="80" alt="Gambar Pendaftar"/>
                                                             <% } else { %>
                                                                 <span class="text-muted">Tidak ada gambar</span>
                                                             <% } %>
@@ -79,11 +134,9 @@
                                                                 <button class="btn btn-sm btn-success btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="diterima">Diterima</button>
                                                                 <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="ditolak">Ditolak</button>
                                                             <% } else if (!sudahDaftarUlang) { %>
-                                                                <!-- Tampilkan tombol batalkan hanya jika belum daftar ulang -->
                                                                 <button class="btn btn-sm btn-warning btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="proses">Batalkan</button>
                                                             <% } %>
                                                         </td>
-                                                        
                                                     </tr>
                                                 <% } %>
                                             <% } else { %>
@@ -92,7 +145,6 @@
                                                 </tr>
                                             <% } %>
                                         </tbody>
-                                        
                                     </table>
                                 </div>
                             </div>
@@ -106,66 +158,71 @@
 <%- include('../partials/__foot.ejs') %>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("pendaftaran-list").addEventListener("click", function (event) {
-            if (event.target.classList.contains("btn-update-status")) {
-                const button = event.target;
-                const id = button.getAttribute("data-id");
-                const status = button.getAttribute("data-status");
-    
-                // Tampilkan konfirmasi sesuai jenis status
-                let confirmText = "";
-                if (status === "proses") {
-                    confirmText = "Apakah Anda yakin ingin membatalkan status dan mengembalikannya ke 'proses'?";
-                } else {
-                    confirmText = `Apakah Anda yakin ingin mengubah status menjadi "${status}"?`;
-                }
-    
-                if (confirm(confirmText)) {
-                    fetch(`/pendaftaran/update_status/${id}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ status_pendaftaran: status }) 
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("✅ Status berhasil diperbarui!");
-    
-                            // Ambil elemen baris yang sesuai
-                            const row = document.querySelector(`tr[data-id="${id}"]`);
+document.addEventListener("DOMContentLoaded", function () {
+    // Event delegation untuk kedua tabel
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("btn-update-status")) {
+            const button = event.target;
+            const id = button.getAttribute("data-id");
+            const status = button.getAttribute("data-status");
+            const row = button.closest("tr");
+
+            // Tampilkan konfirmasi sesuai jenis status
+            let confirmText = "";
+            if (status === "proses") {
+                confirmText = "Apakah Anda yakin ingin membatalkan status dan mengembalikannya ke 'proses'?";
+            } else {
+                confirmText = `Apakah Anda yakin ingin mengubah status menjadi "${status}"?`;
+            }
+
+            if (confirm(confirmText)) {
+                fetch(`/pendaftaran/update_status/${id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status_pendaftaran: status }) 
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("✅ Status berhasil diperbarui!");
+
+                        // Update semua baris dengan ID yang sama di kedua tabel
+                        document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
                             const statusCell = row.querySelector(".status-cell");
                             const actionCell = row.querySelector(".action-cell");
-    
-                            // Update badge status
-                            if (status === "diterima") {
-                                statusCell.innerHTML = '<span class="badge badge-success">Diterima</span>';
-                                actionCell.innerHTML = `<button class="btn btn-sm btn-warning btn-update-status" data-id="${id}" data-status="proses">Batalkan</button>`;
-                            } else if (status === "ditolak") {
-                                statusCell.innerHTML = '<span class="badge badge-danger">Ditolak</span>';
-                                actionCell.innerHTML = `<button class="btn btn-sm btn-warning btn-update-status" data-id="${id}" data-status="proses">Batalkan</button>`;
-                            } else if (status === "proses") {
-                                statusCell.innerHTML = '<span class="badge badge-warning">Proses</span>';
-                                actionCell.innerHTML = `
-                                    <button class="btn btn-sm btn-success btn-update-status" data-id="${id}" data-status="diterima">Diterima</button>
-                                    <button class="btn btn-sm btn-danger btn-update-status" data-id="${id}" data-status="ditolak">Ditolak</button>
-                                `;
-                            }
-    
-                        } else {
-                            alert("❌ Gagal memperbarui status. " + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        alert("Terjadi kesalahan saat memperbarui status.");
-                    });
-                }
-            }
-        });
-    });
-    </script>
-    
-    
 
+                            if (statusCell) {
+                                statusCell.innerHTML = 
+                                    status === "diterima" ? '<span class="badge badge-success">Diterima</span>' :
+                                    status === "ditolak" ? '<span class="badge badge-danger">Ditolak</span>' :
+                                    '<span class="badge badge-warning">Proses</span>';
+                            }
+
+                            if (actionCell) {
+                                actionCell.innerHTML = 
+                                    status === "proses" ? 
+                                        `<button class="btn btn-sm btn-success btn-update-status" data-id="${id}" data-status="diterima">Diterima</button>
+                                         <button class="btn btn-sm btn-danger btn-update-status" data-id="${id}" data-status="ditolak">Ditolak</button>` :
+                                    `<button class="btn btn-sm btn-warning btn-update-status" data-id="${id}" data-status="proses">Batalkan</button>`;
+                            }
+
+                            // Jika di tabel proses dan status diubah, sembunyikan baris
+                            if (row.closest('#pendaftaran-proses-list') && status !== "proses") {
+                                row.style.display = "none";
+                            }
+                        });
+
+                    } else {
+                        alert("❌ Gagal memperbarui status. " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Terjadi kesalahan saat memperbarui status.");
+                });
+            }
+        }
+    });
+});
+</script>
 </body>

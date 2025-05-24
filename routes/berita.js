@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Model_Berita = require('../model/Model_Berita.js');
+const Model_Admin = require('../model/Model_Admin.js');
 const Model_Users = require('../model/Model_Users.js');
 const fs = require('fs');
 const multer = require('multer');
@@ -23,7 +24,7 @@ const upload = multer({
 router.get('/', async (req, res, next) => {
     try {
         let id = req.session.adminId;
-        let Data = await Model_Users.getId(id);
+        let Data = await Model_Admin.getId(id);
         let rows = await Model_Berita.getAll();
         res.render('berita/index', {
             data: rows,
@@ -34,36 +35,57 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/users', async function (req, res, next) {
-    try {
-        let rows = await Model_Berita.getAll();
-        res.render('artikel/users/index', {
-            data: rows
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        req.flash('invalid', 'Terjadi kesalahan saat memuat data artikel');
-        res.redirect('/artikel');
+    router.get('/users', async (req, res, next) => {
+        try {
+            let id = req.session.userId;
+            let Data = await Model_Users.getId(id);
+            let rows = await Model_Berita.getAll();
+            res.render('users/berita', {
+                data: rows,
+                data1: Data,
+            });
+        } catch (error) {
+            next(error);
+        }
+    });
+
+router.get('/detail/:id', async (req, res, next) => {
+  try {
+    let userId = req.session.userId;
+    let userData = await Model_Users.getId(userId);
+    let beritaId = req.params.id; // <- harus ini dulu
+    let berita = await Model_Berita.getId(beritaId);
+
+    if (!berita || berita.length === 0) {
+      req.flash('error', 'Berita tidak ditemukan');
+      return res.redirect('/berita/users');
     }
+
+    let beritaLain = await Model_Berita.getLimited(5, beritaId); // pakai setelah beritaId sudah dideklarasi
+
+    res.render('users/detail_berita', {
+      data: berita[0],
+      data1: userData,
+      beritaLain
+    });
+  } catch (error) {
+    next(error);
+  }
 });
+
 
 
 
 router.get('/create', async function (req, res, next) {
     try {
-        let level_users = req.session.level;
-        let id = req.session.userId;
+        let id = req.session.adminId;
+        let admin = await Model_Admin.getId(id);
         let Data = await Model_Berita.getAll();
-        // if(Data[0].level_users == "2") {
         res.render('berita/create', {
             nama_service: '',
             data: Data,
+            data2:admin[0],
         })
-        // }
-        // else if (Data[0].level_users == "1"){
-        //     req.flash('failure', 'Anda bukan admin');
-        //     res.redirect('/sevice')
-        // }
     } catch (error) {
         console.log(error);
     }
@@ -71,10 +93,12 @@ router.get('/create', async function (req, res, next) {
 
 router.post('/store', upload.single("gambar_berita"), async function (req, res, next) {
     try {
-        let {nama_berita, deskripsi_berita} = req.body;
+        let {id_admin, nama_berita, deskripsi_berita, tanggal_upload, } = req.body;
         let Data = {
+            id_admin, 
             nama_berita,
             deskripsi_berita,
+            tanggal_upload,
             gambar_berita: req.file.filename
         }
         await Model_Berita.Store(Data);
@@ -94,12 +118,13 @@ router.get("/edit/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
         let rows = await Model_Berita.getId(id);
-        let rows2 = await Model_Berita.getAll();
+        let admin = await Model_Admin.getId(req.session.adminId); // Ambil data pengguna yang login
+
         if (rows.length > 0) {
             res.render("berita/edit", {
                 id: id,
                 data: rows[0],
-                data_berita: rows2,
+                data2: admin[0], // Kirim data pengguna yang login
             });
         } else {
             req.flash("error", "berita not found");
@@ -109,7 +134,6 @@ router.get("/edit/:id", async (req, res, next) => {
         next(error);
     }
 });
-
 
 router.post("/update/:id",  upload.single("gambar_berita"), async (req, res, next) => {
     try {
@@ -123,14 +147,15 @@ router.post("/update/:id",  upload.single("gambar_berita"), async (req, res, nex
             fs.unlinkSync(pathFileLama);
         }
 
+        let id_admin = req.session.adminId;
         let {
-            nama_berita,
-            deskripsi_berita,
+            nama_berita, deskripsi_berita
         } = req.body;
         
         let gambar_berita = filebaru || namaFileLama
 
         let Data = {
+            id_admin,
             nama_berita: nama_berita,
             deskripsi_berita: deskripsi_berita,
             gambar_berita
@@ -144,6 +169,7 @@ router.post("/update/:id",  upload.single("gambar_berita"), async (req, res, nex
         console.log(error);
     }
 });
+
 
 router.get('/delete/:id', async (req, res, next) => {
     try {

@@ -47,6 +47,21 @@ router.get('/profil', async function (req, res, next) {
   }
 });
 
+router.get('/petunjuk', async function (req, res, next) {
+  try {
+      let mapel = await Model_Mapel.getAll();
+      let guru = await Model_Guru.getAll();
+      res.render('users/petunjuk', {
+          data1: mapel,
+          data2: guru,
+      });
+  } catch (error) {
+      console.error("Error:", error);
+      req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
+      res.redirect('/login');
+  }
+});
+
 router.get('/get-pendaftaran/:id', async function (req, res) {
     try {
         let id_pendaftaran = req.params.id;

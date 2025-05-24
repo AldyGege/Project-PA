@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const Model_Berita = require('../model/Model_Berita.js');
-const Model_Album = require('../Model/Model_Album.js');
-const Model_Buku = require('../Model/Model_Buku.js');
+const Model_Album = require('../model/Model_Album.js');
+const Model_Buku = require('../model/Model_Buku.js');
 
 router.get('/users', async function (req, res, next) {
     try {

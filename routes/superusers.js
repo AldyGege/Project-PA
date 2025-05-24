@@ -25,6 +25,10 @@ router.get('/', async function (req, res, next) {
     let totalPendaftar = Data_Pendaftar.length;
     let totalDaftarUlang = Data_Daftar_Ulang.length;
     let totalSiswa = Data_Siswa.length;
+    let jumlahDaftarUlangBaru = await Model_Daftar_Ulang.countBaru();
+    let pendaftaranBaru = Data_Pendaftar.filter(p => p.status_pendaftaran === 'proses');
+    let jumlahPendaftaranBaru = pendaftaranBaru.length;
+
 
 
     if (Data.length > 0) {
@@ -41,7 +45,8 @@ router.get('/', async function (req, res, next) {
         totalSiswa,
         saldo: SaldoSaatIni,
         grafikKeuangan: GrafikKeuangan,
-
+        jumlahDaftarUlangBaru: jumlahDaftarUlangBaru,
+        jumlahPendaftaranBaru: jumlahPendaftaranBaru, 
       });
     } else {
       res.status(401).json({ error: "User tidak ditemukan" });

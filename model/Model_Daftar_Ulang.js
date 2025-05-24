@@ -148,6 +148,22 @@ class Model_Daftar_Ulang {
             );
         });
     }
+
+    static async countBaru() {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            `SELECT COUNT(*) AS total FROM daftar_ulang WHERE status_daftar_ulang = 'proses'`,
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows[0].total);
+                }
+            }
+        );
+    });
+}
+
     
     static async Delete(id) {
         return new Promise((resolve, reject) => {

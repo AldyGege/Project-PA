@@ -25,6 +25,11 @@
                                 <label for="deskripsi_berita">Deskripsi Berita</label>
                                 <textarea class="form-control" id="deskripsi_berita" name="deskripsi_berita" placeholder="Deskripsi Berita" rows="4" required></textarea>
                             </div>
+                            <input type="hidden" id="tanggal_upload" name="tanggal_upload">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="nama_admin" name="nama_admin" value="<%= data2.nama_admin %>" readonly>
+                            </div>
+                            <input type="hidden" name="id_admin" value="<%= data2.id_admin %>">
                             <button type="submit" class="btn btn-primary mr-2">Submit</button>
                             <button type="button" class="btn btn-light" onclick="history.back()">Cancel</button>
                         </form>
@@ -35,6 +40,25 @@
     </div>
     <!-- content-wrapper ends -->
 </div>
+
+    <script>
+        // Mengisi tanggal upload secara otomatis
+        document.addEventListener("DOMContentLoaded", function () {
+            let now = new Date();
+            let formattedDate = now.toLocaleString("en-CA", { 
+                year: "numeric", 
+                month: "2-digit", 
+                day: "2-digit", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                second: "2-digit",
+                hour12: false 
+            }).replace(",", ""); // Menghilangkan koma antara tanggal & waktu
+        
+            document.getElementById("tanggal_upload").value = formattedDate;
+        });
+        
+    </script>
 <!-- container-scroller ends -->
 <%- include('../partials/__foot.ejs') %>
 </body>

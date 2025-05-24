@@ -1,0 +1,254 @@
+<%- include('../partials_view/__head.ejs') %>
+<style>
+  .hero.section {
+    height: 300px; /* Atur tinggi hero agar tidak terlalu besar */
+    padding: 60px 0;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .hero .container {
+    z-index: 2;
+  }
+  
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Overlay agar teks lebih kontras */
+    z-index: 1;
+  }
+  
+  .hero h1, .hero p {
+    position: relative;
+    z-index: 2;
+  }
+  
+  
+
+  /* Menghilangkan efek pudar pada gambar */
+  .hero-image {
+      opacity: 1 !important;
+      filter: none !important;
+  }
+  
+
+  .circle-img {
+    width: 70px;  
+    height: 70px;  
+    border-radius: 50%;  
+    object-fit: cover; /* Pastikan gambar menyesuaikan dalam lingkaran */
+    border: 3px solid #fff; /* Opsional: Tambahkan border putih */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Opsional: Tambahkan bayangan */
+    
+  }
+
+  /* Warna teks navbar menjadi hitam */
+.navmenu a {
+  color: black !important;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+
+/* Warna teks saat hover menjadi coklat */
+.navmenu a:hover {
+  color: brown !important;
+}
+
+/* Warna teks dropdown juga hitam */
+.navmenu .dropdown a {
+  color: black !important;
+}
+
+/* Hover pada dropdown juga menjadi coklat */
+.navmenu .dropdown a:hover {
+  color: brown !important;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #8E6A07;
+  border-radius: 2px;
+}
+
+/* Kartu Berita */
+.berita-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  background-color: #fff;
+}
+
+.berita-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Gambar Berita */
+.berita-img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Deskripsi */
+.card-title {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.card-text {
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tombol Read More */
+.btn-danger {
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 5px 14px;
+}
+
+/* Navigasi Panah */
+.navigation-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-btn {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-brown {
+  background-color: #8E6A07;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 5px 14px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-brown:hover {
+  background-color: #6d5304; /* Versi lebih gelap saat hover */
+  color: white;
+}
+
+
+footer .social-links a {
+  border: 2px solid #8E6A07 !important;
+  color: #8E6A07 !important;
+}
+
+footer .social-links a:hover {
+  background-color: #8E6A07 !important;
+  color: white !important;
+}
+
+  
+</style>
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <div class="logo d-flex align-items-center me-auto">
+        <img src="../../images/logo-madrasah2.png" alt="" style="height: 50px; margin-right: 10px;">
+        <h1 class="sitename">Madrasah At-Taqwa</h1>
+    </div>
+    
+      <%- include('../partials_view/__nav.ejs') %>
+    
+    
+    </div>
+  </header>
+  
+
+  <main>
+
+   <!-- Hero Section -->
+   <section id="hero" class="hero-section d-flex align-items-center justify-content-center" style="height: 200px; background: url('../images/beranda_foto.png') center center / cover no-repeat; position: relative;">
+    <div class="overlay" style="position:absolute; top:0; left:0; right:0; bottom:0; z-index:1;"></div>
+    <div class="container text-center text-white" style="z-index:2; position:relative;">  
+      <h1 class="fw-bold mb-2" style="font-size: 28px;">Selamat Datang di Halaman Berita</h1>
+      <p style="font-size: 16px;">Informasi tentang Berita berita yang di Upload di Madrasah At-Taqwa</p>
+    </div>
+  </section>
+
+<section class="berita-section container">
+<div class="row" id="beritaContainer">
+    <% data.forEach(function(berita) { %>
+      <div class="col-lg-3 col-sm-6 col-6 mb-4">
+        <div class="card berita-card h-100 shadow-sm">
+          <img src="/images/berita/<%= berita.gambar_berita %>" class="card-img-top berita-img" alt="<%= berita.nama_berita %>">
+          <div class="card-body d-flex flex-column">
+            <small class="text-muted mb-1">
+              Uploaded by: <strong><%= berita.nama_admin %></strong>, 
+              <%= new Date(berita.tanggal_upload).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>
+            </small>
+            <h5 class="card-title fw-semibold"><%= berita.nama_berita %></h5>
+            <p class="card-text text-truncate-3"><%= berita.deskripsi_berita %></p>
+            <a href="/berita/detail/<%= berita.id_berita %>" class="btn-brown mt-auto align-self-start">Read More</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+  
+
+
+
+
+
+
+
+
+</main>
+<%- include('../partials_view/__foot.ejs') %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
+
+    <!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+<script type="text/javascript" src="js/mdb.min.js"></script>
+<!-- Custom scripts -->
+<script type="text/javascript" src="js/script.js"></script>
+</body>
+
+</html>

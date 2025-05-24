@@ -1,0 +1,244 @@
+<%- include('../partials_view/__head.ejs') %>
+<style>
+  .hero.section {
+    height: 300px; /* Atur tinggi hero agar tidak terlalu besar */
+    padding: 60px 0;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .hero .container {
+    z-index: 2;
+  }
+  
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Overlay agar teks lebih kontras */
+    z-index: 1;
+  }
+  
+  .hero h1, .hero p {
+    position: relative;
+    z-index: 2;
+  }
+  
+  
+
+  /* Menghilangkan efek pudar pada gambar */
+  .hero-image {
+      opacity: 1 !important;
+      filter: none !important;
+  }
+  
+
+  .circle-img {
+    width: 70px;  
+    height: 70px;  
+    border-radius: 50%;  
+    object-fit: cover; /* Pastikan gambar menyesuaikan dalam lingkaran */
+    border: 3px solid #fff; /* Opsional: Tambahkan border putih */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Opsional: Tambahkan bayangan */
+    
+  }
+
+  /* Warna teks navbar menjadi hitam */
+.navmenu a {
+  color: black !important;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+
+/* Warna teks saat hover menjadi coklat */
+.navmenu a:hover {
+  color: brown !important;
+}
+
+/* Warna teks dropdown juga hitam */
+.navmenu .dropdown a {
+  color: black !important;
+}
+
+/* Hover pada dropdown juga menjadi coklat */
+.navmenu .dropdown a:hover {
+  color: brown !important;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #8E6A07;
+  border-radius: 2px;
+}
+
+/* Kartu Berita */
+.berita-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  background-color: #fff;
+}
+
+.berita-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Gambar Berita */
+.berita-img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Deskripsi */
+.card-title {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.card-text {
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tombol Read More */
+.btn-danger {
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 5px 14px;
+}
+
+/* Navigasi Panah */
+.navigation-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-btn {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-brown {
+  background-color: #8E6A07;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 5px 14px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-brown:hover {
+  background-color: #6d5304; /* Versi lebih gelap saat hover */
+  color: white;
+}
+
+/* Tambahkan ini di <style> atau file CSS */
+.card.mb-4.shadow-sm {
+  max-width: 320px; /* Atur sesuai kebutuhan */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+footer .social-links a {
+  border: 2px solid #8E6A07 !important;
+  color: #8E6A07 !important;
+}
+
+footer .social-links a:hover {
+  background-color: #8E6A07 !important;
+  color: white !important;
+}
+
+  
+</style>
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <div class="logo d-flex align-items-center me-auto">
+        <img src="../../images/logo-madrasah2.png" alt="" style="height: 50px; margin-right: 10px;">
+        <h1 class="sitename">Madrasah At-Taqwa</h1>
+    </div>
+    
+      <%- include('../partials_view/__nav.ejs') %>
+    
+    
+    </div>
+  </header>
+  <main class="container py-5">
+    <div class="row">
+      <!-- KONTEN UTAMA - DETAIL BERITA -->
+      <div class="col-lg-8 mb-4">
+        <img src="/images/berita/<%= data.gambar_berita %>" class="img-fluid rounded mb-3" alt="Gambar Berita">
+        <p class="text-muted">Diposting oleh <%= data.nama_admin %> pada <%= new Date(data.tanggal_upload).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+        <h2><strong><%= data.nama_berita %></strong></h2>
+        <p class="mt-3" style="text-align: justify;"><%= data.deskripsi_berita %></p>
+      </div>
+
+      <!-- SIDEBAR - BERITA LAINNYA -->
+<div class="col-lg-4">
+  <% beritaLain.forEach(function(item) { %>
+    <div class="card mb-4 shadow-sm">
+      <img src="/images/berita/<%= item.gambar_berita %>" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Berita">
+      <div class="card-body">
+        <!-- Tampilkan nama admin di sini -->
+        <p class="text-muted small">Diposting oleh <%= item.nama_admin %> pada <%= new Date(item.tanggal_upload).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+        
+        <h6><%= item.nama_berita %></h6>
+        <p class="small text-muted">
+          <%= item.deskripsi_berita.length > 100 ? item.deskripsi_berita.substr(0, 100) + '...' : item.deskripsi_berita %>
+        </p>
+        <a href="/berita/detail/<%= item.id_berita %>" class="btn-brown btn-sm">Read More</a>
+      </div>
+    </div>
+  <% }); %>
+</div>
+
+    </div>
+  </main>
+  
+<%- include('../partials_view/__foot.ejs') %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+</script>
+
+
+<script type="text/javascript" src="js/mdb.min.js"></script>
+<!-- Custom scripts -->
+<script type="text/javascript" src="js/script.js"></script>
+</body>
+
+</html>
