@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Model_Siswa = require('../model/Model_Siswa.js');
-const Model_Users = require('../model/Model_Users.js'); 
-const Model_Pendaftaran = require('../model/Model_Pendaftaran.js'); 
 const Model_Daftar_Ulang = require('../model/Model_Daftar_Ulang.js'); 
 const Model_Admin = require('../model/Model_Admin.js'); 
 const multer = require('multer');
@@ -116,6 +114,20 @@ router.get("/edit/:id", async (req, res, next) => {
         }
     } catch (error) {
         next(error);
+    }
+});
+
+router.get('/detail/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const siswa = await Model_Siswa.getId(id);
+        if (siswa.length > 0) {
+            res.json(siswa[0]);  // Kirim data siswa pertama (sesuai id)
+        } else {
+            res.status(404).json({ error: 'Data siswa tidak ditemukan' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Terjadi kesalahan server' });
     }
 });
 

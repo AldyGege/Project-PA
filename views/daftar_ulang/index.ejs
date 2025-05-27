@@ -49,10 +49,10 @@
                                                                 <span class="text-muted">Tidak ada</span>
                                                             <% } %>
                                                         </td>
-                                                        <td><%= prosesData[i].waktu_daftar_ulang %></td>
+                                                        <td><%= prosesData[i].waktu_daftar_ulang.toLocaleString('id-ID') %></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="diterima">Diterima</button>
-                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="ditolak">Ditolak</button>
+                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="diterima">Terima</button>
+                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_daftar_ulang %>" data-status="ditolak">Tolak</button>
                                                         </td>
                                                     </tr>
                                                 <% } %>
@@ -112,7 +112,7 @@
                                                                 <span class="text-muted">Tidak ada</span>
                                                             <% } %>
                                                         </td>
-                                                        <td><%= data[i].waktu_daftar_ulang %></td>
+                                                        <td><%= data[i].waktu_daftar_ulang.toLocaleString('id-ID') %></td>
                                                         <td class="status-cell">
                                                             <% if (data[i].status_daftar_ulang === "diterima") { %>
                                                                 <span class="badge badge-success">Diterima</span>

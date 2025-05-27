@@ -33,16 +33,26 @@
                   <input type="number" class="form-control" id="nominal" name="nominal" value="<%= data.nominal %>" required>
                 </div>
                 <%
-                const dateObj = new Date(data.waktu_keuangan);
-                const day = String(dateObj.getDate()).padStart(2, '0');
-                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                const year = dateObj.getFullYear();
-                const formattedDate = `${day}/${month}/${year}`;
+                  const dateObj = new Date(data.waktu_keuangan);
+                  const day = String(dateObj.getDate()).padStart(2, '0');
+                  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                  const year = dateObj.getFullYear();
+                  const valueForInput = `${year}-${month}-${day}`; // Untuk input[type=date]
+                  const valueForDisplay = `${day}/${month}/${year}`; // Untuk ditampilkan
                 %>
+
+                <!-- Tampilkan format dd/mm/yyyy -->
                 <div class="form-group">
-                <label for="waktu_keuangan">Waktu Keuangan</label>
-                <input type="date" class="form-control" name="waktu_keuangan" value="<%= formattedDate %>" required>
+                  <label>Waktu Keuangan (dd/mm/yyyy)</label>
+                  <input type="text" class="form-control" value="<%= valueForDisplay %>" disabled>
                 </div>
+
+                <!-- Input sebenarnya (disembunyikan atau tetap bisa diedit) -->
+                <div class="form-group">
+                  <label for="waktu_keuangan">Waktu Keuangan (ubah jika perlu)</label>
+                  <input type="date" class="form-control" id="waktu_keuangan" name="waktu_keuangan" value="<%= valueForInput %>">
+                </div>
+
                 <input type="hidden" name="nama_admin" value="<%= data2.nama_admin %>">
                 <input type="hidden" name="id_admin" value="<%= data2.id_admin %>">
 

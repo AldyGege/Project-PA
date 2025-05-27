@@ -181,69 +181,59 @@
       }
     }
 
-    function showDetail(id) {
-      console.log("🟢 ID yang dikirim:", id); // ✅ Debug di browser
-  
-      fetch(`/get-pendaftaran/${id}`)
-          .then(response => response.json())
-          .then(data => {
-              console.log("📌 Data yang diterima:", data); // ✅ Debug response
-  
-              let content = `
-              <div class="table-responsive">
-                  <table class="table table-bordered">
-                      <tr><th>Nama</th><td>${data.nama_pendaftar}</td></tr>
-                      <tr><th>No. Induk Keluarga</th><td>${data.nik}</td></tr>
-                      <tr><th>Alamat</th><td>${data.alamat_pendaftar}</td></tr>
-                      <tr><th>TTL</th><td>${data.ttl}</td></tr>
-                      <tr><th>Gender</th><td>${data.gender}</td></tr>
-                      <tr><th>Nama Orang Tua</th><td>${data.nama_ortu_pendaftar}</td></tr>
-                      <tr><th>Pekerjaan Orang Tua</th><td>${data.pekerjaan_ortu_pendaftar}</td></tr>
-                      <tr><th>Alamat Orang Tua</th><td>${data.alamat_ortu_pendaftar}</td></tr>
-                      <tr><th>Status Pendaftaran</th><td><strong>${data.status_pendaftaran}</strong></td></tr>
-                      <tr>
-                          <th>Gambar</th>
-                          <td><img src="/images/pendaftaran/${data.gambar_pendaftar}" class="img-fluid" style="max-width: 150px;"></td>
-                      </tr>
-                  </table>
-                  </div>
-              `;
-  
-              // Tambahkan tombol daftar ulang jika status_pendaftaran = 'diterima'
-              if (data.status_pendaftaran === "diterima") {
-                content += `
-                    <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>✅ Pendaftaran anda diterima.</strong> Silakan lanjutkan dengan melakukan daftar ulang.
-                        </div>
-                        <a href="/daftar_ulang/create" class="btn btn-success btn-sm">Daftar Ulang</a>
-                    </div>
-                `;
-            }
-            
-            // Tambahkan pesan jika status_pendaftaran = 'proses'
-            else if (data.status_pendaftaran === "proses") {
-                content += `
-                    <div class="alert alert-warning mt-3">
-                        <strong>⏳ Pendaftaran anda sedang diproses.</strong> Mohon tunggu konfirmasi dari admin.
-                    </div>
-                `;
-            }
-            // Tambahkan pesan error jika status_pendaftaran = 'ditolak'
-            else if (data.status_pendaftaran === "ditolak") {
-                content += `
-                    <div class="alert alert-danger mt-3">
-                        <strong>❌ Pendaftaran anda ditolak karena tidak valid.</strong> 
-                    </div>
-                `;
-            }
-  
-              document.getElementById("detailContent").innerHTML = content;
-              new bootstrap.Modal(document.getElementById("detailModal")).show();
-          })
-          .catch(error => console.error("❌ Error fetching details:", error));
-  }
-  
+function showDetail(id) {
+  fetch(`/get-pendaftaran/${id}`)
+      .then(response => response.json())
+      .then(data => {
+          let content = `
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <tr><th>Nama</th><td>${data.nama_pendaftar}</td></tr>
+              <tr><th>No. Induk Keluarga</th><td>${data.nik}</td></tr>
+              <tr><th>Alamat</th><td>${data.alamat_pendaftar}</td></tr>
+              <tr><th>TTL</th><td>${new Date(data.ttl).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td></tr>
+              <tr><th>Gender</th><td>${data.gender}</td></tr>
+              <tr><th>Nama Orang Tua</th><td>${data.nama_ortu_pendaftar}</td></tr>
+              <tr><th>Pekerjaan Orang Tua</th><td>${data.pekerjaan_ortu_pendaftar}</td></tr>
+              <tr><th>Alamat Orang Tua</th><td>${data.alamat_ortu_pendaftar}</td></tr>
+              <tr><th>Status Pendaftaran</th><td><strong>${data.status_pendaftaran}</strong></td></tr>
+              <tr>
+                <th>Gambar</th>
+                <td><img src="/images/pendaftaran/${data.gambar_pendaftar}" class="img-fluid" style="max-width: 150px;"></td>
+              </tr>
+            </table>
+          </div>
+          `;
+
+          if (data.status_pendaftaran === "diterima") {
+            content += `
+              <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>✅ Pendaftaran anda diterima.</strong> Silakan lanjutkan dengan melakukan daftar ulang.
+                </div>
+                <a href="/daftar_ulang/create" class="btn btn-success btn-sm">Daftar Ulang</a>
+              </div>
+            `;
+          } else if (data.status_pendaftaran === "proses") {
+            content += `
+              <div class="alert alert-warning mt-3">
+                <strong>⏳ Pendaftaran anda sedang diproses.</strong> Mohon tunggu konfirmasi dari admin.
+              </div>
+            `;
+          } else if (data.status_pendaftaran === "ditolak") {
+            content += `
+              <div class="alert alert-danger mt-3">
+                <strong>❌ Pendaftaran anda ditolak karena tidak valid.</strong> 
+              </div>
+            `;
+          }
+
+          document.getElementById("detailContent").innerHTML = content;
+          new bootstrap.Modal(document.getElementById("detailModal")).show();
+      })
+      .catch(error => console.error("❌ Error fetching details:", error));
+}
+
   
     
     

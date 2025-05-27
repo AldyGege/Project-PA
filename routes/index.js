@@ -10,6 +10,9 @@ var Model_Admin = require('../model/Model_Admin.js');
 var Model_Users = require('../model/Model_Users.js');
 var Model_Mapel = require('../model/Model_Mapel.js');
 var Model_Guru = require('../model/Model_Guru.js');
+var Model_Album = require('../model/Model_Album.js');
+var Model_Fasilitas = require('../model/Model_Fasilitas.js');
+var Model_Berita = require('../model/Model_Berita.js');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,9 +31,11 @@ router.get('/', async function (req, res, next) {
   try {
       let mapel = await Model_Mapel.getAll();
       let guru = await Model_Guru.getAll();
+      let album = await Model_Album.getAll();
       res.render('index', {
-          data1: mapel,
-          data2: guru,
+        data2: mapel,
+        data3: guru,
+        data4: album,
       });
   } catch (error) {
       console.error("Error:", error);
@@ -38,6 +43,73 @@ router.get('/', async function (req, res, next) {
       res.redirect('/login');
   }
 });
+
+router.get('/fasilitaslogin', async (req, res, next) => {
+    try {
+        let rows = await Model_Fasilitas.getAll();
+        res.render('fasilitas', {
+            data: rows,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/albumlogin', async (req, res, next) => {
+    try {
+        let rows = await Model_Album.getAll();
+        res.render('album', {
+            data: rows,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+    router.get('/beritalogin', async (req, res, next) => {
+        try {
+            let rows = await Model_Berita.getAll();
+            res.render('berita', {
+                data: rows,
+            });
+        } catch (error) {
+            next(error);
+        }
+    });
+
+router.get('/detail_berita/:id', async (req, res, next) => {
+  try {
+    let beritaId = req.params.id; // <- harus ini dulu
+    let berita = await Model_Berita.getId(beritaId);
+
+    if (!berita || berita.length === 0) {
+      req.flash('error', 'Berita tidak ditemukan');
+      return res.redirect('/berita');
+    }
+
+    let beritaLain = await Model_Berita.getLimited(5, beritaId); // pakai setelah beritaId sudah dideklarasi
+
+    res.render('detail_berita', {
+      data: berita[0],
+      beritaLain
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+    router.get('/gurulogin', async (req, res, next) => {
+        try {
+            let rows = await Model_Guru.getAll();
+            res.render('guru', {
+                data: rows,
+            });
+        } catch (error) {
+            next(error);
+        }
+    });
+
 
 router.get('/register', function(req, res, next) {
   res.render('auth/register');
@@ -129,47 +201,6 @@ router.post("/updateusers/:id",  upload.single("gambar_users"), async (req, res,
       console.log(error);
   }
 });
-
-// router.post('/log', async (req,res) => {
-//   let {email_users, password_users } = req.body;
-//   try {
-//     let Data = await Model_Users.Login(email_users);
-//     if(Data.length > 0) {
-//       let enkripsi = Data[0].password_users;
-//       let cek = await bcrypt.compare(password_users, enkripsi);
-//       if(cek) {
-//         req.session.userId = Data[0].id_users;
-//         req.session.gambar_users= Data[0].gambar_users;
-//         req.session.nama_users = Data[0].nama_users;
-//         req.session.alamat_users = Data[0].alamat_users;
-//         req.session.no_telp_users = Data[0].no_telp_users;
-//         req.session.email_users = Data[0].email_users;
-//         // tambahkan kondisi pengecekan level pada user yang login
-//         if(Data[0].level_users == 1){
-//           req.flash('success','Berhasil login');
-//           res.redirect('/superusers');
-//           //console.log(Data[0]);
-//         }else if(Data[0].level_users == 2){
-//           req.flash('success', 'Berhasil login');
-//           res.redirect('/users');
-//         }else{
-//           res.redirect('/login');
-//           console.log(Data[0]);
-//         }
-//       } else {
-//         req.flash('failure', 'Email atau password salah');
-//         res.redirect('/login');
-//       }
-//     } else {
-//       req.flash('failure', 'Akun tidak ditemukan');
-//       res.redirect('/login');
-//     }
-//   } catch (err) {
-//     res.redirect('/login');
-//     req.flash('failure', 'Error pada fungsi');
-//     console.log(err);
-//   }
-// })
 
 router.post('/logadmin', async (req,res) => {
   let {email_admin, password_admin } = req.body;

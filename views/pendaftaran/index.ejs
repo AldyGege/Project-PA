@@ -39,10 +39,10 @@
                                                         </td>
                                                         <td><%= prosesData[i].nama_pendaftar %></td>
                                                         <td><%= prosesData[i].nik %></td>
-                                                        <td><%= prosesData[i].waktu_pendaftaran %></td>
+                                                        <td><%= prosesData[i].waktu_pendaftaran.toLocaleString('id-ID') %></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="diterima">Diterima</button>
-                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="ditolak">Ditolak</button>
+                                                            <button class="btn btn-sm btn-success btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="diterima">Terima</button>
+                                                            <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= prosesData[i].id_pendaftaran %>" data-status="ditolak">Tolak</button>
                                                         </td>
                                                     </tr>
                                                 <% } %>
@@ -115,7 +115,7 @@
                                                         <td><%= data[i].no_telp_ortu_pendaftar %></td>
                                                         <td><%= data[i].pekerjaan_ortu_pendaftar %></td>
                                                         <td><%= data[i].alamat_ortu_pendaftar %></td>
-                                                        <td><%= data[i].waktu_pendaftaran %></td>
+                                                        <td><%= data[i].waktu_pendaftaran.toLocaleString('id-ID') %></td>
                                                         <td class="status-cell">
                                                             <% if (data[i].status_pendaftaran === "diterima") { %>
                                                                 <span class="badge badge-success">Diterima</span>
@@ -131,8 +131,8 @@
                                                             %>
                                                         
                                                             <% if (data[i].status_pendaftaran === "proses") { %>
-                                                                <button class="btn btn-sm btn-success btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="diterima">Diterima</button>
-                                                                <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="ditolak">Ditolak</button>
+                                                                <button class="btn btn-sm btn-success btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="diterima">Terima</button>
+                                                                <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="ditolak">Tolak</button>
                                                             <% } else if (!sudahDaftarUlang) { %>
                                                                 <button class="btn btn-sm btn-warning btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="proses">Batalkan</button>
                                                             <% } %>

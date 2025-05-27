@@ -137,6 +137,27 @@
   background: #f4f4f4; /* Warna latar saat hover */
 }
 
+/* Pastikan semua slide punya tinggi sama */
+.swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+.swiper-slide .service-item {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 576px) {
+  #mapel .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
 .btn-brown {
   background-color: #8B4513; /* warna coklat */
   color: #fff;
@@ -310,9 +331,7 @@ footer .social-links a:hover {
   </section><!-- /Hero Section -->
   
 
-<!-- Mata Pelajaran Section -->
 <section id="mapel" class="services section light-background">
-
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
     <h2>Program Pendidikan</h2>
@@ -320,24 +339,29 @@ footer .social-links a:hover {
   </div><!-- End Section Title -->
 
   <div class="container">
-    <div class="row gy-4 gx-3">
-      <% data2.forEach((mapel, index) => { %>
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
-          <a href="/mapel/details/<%= mapel.id_mapel %>" class="service-item item-cyan position-relative text-decoration-none">
-            <!-- Gambar Mapel dalam Lingkaran -->
-            <div class="icon">
-              <img src="/images/mapel/<%= mapel.gambar_mapel %>" height="70" width="70" class="circle-img">
-            </div>
-            <h3><%= mapel.nama_mapel %></h3>
-            <p><%= mapel.deskripsi_mapel %></p>
-          </a>
-        </div><!-- End Mata Pelajaran -->
-      <% }); %>
-    </div>
-    
-  </div>
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        <% data2.forEach((mapel, index) => { %>
+          <div class="swiper-slide" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+            <a  class="service-item item-cyan position-relative text-decoration-none d-flex flex-column align-items-center justify-content-center text-center p-3">
+              <div class="icon mb-3">
+                <img src="/images/mapel/<%= mapel.gambar_mapel %>" height="70" width="70" class="circle-img" />
+              </div>
+              <h3><%= mapel.nama_mapel %></h3>
+              <p><%= mapel.deskripsi_mapel %></p>
+            </a>
+          </div>
+        <% }); %>
+      </div>
 
-</section><!-- /Mata Pelajaran Section -->
+      <!-- Navigasi Optional -->
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-pagination mt-3"></div>
+    </div>
+  </div>
+</section>
+
 
 <section id="guru" class="team section light-background">
 
@@ -376,39 +400,35 @@ footer .social-links a:hover {
 
 </section><!-- /Team Section -->
 
-<!-- <section id="album" class="portfolio sections-bg">
+<section id="album" class="portfolio sections-bg">
   <div class="container" data-aos="fade-up">
+
     <div class="section-title text-center" data-aos="fade-up">
-      <h2>ALBUM</h2>
-      <p>Kumpulan dokumentasi kegiatan dan momen spesial kami</p>
-    <div class="text-center mb-4">
-      <ul id="album-filters" class="list-inline">
-        <li class="list-inline-item filter-active" data-filter="*">Semua</li>
-        <li class="list-inline-item" data-filter=".perkumpulan">Perkumpulan</li>
-        <li class="list-inline-item" data-filter=".ramadhan">Ramadhan</li>
-        <li class="list-inline-item" data-filter=".pembelajaran">Pembelajaran</li>
-        <li class="list-inline-item" data-filter=".acara">Acara</li>
-      </ul>
+      <h2>Prestasi</h2>
+      <p>Kumpulan dokumentasi kegiatan dan Prestasi At-Taqwa</p>
     </div>
-    </div>
+
     <div class="row portfolio-container">
       <% data4.forEach((item) => { %>
-        <div class="col-lg-4 col-md-6 portfolio-item <%= item.jenis_album %>">
-          <div class="portfolio-wrap">
-            <a href="/images/album/<%= item.gambar_album %>" class="glightbox">
-              <img src="/images/album/<%= item.gambar_album %>" class="img-fluid" alt="<%= item.nama_album %>">
-            </a>
-            <div class="portfolio-info">
-              <h4><%= item.nama_album %></h4>
-              <p><%= item.deskripsi_album %></p>
+        <% if (item.jenis_album === "prestasi") { %>
+          <div class="col-lg-4 col-md-6 portfolio-item">
+            <div class="portfolio-wrap">
+              <a href="/images/album/<%= item.gambar_album %>" class="glightbox">
+                <img src="/images/album/<%= item.gambar_album %>" class="img-fluid" alt="<%= item.nama_album %>">
+              </a>
+              <div class="portfolio-info">
+                <h4><%= item.nama_album %></h4>
+                <p><%= item.deskripsi_album %></p>
+              </div>
             </div>
           </div>
-        </div>
+        <% } %>
       <% }) %>
     </div>
 
   </div>
-</section> -->
+</section>
+
 
 <section id="kontak" class="contact section" style="padding: 60px 0; background: #f9f9f9;">
   <div class="container text-center" data-aos="fade-up">
@@ -516,6 +536,38 @@ footer .social-links a:hover {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
     </script>
+
+    <script>
+const swiper = new Swiper(".mySwiper", {
+  slidesPerView: 4,
+  spaceBetween: 20,
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+  breakpoints: {
+    0: {
+      slidesPerView: 2, // ✅ tampil 2 kolom di mobile
+      spaceBetween: 12
+    },
+    576: {
+      slidesPerView: 2,
+    },
+    768: {
+      slidesPerView: 3,
+    },
+    992: {
+      slidesPerView: 4,
+    }
+  }
+});
+
+</script>
+
 
 <script type="text/javascript" src="js/mdb.min.js"></script>
 <!-- Custom scripts -->

@@ -1,4 +1,4 @@
-<%- include('partials_view/__head.ejs') %>
+<%- include('../partials_view/__head.ejs') %>
 <style>
   /* Menghilangkan efek pudar pada gambar */
   .hero-image {
@@ -99,6 +99,24 @@
   display: block;
 }
 
+#album-filters li {
+  cursor: pointer;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: #555;
+  transition: all 0.3s ease-in-out;
+}
+
+#album-filters .filter-active {
+  color: #fff;
+  background-color: #8E6A07;
+  border-radius: 20px;
+}
+
+.portfolio-item {
+  margin-bottom: 1.5rem; /* jarak antar gambar */
+}
+
 @media (max-width: 576px) {
   .icon-box .description {
     display: none;
@@ -119,6 +137,86 @@
   background: #f4f4f4; /* Warna latar saat hover */
 }
 
+/* Pastikan semua slide punya tinggi sama */
+.swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+.swiper-slide .service-item {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 576px) {
+  #mapel .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+.btn-brown {
+  background-color: #8B4513; /* warna coklat */
+  color: #fff;
+  border: none;
+}
+
+.btn-brown:hover {
+  background-color: #5c3317;
+  color: #fff;
+}
+
+
+
+.btn-primary:hover {
+  background-color: #A77F0B;
+  border-color: #A77F0B;
+}
+
+  .card-contact {
+    background-color: #d6c4a4;
+    color: #222;
+  width: 100%; /* Tambahkan agar isi col penuh */
+  height: auto; /* Biarkan tinggi menyesuaikan */
+  min-height: 200px; /* Optional: batas minimum */
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .card-contact:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-contact i {
+    font-size: 2.5rem;
+    color: #3c2e14;
+    margin-bottom: 15px;
+  }
+
+  .card-contact h4 {
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .card-contact p {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .card-contact {
+      width: 100%;
+    }
+  }
 
 footer .social-links a {
   border: 2px solid #8E6A07 !important;
@@ -135,14 +233,14 @@ footer .social-links a:hover {
 <body class="index-page">
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
+  
       <div class="logo d-flex align-items-center me-auto">
         <img src="../../images/logo-madrasah2.png" alt="" style="height: 50px; margin-right: 10px;">
         <h1 class="sitename">Madrasah At-Taqwa</h1>
-    </div>
-    
-      <%- include('partials_view/__nav.ejs') %>
-    
+      </div>
+  
+      <%- include('../partials_view/__nav.ejs') %>
+  
       <!-- Box Profil User -->
       <a class="btn-getstarted" href="/login_users" 
       style="background-color: #8E6A07; color: white; padding: 5px 20px; border-radius: 5px; text-decoration: none; display: inline-block; font-weight: bold;"
@@ -150,8 +248,7 @@ footer .social-links a:hover {
       onmouseout="this.style.backgroundColor='#8E6A07'">
       Login
    </a>
-    
-    
+   
     </div>
   </header>
   
@@ -166,17 +263,17 @@ footer .social-links a:hover {
       <div class="row justify-content-center" data-aos="zoom-out">
         <div class="col-xl-7 col-lg-9 text-center">
           <h1 class="text-white">Selamat Datang di Madrasah At-Taqwa</h1>
-          <p class="text-white">We are team of talented designers making websites with Bootstrap</p>
+          <p class="text-white">lembaga pendidikan Islam yang berkomitmen untuk membentuk generasi yang berakhlak mulia dan berwawasan luas</p>
         </div>
       </div>
 
       <div class="text-center mt-3" data-aos="zoom-out" data-aos-delay="100">
         <!-- Tombol Selengkapnya -->
-        <a href="#about" class="btn"
+        <a href="users/petunjuk" class="btn"
            style="background-color: #4F4533; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; margin-right: 10px;"
            onmouseover="this.style.backgroundColor='#3D3628'"
            onmouseout="this.style.backgroundColor='#4F4533'">
-           Selengkapnya
+           Petunjuk Pendaftaran
         </a>
       
         <!-- Tombol Daftar Sekarang -->
@@ -200,7 +297,7 @@ footer .social-links a:hover {
         </div><!--End Icon Box -->
 
         <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="200">
-          <a href="" class="icon-box text-decoration-none">
+          <a href="#guru" class="icon-box text-decoration-none">
             <div class="icon" style="color: #8E6A07;"><i class="bi bi-person"></i></div>
             <h4 class="title">Pengajar</h4>
             <p class="description">Tim Pengajar Berkualitas dan Berpengalaman</p>
@@ -216,7 +313,7 @@ footer .social-links a:hover {
         </div><!--End Icon Box -->
         
         <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="400">
-          <a href="" class="icon-box text-decoration-none">
+          <a href="#kontak" class="icon-box text-decoration-none">
             <div class="icon" style="color: #8E6A07;"><i class="bi bi-geo-alt"></i></div>
             <h4 class="title">Lokasi & Kontak</h4>
             <p class="description">Temukan Kami dengan Mudah</p>
@@ -229,9 +326,7 @@ footer .social-links a:hover {
   </section><!-- /Hero Section -->
   
 
-<!-- Mata Pelajaran Section -->
 <section id="mapel" class="services section light-background">
-
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
     <h2>Program Pendidikan</h2>
@@ -239,27 +334,31 @@ footer .social-links a:hover {
   </div><!-- End Section Title -->
 
   <div class="container">
-    <div class="row gy-4 gx-3">
-      <% data1.forEach((mapel, index) => { %>
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
-          <a href="/mapel/details/<%= mapel.id_mapel %>" class="service-item item-cyan position-relative text-decoration-none">
-            <!-- Gambar Mapel dalam Lingkaran -->
-            <div class="icon">
-              <img src="/images/mapel/<%= mapel.gambar_mapel %>" height="70" width="70" class="circle-img">
-            </div>
-            <h3><%= mapel.nama_mapel %></h3>
-            <p><%= mapel.deskripsi_mapel %></p>
-          </a>
-        </div><!-- End Mata Pelajaran -->
-      <% }); %>
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        <% data2.forEach((mapel, index) => { %>
+          <div class="swiper-slide" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+            <a  class="service-item item-cyan position-relative text-decoration-none d-flex flex-column align-items-center justify-content-center text-center p-3">
+              <div class="icon mb-3">
+                <img src="/images/mapel/<%= mapel.gambar_mapel %>" height="70" width="70" class="circle-img" />
+              </div>
+              <h3><%= mapel.nama_mapel %></h3>
+              <p><%= mapel.deskripsi_mapel %></p>
+            </a>
+          </div>
+        <% }); %>
+      </div>
+
+      <!-- Navigasi Optional -->
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-pagination mt-3"></div>
     </div>
-    
   </div>
+</section>
 
-</section><!-- /Mata Pelajaran Section -->
 
-<!-- Team Section -->
-<section id="team" class="team section light-background">
+<section id="guru" class="team section light-background">
 
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
@@ -269,17 +368,11 @@ footer .social-links a:hover {
 
   <div class="container">
     <div class="row gy-4 gx-3">
-      <% data2.forEach((item, index) => { %>
+      <% data3.slice(0, 4).forEach((item, index) => { %>
         <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
           <div class="team-member">
             <div class="member-img">
               <img src="/images/guru/<%= item.gambar_guru %>" class="img-fluid" alt="<%= item.nama_guru %>">
-              <!-- <div class="social">
-                <a href=""><i class="bi bi-twitter-x"></i></a>
-                <a href=""><i class="bi bi-facebook"></i></a>
-                <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
-              </div> -->
             </div>
             <div class="member-info">
               <h4><%= item.nama_guru %></h4>
@@ -289,9 +382,115 @@ footer .social-links a:hover {
         </div><!-- End Team Member -->
       <% }) %>
     </div>
+
+    <!-- Tombol Lihat Selengkapnya -->
+    <div class="text-center mt-4">
+<a href="/guru/users" class="btn" 
+   style="background-color: #8E6A07; color: #fff; border: none; padding: 10px 20px; border-radius: 5px;">
+   Lihat Selengkapnya
+</a>
+
+    </div>
   </div>
 
 </section><!-- /Team Section -->
+
+<section id="album" class="portfolio sections-bg">
+  <div class="container" data-aos="fade-up">
+
+    <div class="section-title text-center" data-aos="fade-up">
+      <h2>Prestasi</h2>
+      <p>Kumpulan dokumentasi kegiatan dan Prestasi At-Taqwa</p>
+    </div>
+
+    <div class="row portfolio-container">
+      <% data4.forEach((item) => { %>
+        <% if (item.jenis_album === "prestasi") { %>
+          <div class="col-lg-4 col-md-6 portfolio-item">
+            <div class="portfolio-wrap">
+              <a href="/images/album/<%= item.gambar_album %>" class="glightbox">
+                <img src="/images/album/<%= item.gambar_album %>" class="img-fluid" alt="<%= item.nama_album %>">
+              </a>
+              <div class="portfolio-info">
+                <h4><%= item.nama_album %></h4>
+                <p><%= item.deskripsi_album %></p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% }) %>
+    </div>
+
+  </div>
+</section>
+
+
+<section id="kontak" class="contact section" style="padding: 60px 0; background: #f9f9f9;">
+  <div class="container text-center" data-aos="fade-up">
+    <h2 style="color: #5a4d1c; font-weight: 700;">Lokasi Dan Kontak</h2>
+    <p style="margin-top: 10px; color: #555;">
+      Berikut adalah Informasi Lokasi dan Kontak di Madrasah At-Taqwa
+    </p>
+  </div>
+
+  <div class="container" data-aos="fade-up" style="margin-top: 30px;">
+    <!-- Embedded Google Maps -->
+    <div style="overflow: hidden; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <iframe 
+        src="https://www.google.com/maps?q=Jalan+Panji+Waji+no+30,+Kalianget,+Sumenep&output=embed" 
+        width="100%" height="300" style="border:0;" 
+        allowfullscreen="" loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Contact Info Cards -->
+  <div class="container" data-aos="fade-up" style="margin-top: 50px;">
+    <div class="contact-cards" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+      
+      <!-- Card Template -->
+<div class="row gy-4 gx-3">
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-geo-alt-fill"></i>
+      <h4>Alamat</h4>
+      <p>Jalan Panji Waji no 30,<br>Kalianget, Sumenep</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-telephone-fill"></i>
+      <h4>Telepon</h4>
+      <p>+62-823-2344-4324</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-envelope-fill"></i>
+      <h4>Email</h4>
+      <p>example8688@gmail.com</p>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch">
+    <div class="card-contact text-center w-100">
+      <i class="bi bi-clock-fill"></i>
+      <h4>Jam Operasional</h4>
+      <p>
+        Senin - Jumat: 07.00 - 15.00<br>
+        Sabtu: 07.00 - 12.00
+      </p>
+    </div>
+  </div>
+
+
+    </div>
+  </div>
+</section>
+
 
 
 <!-- Floating Action Button -->
@@ -305,9 +504,65 @@ footer .social-links a:hover {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
 
+  <!-- JavaScript Filter Album -->
+  <!-- <script>
+    const filters = document.querySelectorAll('#album-filters li');
+    const items = document.querySelectorAll('.portfolio-item');
+  
+    filters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const filterValue = filter.getAttribute('data-filter');
+  
+        filters.forEach(el => el.classList.remove('filter-active'));
+        filter.classList.add('filter-active');
+  
+        items.forEach(item => {
+          if (filterValue === '*' || item.classList.contains(filterValue.substring(1))) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script> -->
+  
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
     </script>
+
+    <script>
+const swiper = new Swiper(".mySwiper", {
+  slidesPerView: 4,
+  spaceBetween: 20,
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+  breakpoints: {
+    0: {
+      slidesPerView: 2, // ✅ tampil 2 kolom di mobile
+      spaceBetween: 12
+    },
+    576: {
+      slidesPerView: 2,
+    },
+    768: {
+      slidesPerView: 3,
+    },
+    992: {
+      slidesPerView: 4,
+    }
+  }
+});
+
+</script>
+
 
 <script type="text/javascript" src="js/mdb.min.js"></script>
 <!-- Custom scripts -->

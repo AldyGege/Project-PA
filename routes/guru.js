@@ -1,7 +1,7 @@
     const express = require("express");
     const router = express.Router();
     const Model_Guru = require('../model/Model_Guru.js');
-    const Model_Mapel = require('../Model/Model_Mapel.js');
+    const Model_Mapel = require('../model/Model_Mapel.js');
     const Model_Admin = require('../model/Model_Admin.js');
     const Model_Users = require('../model/Model_Users.js');
     const fs = require('fs');

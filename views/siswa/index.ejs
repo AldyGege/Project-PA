@@ -23,12 +23,8 @@
                                                 <th>Alamat</th>
                                                 <th>TTL</th>
                                                 <th>Gender</th>
-                                                <th>Jalur Daftar</th>
-                                                <th>Nama Ortu</th>
-                                                <th>Pekerjaan Ortu</th>
-                                                <th>Alamat Ortu</th>
-                                                <th>Gambar</th>
-                                                <th colspan="2">Aksi</th>
+                                                <th>Detail</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -39,25 +35,18 @@
                                                     <td><%= siswa.nama_siswa %></td>
                                                     <td><%= siswa.nik %></td>
                                                     <td><%= siswa.alamat_siswa %></td>
-                                                    <td><%= siswa.ttl %></td>
+                                                    <td>
+                                                        <% 
+                                                            const t = new Date(siswa.ttl);
+                                                            const tanggal = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
+                                                        %>
+                                                        <%= tanggal %>
+                                                    </td>
                                                     <td><%= siswa.gender %></td>
-                                                    <td><%= siswa.jalur_daftar %></td>
-                                                    <td><%= siswa.nama_ortu_siswa %></td>
-                                                    <td><%= siswa.pekerjaan_ortu_siswa %></td>
-                                                    <td><%= siswa.alamat_ortu_siswa %></td>
-                                                    <td class="py-1">
-                                                        <% if (siswa.gambar_siswa) { %>
-                                                          <img 
-                                                            src="/images/<%= siswa.jalur_daftar === 'online' ? 'pendaftaran' : 'siswa' %>/<%= siswa.gambar_siswa %>" 
-                                                            height="80" width="80" 
-                                                            style="object-fit: cover; border-radius: 6px;" 
-                                                            alt="Foto Siswa"/>
-                                                        <% } else { %>
-                                                          <span class="text-muted">Tidak ada foto</span>
-                                                        <% } %>
-                                                      </td>
-                                                      
-                                                      <td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info" onclick="showDetail(<%= siswa.id_siswa %>)">Lihat Detail</button>
+                                                    </td>
+                                                                                                          <td>
                                                         <a href="/siswa/edit/<%= siswa.id_siswa %>" class="btn btn-sm btn-warning">Edit</a>
                                                         
                                                         <% if (siswa.jalur_daftar === 'offline') { %>
@@ -66,12 +55,11 @@
                                                           <a href="/siswa/delete/<%= siswa.id_siswa %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin membatalkan pendaftaran ini?')">Batalkan</a>
                                                         <% } %>
                                                       </td>
-                                                      
                                                 </tr>
                                                 <% }) %>
                                             <% } else { %>
                                                 <tr>
-                                                    <td colspan="13" class="text-center text-muted">Tidak ada data siswa</td>
+                                                    <td colspan="7" class="text-center text-muted">Tidak ada data siswa</td>
                                                 </tr>
                                             <% } %>
                                         </tbody>
@@ -86,6 +74,62 @@
     </div>
     <!-- content-wrapper ends -->
 </div>
+
+<!-- Modal Detail Siswa -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Detail Siswa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="detailContent">
+        <p>Memuat data...</p>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- container-scroller ends -->
+
+<script>
+async function showDetail(id) {
+    const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+    const content = document.getElementById('detailContent');
+    content.innerHTML = '<p>Memuat data...</p>';
+    modal.show();
+
+    try {
+        const res = await fetch(`/siswa/detail/${id}`);
+        if (!res.ok) throw new Error('Gagal memuat data');
+        const data = await res.json();
+
+        const t = new Date(data.ttl);
+        const ttlFormatted = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
+
+        const gambarPath = data.gambar_siswa
+          ? `/images/${data.jalur_daftar === 'online' ? 'pendaftaran' : 'siswa'}/${data.gambar_siswa}`
+          : null;
+
+        content.innerHTML = `
+            <table class="table table-borderless">
+                <tr><th>Nama</th><td>${data.nama_siswa}</td></tr>
+                <tr><th>NIK</th><td>${data.nik}</td></tr>
+                <tr><th>Alamat</th><td>${data.alamat_siswa}</td></tr>
+                <tr><th>TTL</th><td>${ttlFormatted}</td></tr>
+                <tr><th>Gender</th><td>${data.gender}</td></tr>
+                <tr><th>Jalur Daftar</th><td>${data.jalur_daftar}</td></tr>
+                <tr><th>Nama Ortu</th><td>${data.nama_ortu_siswa}</td></tr>
+                <tr><th>Pekerjaan Ortu</th><td>${data.pekerjaan_ortu_siswa}</td></tr>
+                <tr><th>Alamat Ortu</th><td>${data.alamat_ortu_siswa}</td></tr>
+                <tr><th>Gambar</th><td>${gambarPath ? `<img src="${gambarPath}" alt="Foto Siswa" style="max-height:150px; border-radius:6px;" />` : 'Tidak ada foto'}</td></tr>
+            </table>
+        `;
+    } catch (err) {
+        content.innerHTML = `<p class="text-danger">${err.message}</p>`;
+    }
+}
+</script>
 <%- include('../partials/__foot.ejs') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
