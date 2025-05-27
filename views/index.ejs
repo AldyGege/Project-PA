@@ -408,7 +408,13 @@ footer .social-links a:hover {
         <% if (item.jenis_album === "prestasi") { %>
           <div class="col-lg-4 col-md-6 portfolio-item">
             <div class="portfolio-wrap">
-              <a href="/images/album/<%= item.gambar_album %>" class="glightbox">
+              <a 
+                href="/images/album/<%= item.gambar_album %>" 
+                class="glightbox"
+                data-gallery="album-gallery"
+                data-type="image"
+                data-title="<%= item.nama_album %>"
+                data-description="<%= item.deskripsi_album %>">
                 <img src="/images/album/<%= item.gambar_album %>" class="img-fluid" alt="<%= item.nama_album %>">
               </a>
               <div class="portfolio-info">
@@ -423,6 +429,7 @@ footer .social-links a:hover {
 
   </div>
 </section>
+
 
 
 <section id="kontak" class="contact section" style="padding: 60px 0; background: #f9f9f9;">
