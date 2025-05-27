@@ -145,7 +145,7 @@ router.post('/update_status/:id', async function (req, res, next) {
 
         // Jika status diterima, kirim pesan WA
         if (status_pendaftaran === 'diterima' && no_telp) {
-            const message = `Selamat!, Peserta dengan nama ${pendaftar.nama_pendaftar} telah diterima, Silahkan lanjut ke daftar ulang dengan Mengakses website kami di Link Berikut :  `;
+            const message = `Selamat!, Peserta dengan nama ${pendaftar.nama_pendaftar} telah diterima, Silahkan lanjut ke daftar ulang dengan Mengakses website kami di Link Berikut :  https://madrasahattaqwa.kabupatensumenep.com/daftar_ulang/create `;
             const response = await sendWhatsappMessage(no_telp, message);
             if (response.success) {
                 console.log(`Pesan berhasil dikirim ke ${no_telp}`);

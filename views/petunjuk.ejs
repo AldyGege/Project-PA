@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <%- include('partials/__head.ejs') %>
+    <style>
+        :root {
+            --primary-color: #8B6F1A;
+            --button-color: #8B6F1A;
+            --background-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header .home-icon {
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header .cancel-button {
+            background: #E6D5B8;
+            color: red;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .branding {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Tengah secara horizontal */
+            padding: 15px;
+        }
+        
+        .logo {
+            height: 50px; /* Sesuaikan ukuran logo */
+            margin-right: 10px;
+        }
+        
+        .branding-title {
+            color: #8B6F1A;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+    .step-filter {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto;
+}
+
+.filter-button {
+    background-color: #E6D5B8;
+    color: #8B6F1A;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #d8c1a3;
+}
+
+.filter-button.active {
+    background-color: #8B6F1A;
+    color: white;
+}
+
+        
+
+.steps-section {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+.step-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    transition: transform 0.2s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-title {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.step-image {
+    display: block;
+    margin: 15px auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    object-fit: cover;
+}
+
+/* Kelas untuk ukuran gambar */
+.img-small {
+    width: 200px;
+    height: auto;
+}
+
+.img-medium {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+}
+
+.img-large {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div class="header">
+    <a href="javascript:history.back()" class="home-icon">&#8962;</a>
+        <!-- <button class="home-icon">Batalkan</button> -->
+    </div>
+
+    <!-- Tambahkan bagian baru untuk logo & teks -->
+<div class="branding">
+    <img src="../../images/logo-madrasah.png" alt="" class="logo">
+    <h2 class="branding-title">Petunjuk Pendaftaran Online</h2>
+</div>
+
+<div class="step-filter">
+    <button class="filter-button active" data-filter="pendaftaran">Pendaftaran</button>
+    <button class="filter-button" data-filter="daftarulang">Daftar Ulang</button>
+</div>
+    
+<div class="steps-section">
+
+<div class="step-card" data-category="pendaftaran">
+    <h3 class="step-title">1. Buka Halaman Pendaftaran</h3>
+    <img src="../../images/album1.png" class="step-image img-large">
+    <p>Klik menu <strong>"Pendaftaran"</strong> pada halaman utama...</p>
+</div>
+
+<div class="step-card" data-category="daftarulang">
+    <h3 class="step-title">1. Masuk ke Menu Daftar Ulang</h3>
+    <img src="../../images/album2.jpeg" class="step-image img-large">
+    <p>Klik <strong>"Daftar Ulang"</strong> untuk memverifikasi data siswa...</p>
+</div>
+
+</div>
+
+
+        
+<script>
+    const buttons = document.querySelectorAll('.filter-button');
+    const steps = document.querySelectorAll('.step-card');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Ubah tombol aktif
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            const filter = button.getAttribute('data-filter');
+
+            steps.forEach(step => {
+                if (step.getAttribute('data-category') === filter) {
+                    step.style.display = 'block';
+                } else {
+                    step.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Tampilkan hanya kategori awal (pendaftaran)
+    window.addEventListener('DOMContentLoaded', () => {
+        steps.forEach(step => {
+            if (step.getAttribute('data-category') !== 'pendaftaran') {
+                step.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

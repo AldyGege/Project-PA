@@ -110,6 +110,21 @@ router.get('/detail_berita/:id', async (req, res, next) => {
         }
     });
 
+    router.get('/petunjuklogin', async function (req, res, next) {
+  try {
+      let mapel = await Model_Mapel.getAll();
+      let guru = await Model_Guru.getAll();
+      res.render('petunjuk', {
+          data1: mapel,
+          data2: guru,
+      });
+  } catch (error) {
+      console.error("Error:", error);
+      req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
+      res.redirect('/login');
+  }
+});
+
 
 router.get('/register', function(req, res, next) {
   res.render('auth/register');
