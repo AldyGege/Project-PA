@@ -1,0 +1,141 @@
+<%- include('../partials/__head.ejs') %>
+
+<style>
+  :root {
+    --primary-color: #09498a;
+    --btn-color: #09498a;
+  }
+
+  .header {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header .home-icon {
+    font-size: 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.header .cancel-button {
+    background: #E6D5B8;
+    color: red;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 15px;
+}
+
+  .profile-container {
+    max-width: 800px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow: hidden;
+    margin: 15px;
+  }
+
+  .profile-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+  }
+
+  .profile-form {
+    padding: 30px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .img-fluid.rounded-circle {
+    width: 100px !important;
+    height: 100px !important;
+  }
+/* Paksa modal Bootstrap agar selalu tampil di tengah layar */
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.modal.fade .modal-dialog {
+  margin: 0 auto; /* penting untuk horizontal centering */
+}
+
+  .badge {
+    cursor: pointer;
+    margin: 5px;
+  }
+</style>
+
+<body>
+
+  <div class="header">
+    <a href="/superusers" class="home-icon">&#8962;</a>
+    <!-- <button class="cancel-button">Batalkan</button> -->
+</div>
+  
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="profile-container">
+      <div class="profile-header">
+        <h5>Profil Saya</h5>
+        <p>Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
+      </div>
+
+      <div class="profile-form">
+        <form action="/updateadmin/<%= id %>" method="POST" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-8">
+              <%- include('../partials/__messagess.ejs') %>
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" name="nama_admin" value="<%= data1[0].nama_admin %>" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email_admin" value="<%= data1[0].email_admin %>" required>
+              </div>
+              <div class="form-group">
+                <label>No. Telepon</label>
+                <input type="text" class="form-control" name="no_telp_admin" value="<%= data1[0].no_telp_admin %>" required>
+              </div>
+            </div>
+
+            <!-- Gambar Profil -->
+            <div class="col-md-4 text-center mb-3">
+              <img src="/images/users/<%= data1[0].gambar_admin %>" id="previewImage" class="img-fluid rounded-circle mx-auto d-block mb-2" style="width: 150px; height: 150px; object-fit: cover; border: 2px solid #ccc;">
+              <input type="file" name="gambar_admin" class="form-control" onchange="previewFile()">
+              <small class="d-block mt-1">Ukuran maks 1MB, format JPG/PNG</small>
+            </div>
+            
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+        function previewFile() {
+      const preview = document.getElementById("previewImage");
+      const file = document.querySelector('input[type=file]').files[0];
+      const reader = new FileReader();
+      reader.addEventListener("load", function () {
+        preview.src = reader.result;
+      }, false);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>

@@ -218,6 +218,42 @@
     }
   }
 
+  .modal {
+  display: none; 
+  position: fixed; 
+  z-index: 999; 
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%; max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.btn-login {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #8E6A07;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
 footer .social-links a {
   border: 2px solid #8E6A07 !important;
   color: #8E6A07 !important;
@@ -277,12 +313,14 @@ footer .social-links a:hover {
         </a>
       
         <!-- Tombol Daftar Sekarang -->
-        <a href="pendaftaran/create" class="btn"
-           style="background-color: #F4F1E6; color: black; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;"
-           onmouseover="this.style.backgroundColor='#D9D2C0'"
-           onmouseout="this.style.backgroundColor='#F4F1E6'">
-           Daftar Sekarang
-        </a>
+<a href="#" class="btn"
+   style="background-color: #F4F1E6; color: black; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;"
+   onmouseover="this.style.backgroundColor='#D9D2C0'"
+   onmouseout="this.style.backgroundColor='#F4F1E6'"
+   onclick="openModal()">
+   Daftar Sekarang
+</a>
+
       </div>
       
       <div class="row gy-4 mt-5">
@@ -385,7 +423,7 @@ footer .social-links a:hover {
 
     <!-- Tombol Lihat Selengkapnya -->
     <div class="text-center mt-4">
-<a href="guru" class="btn" 
+<a href="../gurulogin" class="btn" 
    style="background-color: #8E6A07; color: #fff; border: none; padding: 10px 20px; border-radius: 5px;">
    Lihat Selengkapnya
 </a>
@@ -569,6 +607,35 @@ const swiper = new Swiper(".mySwiper", {
 });
 
 </script>
+
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Login Diperlukan</h3>
+    <p>Silakan login terlebih dahulu sebelum melakukan pendaftaran.</p>
+    <a href="/login_users" class="btn-login">Login Sekarang</a>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById("loginModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("loginModal").style.display = "none";
+}
+
+// Tutup modal saat klik di luar area modal
+window.onclick = function(event) {
+  const modal = document.getElementById("loginModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+
 
 
 <script type="text/javascript" src="js/mdb.min.js"></script>

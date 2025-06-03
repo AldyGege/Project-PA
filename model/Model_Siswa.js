@@ -5,14 +5,16 @@ class Model_Siswa {
     static async getAll() {
         return new Promise((resolve, reject) => {
             connection.query(
-                `SELECT 
-    siswa.*, 
-    pendaftaran.nama_pendaftar, 
-    COALESCE(siswa.nik, pendaftaran.nik) AS nik,
-    COALESCE(siswa.gambar_siswa, pendaftaran.gambar_pendaftar) AS gambar_siswa,
-    users.nama_users, 
-    daftar_ulang.waktu_daftar_ulang,
-    daftar_ulang.status_daftar_ulang
+                `SELECT
+siswa.*,
+pendaftaran.nama_pendaftar,
+COALESCE(siswa.nik, pendaftaran.nik) AS nik,
+COALESCE(siswa.gambar_siswa, pendaftaran.gambar_pendaftar) AS gambar_siswa,
+COALESCE(siswa.file_kk, daftar_ulang.file_kk) AS file_kk,
+COALESCE(siswa.file_akta, daftar_ulang.file_akta) AS file_akta,
+users.nama_users,
+daftar_ulang.waktu_daftar_ulang,
+daftar_ulang.status_daftar_ulang
 FROM siswa
 LEFT JOIN pendaftaran ON siswa.id_pendaftaran = pendaftaran.id_pendaftaran
 LEFT JOIN users ON siswa.id_users = users.id_users
@@ -66,6 +68,25 @@ ORDER BY siswa.nama_siswa ASC
             });
         });
     }
+
+    static async getStatistikPerTahun() {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT YEAR(waktu_siswa) AS tahun, COUNT(*) AS jumlah_siswa
+      FROM siswa
+      GROUP BY tahun
+      ORDER BY tahun ASC
+    `;
+    connection.query(query, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
     
 
 

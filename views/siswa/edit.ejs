@@ -37,10 +37,27 @@
                                 <input type="text" class="form-control" id="alamat_siswa" name="alamat_siswa" value="<%= data.alamat_siswa %>" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="ttl">Tempat Tanggal Lahir</label>
-                                <input type="text" class="form-control" id="ttl" name="ttl" value="<%= data.ttl %>" required>
-                            </div>
+                <%
+                  const dateObj = new Date(data.ttl);
+                  const day = String(dateObj.getDate()).padStart(2, '0');
+                  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                  const year = dateObj.getFullYear();
+                  const valueForInput = `${year}-${month}-${day}`; // Untuk input[type=date]
+                  const valueForDisplay = `${day}/${month}/${year}`; // Untuk ditampilkan
+                %>
+
+                <!-- Tampilkan format dd/mm/yyyy -->
+                <div class="form-group">
+                  <label>Waktu Keuangan (dd/mm/yyyy)</label>
+                  <input type="text" class="form-control" value="<%= valueForDisplay %>" disabled>
+                </div>
+
+                <!-- Input sebenarnya (disembunyikan atau tetap bisa diedit) -->
+                <div class="form-group">
+                  <label for="ttl">Waktu Keuangan (ubah jika perlu)</label>
+                  <input type="date" class="form-control" id="ttl" name="ttl" value="<%= valueForInput %>">
+                </div>
+
 
                             <div class="form-group">
                                 <label for="gender">Gender</label>
@@ -67,7 +84,11 @@
 
                             <div class="form-group">
                                 <label for="alamat_ortu_siswa">Alamat Orang Tua</label>
-                                <input type="text" class="form-control" id="alamat_ortu_siswa" name="alamat_ortu_siswa" value="<%= data.alamat_ortu_siswa %>" required>
+                                <input type="text" class="form-control" id="alamat_ortu_siswa" name="alamat_ortu_siswa" value="<%= data.alamat_ortu_siswa %>">
+                            </div>
+                            <div class="mb-3">
+                                <label for="waktu_siswa" class="form-label">Waktu Siswa Masuk</label>
+                                <input type="datetime-local" class="form-control" name="waktu_siswa" value="<%= data?.waktu_siswa ? data.waktu_siswa.toISOString().slice(0,16) : '' %>">
                             </div>
                             <button type="submit" class="btn btn-primary mr-2">Simpan</button>
                             <button type="button" class="btn btn-light" onclick="history.back()">Cancel</button>

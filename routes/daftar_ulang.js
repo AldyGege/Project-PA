@@ -205,22 +205,25 @@ router.post('/update_status/:id', async (req, res, next) => {
                 }
 
                 const dataSiswa = {
-                    id_pendaftaran: p.id_pendaftaran,
-                    id_daftar_ulang: dataDU.id_daftar_ulang,
-                    id_users: p.id_users,
-                    nama_siswa: p.nama_pendaftar,
-                    nik: p.nik,
-                    alamat_siswa: p.alamat_pendaftar,
-                    ttl: p.ttl,
-                    gender: p.gender,
-                    jalur_daftar: 'online',
-                    nama_ortu_siswa: p.nama_ortu_pendaftar,
-                    no_telp_ortu_siswa: p.no_telp_ortu_pendaftar,
-                    pekerjaan_ortu_siswa: p.pekerjaan_ortu_pendaftar,
-                    alamat_ortu_siswa: p.alamat_ortu_pendaftar,
-                    gambar_siswa: p.gambar_pendaftar || null
+                id_pendaftaran: p.id_pendaftaran,
+                id_daftar_ulang: dataDU.id_daftar_ulang,
+                id_users: p.id_users,
+                nama_siswa: p.nama_pendaftar,
+                nik: p.nik,
+                alamat_siswa: p.alamat_pendaftar,
+                ttl: p.ttl,
+                gender: p.gender,
+                jalur_daftar: 'online',
+                nama_ortu_siswa: p.nama_ortu_pendaftar,
+                no_telp_ortu_siswa: p.no_telp_ortu_pendaftar,
+                pekerjaan_ortu_siswa: p.pekerjaan_ortu_pendaftar,
+                alamat_ortu_siswa: p.alamat_ortu_pendaftar,
+                gambar_siswa: p.gambar_pendaftar || null,
+                file_kk: dataDU.file_kk || null,
+                file_akta: dataDU.file_akta || null,
+                waktu_daftar_ulang: dataDU.waktu_daftar_ulang || null
                 };
-
+                
                 await Model_Siswa.Store(dataSiswa);
                 console.log("✅ Data siswa berhasil disimpan");
 

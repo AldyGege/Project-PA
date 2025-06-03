@@ -124,28 +124,57 @@
                 </div>
               </div>
             </div> -->
-<div class="col-md-12 grid-margin stretch-card">
-  <div class="card">
-    <div class="card-body">
-      <h4 class="card-title">Grafik Keuangan Bulanan</h4>
-
-      <div class="form-group">
-        <label for="tahun-select">Pilih Tahun:</label>
-<select id="tahun-select" class="form-control" style="width:150px;">
-  <% 
-    const tahunSekarang = new Date().getFullYear();
-    for(let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) { 
-  %>
-    <option value="<%= t %>" <%= t === tahunSekarang ? 'selected' : '' %>><%= t %></option>
-  <% } %>
-</select>
-
+<div class="container-fluid">
+  <div class="row">
+    <!-- Grafik Keuangan Bulanan -->
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h4 class="card-title">Grafik Keuangan Bulanan</h4>
+          <div class="form-group">
+            <label for="tahun-select">Pilih Tahun:</label>
+            <select id="tahun-select" class="form-control" style="width:150px;">
+              <% const tahunSekarang = new Date().getFullYear(); for(let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) { %>
+                <option value="<%= t %>" <%= t === tahunSekarang ? 'selected' : '' %>><%= t %></option>
+              <% } %>
+            </select>
+          </div>
+          <canvas id="chart-keuangan" height="200"></canvas>
+        </div>
       </div>
+    </div>
 
-      <canvas id="chart-keuangan" width="400" height="200"></canvas>
+    <!-- Grafik Jumlah Siswa -->
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h4 class="card-title">Grafik Jumlah Siswa per Tahun</h4>
+          <div class="form-inline mb-3">
+            <label class="mr-2">Dari Tahun:</label>
+            <select id="tahun-awal" class="form-control mr-3">
+              <% for(let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) { %>
+                <option value="<%= t %>" <%= t === tahunSekarang - 1 ? 'selected' : '' %>><%= t %></option>
+              <% } %>
+            </select>
+
+            <label class="mr-2">Sampai Tahun:</label>
+            <select id="tahun-akhir" class="form-control">
+              <% for(let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) { %>
+                <option value="<%= t %>" <%= t === tahunSekarang ? 'selected' : '' %>><%= t %></option>
+              <% } %>
+            </select>
+
+            <button class="btn btn-primary ml-3" onclick="filterSiswaPerTahun()">Filter</button>
+          </div>
+          <canvas id="chart-siswa" height="200"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+
+
 
 
           </div>
@@ -237,6 +266,129 @@
     }
   });
 </script>
+
+<script>
+  let chartSiswa = null;
+
+  async function loadSiswaPerTahun(tahunAwal, tahunAkhir) {
+    try {
+      const res = await fetch('/superusers/grafik-siswa-per-tahun');
+      if (!res.ok) throw new Error('Gagal fetch');
+
+      let data = await res.json();
+
+      // Filter data berdasarkan range tahun yang dipilih
+      if (tahunAwal && tahunAkhir) {
+        data = data.filter(item => item.tahun >= tahunAwal && item.tahun <= tahunAkhir);
+      }
+
+      const labels = data.map(item => item.tahun);
+      const jumlah = data.map(item => item.jumlah_siswa);
+
+      const ctx = document.getElementById('chart-siswa').getContext('2d');
+
+      if (chartSiswa) {
+        chartSiswa.destroy();
+      }
+
+      chartSiswa = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Jumlah Siswa',
+            data: jumlah,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Jumlah Siswa'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Tahun'
+              }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Error fetch grafik siswa:', err);
+    }
+  }
+
+  function filterSiswaPerTahun() {
+    const tahunAwal = parseInt(document.getElementById('tahun-awal').value);
+    const tahunAkhir = parseInt(document.getElementById('tahun-akhir').value);
+    if (tahunAwal > tahunAkhir) {
+      alert("Tahun awal tidak boleh lebih besar dari tahun akhir.");
+      return;
+    }
+    loadSiswaPerTahun(tahunAwal, tahunAkhir);
+  }
+
+  // Load awal (default)
+  loadSiswaPerTahun();
+</script>
+
+<script>
+  async function populateTahunDropdowns() {
+    try {
+      const res = await fetch('/superusers/grafik-siswa-per-tahun');
+      if (!res.ok) throw new Error('Gagal fetch data tahun');
+
+      const data = await res.json();
+      const tahunList = [...new Set(data.map(item => item.tahun))].sort();
+
+      const selectAwal = document.getElementById('tahun-awal');
+      const selectAkhir = document.getElementById('tahun-akhir');
+
+      selectAwal.innerHTML = '';
+      selectAkhir.innerHTML = '';
+
+      tahunList.forEach(t => {
+        const optAwal = document.createElement('option');
+        optAwal.value = t;
+        optAwal.textContent = t;
+        selectAwal.appendChild(optAwal);
+
+        const optAkhir = document.createElement('option');
+        optAkhir.value = t;
+        optAkhir.textContent = t;
+        selectAkhir.appendChild(optAkhir);
+      });
+
+      // Set default selection
+      if (tahunList.length > 1) {
+        selectAwal.value = tahunList[0];
+        selectAkhir.value = tahunList[tahunList.length - 1];
+      }
+
+      // Load data grafik pertama kali
+      loadSiswaPerTahun(parseInt(selectAwal.value), parseInt(selectAkhir.value));
+
+    } catch (err) {
+      console.error('Gagal mengambil data tahun:', err);
+    }
+  }
+
+  // Jalankan saat awal halaman
+  populateTahunDropdowns();
+</script>
+
+
 
 
 

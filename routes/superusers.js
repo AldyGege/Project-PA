@@ -71,4 +71,31 @@ router.get('/grafik-keuangan/:tahun', async function(req, res, next) {
   }
 });
 
+router.get('/grafik-siswa-per-tahun', async function (req, res, next) {
+  try {
+    const data = await Model_Siswa.getStatistikPerTahun(); // Fungsi ini perlu kamu buat di model
+    res.json(data);
+  } catch (error) {
+    console.error('Error ambil data siswa per tahun:', error);
+    res.status(500).json({ error: 'Gagal mengambil data siswa' });
+  }
+});
+
+router.get('/profil_admin', async function (req, res, next) {
+  try {
+    let id = req.session.adminId;
+    let admin = await Model_Admin.getId(id);
+
+    res.render('users/profil_admin', {
+      id: id,
+      data1: admin,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
+    res.redirect('/login_users');
+  }
+});
+
+
 module.exports = router;

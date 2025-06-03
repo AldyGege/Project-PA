@@ -181,6 +181,42 @@ router.post('/saveusers', upload.single("gambar_users"), async (req, res) => {
   }
 });
 
+router.post("/updateadmin/:id",  upload.single("gambar_admin"), async (req, res, next) => {
+  try {
+      const id = req.params.id;
+      let filebaru = req.file ? req.file.filename : null;
+      let rows = await Model_Admin.getId(id);
+      const namaFileLama = rows[0].gambar_admin;
+
+      if (filebaru && namaFileLama) {
+          const pathFileLama = path.join(__dirname, '../public/images/users', namaFileLama);
+          fs.unlinkSync(pathFileLama);
+      }
+
+      let {
+        nama_admin,
+        no_telp_admin,
+        email_admin,
+      } = req.body;
+      
+      let gambar_admin = filebaru || namaFileLama
+
+      let Data = {
+          nama_admin: nama_admin,
+          no_telp_admin: no_telp_admin,
+          email_admin: email_admin,
+          gambar_admin
+      }
+      console.log(req.body);
+      console.log(Data);
+      await Model_Admin.Update(id, Data);
+      req.flash("success", "Berhasil mengupdate data profil");
+      res.redirect("/superusers/profil_admin");
+  } catch (error) {
+      console.log(error);
+  }
+});
+
 router.post("/updateusers/:id",  upload.single("gambar_users"), async (req, res, next) => {
   try {
       const id = req.params.id;

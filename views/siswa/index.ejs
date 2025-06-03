@@ -12,7 +12,33 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">Data Siswa</h4>
-                                <a href="/siswa/create" class="btn btn-sm btn-success mb-3">Tambah Siswa</a>
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <!-- KIRI: Tombol Tambah -->
+  <a href="/siswa/create" class="btn btn-success btn-sm">Tambah Siswa</a>
+
+  <!-- KANAN: Filter Tahun -->
+  <form method="GET" action="/siswa" class="d-flex align-items-center gap-2">
+    <!-- <label for="tahun" class="mb-0">Filter Tahun</label> -->
+    <select name="tahun" id="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+      <option value="">-- Pilih Tahun --</option>
+      <% tahunList.forEach(t => { %>
+        <option value="<%= t %>" <%= t == selectedTahun ? 'selected' : '' %>><%= t %></option>
+      <% }) %>
+    </select>
+
+    <% if (selectedTahun) { %>
+      <a href="/siswa" class="btn btn-outline-secondary btn-sm">Reset</a>
+    <% } %>
+  </form>
+</div>
+
+
+                                <% if (selectedTahun) { %>
+                                  <a href="/siswa/download?tahun=<%= selectedTahun %>" class="btn btn-sm btn-primary ms-2">
+                                    Download Excel Tahun <%= selectedTahun %>
+                                  </a>
+                                <% } %>
+
                                 <div class="table-responsive">
                                     <table class="table table-striped">
                                         <thead>
@@ -105,25 +131,55 @@ async function showDetail(id) {
 
         const t = new Date(data.ttl);
         const ttlFormatted = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
+        const s = new Date(data.waktu_siswa);
+        const wsiswaFormatted = ("0" + s.getDate()).slice(-2) + "-" + ("0" + (s.getMonth() + 1)).slice(-2) + "-" + s.getFullYear();
 
         const gambarPath = data.gambar_siswa
           ? `/images/${data.jalur_daftar === 'online' ? 'pendaftaran' : 'siswa'}/${data.gambar_siswa}`
           : null;
 
-        content.innerHTML = `
-            <table class="table table-borderless">
-                <tr><th>Nama</th><td>${data.nama_siswa}</td></tr>
-                <tr><th>NIK</th><td>${data.nik}</td></tr>
-                <tr><th>Alamat</th><td>${data.alamat_siswa}</td></tr>
-                <tr><th>TTL</th><td>${ttlFormatted}</td></tr>
-                <tr><th>Gender</th><td>${data.gender}</td></tr>
-                <tr><th>Jalur Daftar</th><td>${data.jalur_daftar}</td></tr>
-                <tr><th>Nama Ortu</th><td>${data.nama_ortu_siswa}</td></tr>
-                <tr><th>Pekerjaan Ortu</th><td>${data.pekerjaan_ortu_siswa}</td></tr>
-                <tr><th>Alamat Ortu</th><td>${data.alamat_ortu_siswa}</td></tr>
-                <tr><th>Gambar</th><td>${gambarPath ? `<img src="${gambarPath}" alt="Foto Siswa" style="max-height:150px; border-radius:6px;" />` : 'Tidak ada foto'}</td></tr>
-            </table>
-        `;
+const baseFilePath = data.jalur_daftar === 'online'
+  ? '/files/daftar_ulang_kk'
+  : '/images/siswa';
+
+content.innerHTML = `
+  <table class="table table-borderless">
+    <tr><th>Nama</th><td>${data.nama_siswa}</td></tr>
+    <tr><th>NIK</th><td>${data.nik}</td></tr>
+    <tr><th>Alamat</th><td>${data.alamat_siswa}</td></tr>
+    <tr><th>TTL</th><td>${ttlFormatted}</td></tr>
+    <tr><th>Gender</th><td>${data.gender}</td></tr>
+    <tr><th>Jalur Daftar</th><td>${data.jalur_daftar}</td></tr>
+    <tr><th>Nama Ortu</th><td>${data.nama_ortu_siswa}</td></tr>
+    <tr><th>Pekerjaan Ortu</th><td>${data.pekerjaan_ortu_siswa}</td></tr>
+    <tr><th>Alamat Ortu</th><td>${data.alamat_ortu_siswa}</td></tr>
+    <tr>
+      <th>Gambar</th>
+      <td>
+        ${gambarPath ? `<img src="${gambarPath}" alt="Foto Siswa" style="max-height:150px; border-radius:6px;" />` : 'Tidak ada foto'}
+      </td>
+    </tr>
+    <tr>
+      <th>File KK</th>
+      <td>
+        ${data.file_kk ? `
+          <a href="${baseFilePath}/${data.file_kk}" target="_blank">
+            <img src="${baseFilePath}/${data.file_kk}" alt="KK" style="max-height:100px; border-radius:6px;" />
+          </a>` : 'Tidak ada file'}
+      </td>
+    </tr>
+    <tr>
+      <th>File Akta</th>
+      <td>
+        ${data.file_akta ? `
+          <a href="${baseFilePath}/${data.file_akta}" target="_blank">
+            <img src="${baseFilePath}/${data.file_akta}" alt="Akta" style="max-height:100px; border-radius:6px;" />
+          </a>` : 'Tidak ada file'}
+      </td>
+    </tr>
+        <tr><th>Diterima pada</th><td>${wsiswaFormatted}</td></tr>
+  </table>
+`;
     } catch (err) {
         content.innerHTML = `<p class="text-danger">${err.message}</p>`;
     }

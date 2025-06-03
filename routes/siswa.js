@@ -6,6 +6,7 @@ const Model_Admin = require('../model/Model_Admin.js');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const ExcelJS = require('exceljs');
 
 // Setup multer
 const storage = multer.diskStorage({
@@ -35,68 +36,109 @@ function createMulterUpload(folderName) {
 router.get('/', async (req, res, next) => {
     try {
         let id = req.session.adminId;
-        let Data = await Model_Admin.getId(id);
-        let rows = await Model_Siswa.getAll();
+        let dataAdmin = await Model_Admin.getId(id);
+
+        // Ambil semua data siswa
+        let allSiswa = await Model_Siswa.getAll();
+
+        // Ambil tahun dari query (misalnya ?tahun=2024)
+        const selectedTahun = req.query.tahun;
+
+        // Filter data jika tahun dipilih
+        let filteredSiswa = selectedTahun
+            ? allSiswa.filter(s => {
+                const waktu = new Date(s.waktu_siswa);
+                return waktu.getFullYear().toString() === selectedTahun;
+            })
+            : allSiswa;
+
+        // Ambil list tahun unik dari semua siswa
+        const tahunList = [...new Set(
+            allSiswa.map(s => new Date(s.waktu_siswa).getFullYear())
+        )].sort((a, b) => b - a); // Urutkan dari yang terbaru
+
         res.render('siswa/index', {
-            data: rows,
-            data2: Data,
+            data: filteredSiswa,
+            data2: dataAdmin,
+            tahunList,
+            selectedTahun
         });
     } catch (error) {
         next(error);
     }
 });
 
+
 // Form tambah
-router.get('/create', async (req, res) => {
-    res.render('siswa/create', {
-        nama_siswa: '',
-        nik: '',
-        alamat_siswa: '',
-        ttl: '',
-        gender: '',
-        nama_ortu_siswa: '',
-        no_telp_ortu_siswa: '',
-        pekerjaan_ortu_siswa: '',
-        alamat_ortu_siswa: '',
-        gambar_siswa: ''
-    });
-});
-
+        router.get('/create', async (req, res) => {
+                res.render('siswa/create', {
+                    nama_siswa: '',
+                    nik: '',
+                    alamat_siswa: '',
+                    ttl: '',
+                    gender: '',
+                    nama_ortu_siswa: '',
+                    no_telp_ortu_siswa: '',
+                    pekerjaan_ortu_siswa: '',
+                    alamat_ortu_siswa: '',
+                    gambar_siswa: '',
+                    file_kk: '',
+                    file_akta: '',
+                    waktu_daftar_ulang: ''
+        });
+        });
 // Store
-router.post('/store', upload.single("gambar_siswa"), async (req, res) => {
-    try {
-        let {
-            id_pendaftaran, id_daftar_ulang, nama_siswa, nik, alamat_siswa, ttl, gender,
-            nama_ortu_siswa, no_telp_ortu_siswa,
-            pekerjaan_ortu_siswa, alamat_ortu_siswa
-        } = req.body;
+router.post("/store", upload.fields([
+    { name: 'gambar_siswa', maxCount: 1 },
+    { name: 'file_kk', maxCount: 1 },
+    { name: 'file_akta', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    let {
+      id_pendaftaran,
+      id_daftar_ulang,
+      nama_siswa,
+      nik,
+      alamat_siswa,
+      ttl,
+      gender,
+      nama_ortu_siswa,
+      no_telp_ortu_siswa,
+      pekerjaan_ortu_siswa,
+      alamat_ortu_siswa,
+      waktu_siswa // <-- dari form admin, optional
+    } = req.body;
 
-        let Data = {
-            id_pendaftaran,
-            id_daftar_ulang,
-            nama_siswa,
-            nik,
-            alamat_siswa,
-            ttl,
-            gender,
-            jalur_daftar: 'offline',
-            nama_ortu_siswa,
-            no_telp_ortu_siswa,
-            pekerjaan_ortu_siswa,
-            alamat_ortu_siswa,
-            gambar_siswa: req.file ? req.file.filename : null,
-            id_users: req.session.userId
-        };
+    let Data = {
+      id_pendaftaran,
+      id_daftar_ulang,
+      nama_siswa,
+      nik,
+      alamat_siswa,
+      ttl,
+      gender,
+      jalur_daftar: "offline",
+      nama_ortu_siswa,
+      no_telp_ortu_siswa,
+      pekerjaan_ortu_siswa,
+      alamat_ortu_siswa,
+      gambar_siswa: req.files['gambar_siswa']?.[0]?.filename,
+      file_kk: req.files['file_kk']?.[0]?.filename,
+      file_akta: req.files['file_akta']?.[0]?.filename,
+      waktu_siswa: waktu_siswa ? new Date(waktu_siswa) : new Date()
 
-        await Model_Siswa.Store(Data);
-        req.flash('success', 'Berhasil menambahkan data siswa');
-        res.redirect('/siswa');
-    } catch (error) {
-        console.log(error);
-        req.flash('error', 'Gagal menyimpan data siswa');
-        res.redirect('/siswa');
-    }
+    };
+
+    await Model_Siswa.Store(Data);
+    req.flash("success", "Berhasil menambahkan data siswa");
+    res.redirect("/siswa");
+  } catch (error) {
+    console.log(error);
+    req.flash("error", "Gagal menyimpan data siswa");
+    res.redirect("/siswa");
+  }
 });
+
 
 // Edit
 router.get("/edit/:id", async (req, res, next) => {
@@ -133,63 +175,65 @@ router.get('/detail/:id', async (req, res) => {
 
 // Update
 router.post("/update/:id", async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const siswa = await Model_Siswa.getId(id);
-        const jalurDaftar = siswa[0].jalur_daftar; // offline atau online
+  try {
+    const id = req.params.id;
+    const siswa = await Model_Siswa.getId(id);
+    const jalurDaftar = siswa[0].jalur_daftar;
 
-        // Pakai multer upload dinamis
-        const upload = createMulterUpload(jalurDaftar === 'online' ? 'pendaftaran' : 'siswa');
-        
-        upload.single('gambar_siswa')(req, res, async (err) => {
-            if (err) {
-                console.log(err);
-                req.flash("error", "Gagal upload gambar");
-                return res.redirect("/siswa");
-            }
+    const upload = createMulterUpload(jalurDaftar === 'online' ? 'pendaftaran' : 'siswa');
 
-            const fileBaru = req.file ? req.file.filename : null;
-            const namaFileLama = siswa[0].gambar_siswa;
+    upload.single('gambar_siswa')(req, res, async (err) => {
+      if (err) {
+        console.log(err);
+        req.flash("error", "Gagal upload gambar");
+        return res.redirect("/siswa");
+      }
 
-            // Hapus file lama jika ada dan diganti
-            if (fileBaru && namaFileLama) {
-                const folder = jalurDaftar === 'online' ? 'pendaftaran' : 'siswa';
-                const pathFileLama = path.join(__dirname, `../public/images/${folder}`, namaFileLama);
-                if (fs.existsSync(pathFileLama)) {
-                    fs.unlinkSync(pathFileLama);
-                }
-            }
+      const fileBaru = req.file ? req.file.filename : null;
+      const namaFileLama = siswa[0].gambar_siswa;
 
-            let {
-                id_pendaftaran, id_daftar_ulang, id_users, nama_siswa, nik, alamat_siswa, ttl, gender,
-                nama_ortu_siswa, no_telp_ortu_siswa, pekerjaan_ortu_siswa, alamat_ortu_siswa
-            } = req.body;
+      if (fileBaru && namaFileLama) {
+        const folder = jalurDaftar === 'online' ? 'pendaftaran' : 'siswa';
+        const pathFileLama = path.join(__dirname, `../public/images/${folder}`, namaFileLama);
+        if (fs.existsSync(pathFileLama)) {
+          fs.unlinkSync(pathFileLama);
+        }
+      }
 
-            const Data = {
-                id_pendaftaran,
-                id_daftar_ulang,
-                id_users,
-                nama_siswa,
-                nik,
-                alamat_siswa,
-                ttl,
-                gender,
-                nama_ortu_siswa,
-                no_telp_ortu_siswa,
-                pekerjaan_ortu_siswa,
-                alamat_ortu_siswa,
-                gambar_siswa: fileBaru || namaFileLama
-            };
+      let {
+        id_pendaftaran, id_daftar_ulang, id_users,
+        nama_siswa, nik, alamat_siswa, ttl, gender,
+        nama_ortu_siswa, no_telp_ortu_siswa, pekerjaan_ortu_siswa, alamat_ortu_siswa,
+        waktu_siswa // ← ambil dari form
+      } = req.body;
 
-            await Model_Siswa.Update(id, Data);
-            req.flash("success", "Berhasil memperbarui data siswa");
-            res.redirect("/siswa");
-        });
-    } catch (error) {
-        console.log(error);
-        req.flash("error", "Gagal memperbarui data siswa");
-        res.redirect("/siswa");
-    }
+      const Data = {
+        id_pendaftaran,
+        id_daftar_ulang,
+        id_users,
+        nama_siswa,
+        nik,
+        alamat_siswa,
+        ttl,
+        gender,
+        nama_ortu_siswa,
+        no_telp_ortu_siswa,
+        pekerjaan_ortu_siswa,
+        alamat_ortu_siswa,
+        gambar_siswa: fileBaru || namaFileLama,
+        waktu_siswa: waktu_siswa ? new Date(waktu_siswa) : new Date()
+
+      };
+
+      await Model_Siswa.Update(id, Data);
+      req.flash("success", "Berhasil memperbarui data siswa");
+      res.redirect("/siswa");
+    });
+  } catch (error) {
+    console.log(error);
+    req.flash("error", "Gagal memperbarui data siswa");
+    res.redirect("/siswa");
+  }
 });
 
 
@@ -232,5 +276,68 @@ router.get('/delete/:id', async (req, res) => {
     }
 });
 
+router.get('/download', async (req, res, next) => {
+    try {
+        const selectedTahun = req.query.tahun;
+        if (!selectedTahun) return res.redirect('/siswa');
+
+        const allSiswa = await Model_Siswa.getAll();
+
+        // Filter berdasarkan tahun
+        const filteredSiswa = allSiswa.filter(s => {
+            const waktu = new Date(s.waktu_siswa);
+            return waktu.getFullYear().toString() === selectedTahun;
+        });
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet(`Siswa ${selectedTahun}`);
+
+        // Header
+        worksheet.columns = [
+            { header: 'No', key: 'no', width: 5 },
+            { header: 'Nama', key: 'nama_siswa', width: 25 },
+            { header: 'NIK', key: 'nik', width: 20 },
+            { header: 'Alamat', key: 'alamat_siswa', width: 30 },
+            { header: 'TTL', key: 'ttl', width: 20 },
+            { header: 'Gender', key: 'gender', width: 10 },
+            { header: 'Nama Ortu', key: 'nama_ortu_siswa', width: 25 },
+            { header: 'Pekerjaan Ortu', key: 'pekerjaan_ortu_siswa', width: 20 },
+            { header: 'Alamat Ortu', key: 'alamat_ortu_siswa', width: 30 },
+            { header: 'Jalur Daftar', key: 'jalur_daftar', width: 10 },
+            { header: 'Diterima Pada', key: 'waktu_siswa', width: 20 }
+        ];
+
+        // Data
+        filteredSiswa.forEach((siswa, index) => {
+            worksheet.addRow({
+                no: index + 1,
+                nama_siswa: siswa.nama_siswa,
+                nik: siswa.nik,
+                alamat_siswa: siswa.alamat_siswa,
+                ttl: siswa.ttl,
+                gender: siswa.gender,
+                nama_ortu_siswa: siswa.nama_ortu_siswa,
+                pekerjaan_ortu_siswa: siswa.pekerjaan_ortu_siswa,
+                alamat_ortu_siswa: siswa.alamat_ortu_siswa,
+                jalur_daftar: siswa.jalur_daftar,
+                waktu_siswa: new Date(siswa.waktu_siswa).toLocaleDateString('id-ID')
+            });
+        });
+
+        res.setHeader(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="data_siswa_${selectedTahun}.xlsx"`
+        );
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = router;
