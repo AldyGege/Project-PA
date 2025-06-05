@@ -5,6 +5,8 @@ const fs = require('fs');
 const multer = require('multer');
 const path = require('path'); 
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const axios = require("axios");
 
 var Model_Admin = require('../model/Model_Admin.js');
 var Model_Users = require('../model/Model_Users.js');
@@ -13,6 +15,7 @@ var Model_Guru = require('../model/Model_Guru.js');
 var Model_Album = require('../model/Model_Album.js');
 var Model_Fasilitas = require('../model/Model_Fasilitas.js');
 var Model_Berita = require('../model/Model_Berita.js');
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,6 +28,30 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
+
+async function sendWhatsappMessage(no_telp, message) {
+    try {
+        const response = await axios.post('https://api.fonnte.com/send', {
+            target: no_telp, // ← ini harus 'target', bukan 'number'
+            message: message,
+        }, {
+            headers: {
+                'Authorization': 'dJ1Dbn1xeBudvXvBn1b6',
+            }
+        });
+
+        if (response.data.status === true) {
+            return { success: true };
+        } else {
+            console.error('Fonnte API error:', response.data);
+            return { success: false };
+        }
+    } catch (error) {
+        console.error('Error saat mengirim pesan WhatsApp:', error);
+        return { success: false };
+    }
+}
+
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -138,6 +165,92 @@ router.get('/login', function(req, res, next) {
 router.get('/login_users', function(req, res, next) {
   res.render('auth/login_users');
 })
+
+router.get('/forgot-password', (req, res) => {
+  res.render('auth/forgot_password');
+});
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { no_telp_users } = req.body;
+    const user = await Model_Users.findByPhone(no_telp_users); // kamu harus buat method ini
+
+    if (!user || user.length === 0) {
+      req.flash('failure', 'Nomor tidak ditemukan');
+      return res.redirect('/forgot-password');
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    await Model_Users.saveResetToken(user[0].id_users, token);
+
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const message = `Halo ${user[0].nama_users}, klik link berikut untuk reset password (dengan email: ${user[0].email_users}):\n\n${resetLink}`;
+
+    const result = await sendWhatsappMessage(no_telp_users, message);
+
+    if (result.success) {
+      req.flash('success', 'Link reset berhasil dikirim ke WhatsApp Anda');
+    } else {
+      req.flash('failure', 'Gagal mengirim pesan WhatsApp');
+    }
+
+    res.redirect('/forgot-password');
+  } catch (err) {
+    console.error(err);
+    req.flash('failure', 'Terjadi kesalahan');
+    res.redirect('/forgot-password');
+  }
+});
+
+router.get('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const user = await Model_Users.findByToken(token); // kamu perlu buat method ini
+
+  if (!user) {
+    req.flash('failure', 'Token tidak valid atau kadaluarsa');
+    return res.redirect('/login_users');
+  }
+
+  res.render('auth/reset_password', { token });
+});
+
+router.post('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { password_users } = req.body;
+  const user = await Model_Users.findByToken(token);
+
+  if (!user) {
+    req.flash('failure', 'Token tidak valid');
+    return res.redirect('/login_users');
+  }
+
+  const hashed = await bcrypt.hash(password_users, 10);
+  await Model_Users.updatePassword(user.id_users, hashed);
+  await Model_Users.clearResetToken(user.id_users); // hapus token agar tidak bisa digunakan ulang
+
+  req.flash('success', 'Password berhasil diubah, silakan login');
+  res.redirect('/login_users');
+});
+
+// Tambahkan fungsi masking ini di atas router.post('/check-phone')
+function maskEmail(email) {
+  const [user, domain] = email.split('@');
+  return user.slice(0, 3) + '***@' + domain;
+}
+
+router.post('/check-phone', async (req, res) => {
+  const { no_telp_users } = req.body;
+  const user = await Model_Users.findByPhone(no_telp_users);
+  
+  if (user && user.length > 0) {
+    const maskedEmail = maskEmail(user[0].email_users);
+    res.json({ found: true, email: maskedEmail });
+  } else {
+    res.json({ found: false });
+  }
+});
+
+
 
 router.post('/saveadmin', upload.single("gambar_admin"), async (req, res) => {
   try {
