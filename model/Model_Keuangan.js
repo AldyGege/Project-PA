@@ -73,6 +73,25 @@ static async getGrafikKeuanganPerBulan(tahun) {
   });
 }
 
+static async getDistinctBulanByYear(tahun) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT DISTINCT MONTH(waktu_keuangan) as bulan
+      FROM keuangan
+      WHERE YEAR(waktu_keuangan) = ?
+      ORDER BY bulan
+    `;
+    connection.query(sql, [tahun], (err, results) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        const bulanList = results.map(r => r.bulan);
+        resolve(bulanList);
+      }
+    });
+  });
+}
 
 
     static async Update(id, Data) {

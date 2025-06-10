@@ -5,106 +5,76 @@
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="container mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Data Keuangan</h4>
+                                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <a href="/keuangan/create" class="btn btn-sm btn-success">Tambah Keuangan</a>
 
-                <!-- Tombol tambah -->
-                <div class="mb-3">
-                    <a href="/keuangan/create" class="btn btn-sm btn-success">Tambah keuangan</a>
+                    <form method="GET" action="/keuangan" class="d-flex align-items-center gap-2">
+                        <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">Pilih Tahun</option>
+                            <% tahunList.forEach(t => { %>
+                                <option value="<%= t %>" <%= selectedTahun == t ? 'selected' : '' %>><%= t %></option>
+                            <% }); %>
+                        </select>
+
+                        <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">Pilih Bulan</option>
+                        <% bulanList.forEach(b => { 
+                            const namaBulan = new Date(2000, b - 1).toLocaleString('id-ID', { month: 'long' });
+                        %>
+                            <option value="<%= b %>" <%= selectedBulan == b ? 'selected' : '' %>><%= namaBulan %></option>
+                        <% }) %>
+                        </select>
+
+
+                        <% if (selectedTahun || selectedBulan) { %>
+                            <a href="/keuangan" class="btn btn-outline-secondary btn-sm">Reset</a>
+                        <% } %>
+
+                        <!-- <a href="/keuangan/download?tahun=<%= selectedTahun %>&bulan=<%= selectedBulan %>" class="btn btn-sm btn-primary">Download Excel</a> -->
+                    </form>
                 </div>
+                        <div class="table-responsive">
+                            <table id="tabelKeuangan" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Jenis</th>
+                                        <th>Nama</th>
+                                        <th>Deskripsi</th>
+                                        <th>Nominal</th>
+                                        <th>Waktu</th>
+                                        <th>Uploader</th>
+                                        <th class="no-export">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <% if (data.length > 0) { %>
+                                    <% data.forEach((item, i) => { %>
+                                    <tr>
+                                        <td><%= i + 1 %></td>
+                                        <td><%= item.jenis_keuangan %></td>
+                                        <td><%= item.nama_keuangan %></td>
+                                        <td><%= item.deskripsi_keuangan.length > 100 ? item.deskripsi_keuangan.substring(0, 100) + '...' : item.deskripsi_keuangan %></td>
+                                        <td><%= item.nominal.toLocaleString('id-ID') %></td>
+                                        <td><%= new Date(item.waktu_keuangan).toLocaleDateString('id-ID') %></td>
+                                        <td><%= item.nama_admin %></td>
+                                        <td class="no-export">
+                                        <a href="/keuangan/edit/<%= item.id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="/keuangan/delete/<%= item.id_keuangan %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                    <td colspan="8" class="text-center text-muted">Data keuangan untuk bulan ini tidak tersedia</td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
 
-                <!-- Tabel Pemasukan -->
-                <div class="row">
-                    <div class="col-lg-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Data Pemasukan</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama</th>
-                                                <th>Deskripsi</th>
-                                                <th>Nominal</th>
-                                                <th>Waktu (dd/mm/yyyy)</th>
-                                                <th>Uploader</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% let noPemasukan = 1; %>
-                                            <% data.forEach(item => { if(item.jenis_keuangan === 'pemasukan') { %>
-                                                <tr>
-                                                    <td><%= noPemasukan++ %></td>
-                                                    <td><%= item.nama_keuangan %></td>
-                                                    <td><%= item.deskripsi_keuangan.length > 100 ? item.deskripsi_keuangan.substring(0, 100) + '...' : item.deskripsi_keuangan %></td>
-                                                    <td><%= item.nominal.toLocaleString('id-ID') %></td>
-                                                    <td>
-                                                        <% 
-                                                            const t = new Date(item.waktu_keuangan);
-                                                            const tanggal = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
-                                                        %>
-                                                        <%= tanggal %>
-                                                    </td>
-                                                    <td><%= item.nama_admin %></td>
-                                                    <td>
-                                                        <a href="/keuangan/edit/<%= item.id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
-                                                        <a href="/keuangan/delete/<%= item.id_keuangan %>" class="btn btn-sm btn-danger">Delete</a>
-                                                    </td>
-                                                </tr>
-                                            <% } }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabel Pengeluaran -->
-                <div class="row mt-4">
-                    <div class="col-lg-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Data Pengeluaran</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama</th>
-                                                <th>Deskripsi</th>
-                                                <th>Nominal</th>
-                                                <th>Waktu (dd/mm/yyyy)</th>
-                                                <th>Uploader</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% let noPengeluaran = 1; %>
-                                            <% data.forEach(item => { if(item.jenis_keuangan === 'pengeluaran') { %>
-                                                <tr>
-                                                    <td><%= noPengeluaran++ %></td>
-                                                    <td><%= item.nama_keuangan %></td>
-                                                    <td><%= item.deskripsi_keuangan.length > 100 ? item.deskripsi_keuangan.substring(0, 100) + '...' : item.deskripsi_keuangan %></td>
-                                                    <td><%= item.nominal.toLocaleString('id-ID') %></td>
-                                                    <td>
-                                                        <% 
-                                                            const t = new Date(item.waktu_keuangan);
-                                                            const tanggal = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
-                                                        %>
-                                                        <%= tanggal %>
-                                                    </td>
-                                                    <td><%= item.nama_admin %></td>
-                                                    <td>
-                                                        <a href="/keuangan/edit/<%= item.id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
-                                                        <a href="/keuangan/delete/<%= item.id_keuangan %>" class="btn btn-sm btn-danger">Delete</a>
-                                                    </td>
-                                                </tr>
-                                            <% } }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -113,6 +83,53 @@
         </div>
     </div>
 </div>
+
 <%- include('../partials/__foot.ejs') %>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#tabelKeuangan').DataTable({
+        autoWidth: false,
+        responsive: true,
+        scrollX: true,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Data Keuangan',
+                text: 'Download Excel',
+                exportOptions: {
+                    columns: function (idx, data, node) {
+                        // Ekspor hanya kolom yang visible dan bukan yang punya class no-export
+                        return $(node).is(':visible') && !$(node).hasClass('no-export');
+                    }
+                }
+            },
+            {
+                extend: 'colvis',
+                text: 'Tampilkan/Sembunyikan Kolom',
+                columns: ':not(.no-export)' // Optional: jangan beri toggle pada kolom aksi
+            }
+        ],
+        columnDefs: [
+            {
+                targets: [7], // kolom aksi
+                orderable: false,
+                searchable: false
+            }
+        ]
+    });
+});
+</script>
+
 </body>
 </html>

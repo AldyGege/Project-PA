@@ -48,13 +48,13 @@
 
                 <!-- Tampilkan format dd/mm/yyyy -->
                 <div class="form-group">
-                  <label>Waktu Keuangan (dd/mm/yyyy)</label>
+                  <label>Tanggal Lahir (dd/mm/yyyy)</label>
                   <input type="text" class="form-control" value="<%= valueForDisplay %>" disabled>
                 </div>
 
                 <!-- Input sebenarnya (disembunyikan atau tetap bisa diedit) -->
                 <div class="form-group">
-                  <label for="ttl">Waktu Keuangan (ubah jika perlu)</label>
+                  <label for="ttl">Tanggal Lahir (ubah jika perlu)</label>
                   <input type="date" class="form-control" id="ttl" name="ttl" value="<%= valueForInput %>">
                 </div>
 
@@ -66,6 +66,41 @@
                                     <option value="Wanita" <%= data.gender === 'Perempuan' ? 'selected' : '' %>>Perempuan</option>
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                            <label for="file_kk">File Kartu Keluarga</label>
+                            <input type="file" class="form-control" id="file_kk" name="file_kk">
+                            <% if (data.file_kk) { %>
+                            <% 
+                            const pathKK = `/${data.jalur_daftar === 'online' ? 'files/daftar_ulang_kk' : 'images/siswa'}/${data.file_kk}`;
+                            %>
+                            <a href="<%= pathKK %>" target="_blank">
+                            <img src="<%= pathKK %>" height="100" style="border-radius: 6px;">
+                            </a>
+
+                                <br>
+                            <% } else { %>
+                                <p class="text-muted">Tidak ada file KK</p>
+                            <% } %>
+                            </div>
+
+                            <div class="form-group">
+                            <label for="file_akta">File Akta (Opsional)</label>
+                            <input type="file" class="form-control" id="file_akta" name="file_akta">
+                            <% if (data.file_akta) { %>
+                            <% 
+                            const pathAkta = `/${data.jalur_daftar === 'online' ? 'files/daftar_ulang_akta' : 'images/siswa'}/${data.file_akta}`;
+                            %>
+                            <a href="<%= pathAkta %>" target="_blank">
+                            <img src="<%= pathAkta %>" height="100" style="border-radius: 6px;">
+                            </a>
+
+                                <br>
+                            <% } else { %>
+                                <p class="text-muted">Tidak ada file Akta</p>
+                            <% } %>
+                            </div>
+
 
                             <div class="form-group">
                                 <label for="nama_ortu_siswa">Nama Orang Tua</label>
