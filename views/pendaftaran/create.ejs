@@ -134,6 +134,69 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
         
+        .konsultasi-section {
+    background-color: #8B6F1A;
+    padding: 40px 20px;
+    color: white;
+}
+
+.konsultasi-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.konsultasi-text {
+    flex: 1;
+    min-width: 250px;
+}
+
+.konsultasi-text h2 {
+    margin: 0 0 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.konsultasi-text p {
+    font-size: 16px;
+    margin: 0;
+}
+
+.konsultasi-button {
+    flex-shrink: 0;
+}
+
+.hubungi-kami-btn {
+    background-color: #7ED957;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.hubungi-kami-btn:hover {
+    background-color: #69c647;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .konsultasi-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .konsultasi-button {
+        margin-top: 20px;
+    }
+}
+
         /* ---------------- RESPONSIVE ---------------- */
         
         @media (max-width: 768px) {
@@ -265,6 +328,18 @@
     </form>
 </div>
 
+<!-- Section Konsultasi (Horizontal Layout) -->
+<div class="konsultasi-section">
+    <div class="konsultasi-content">
+        <div class="konsultasi-text">
+            <h2>Mau Konsultasi ?</h2>
+            <p>Tanyakan Apa Saja Kepada Service dan Dapatkan Solusi Terbaik untuk Masalah Anda!</p>
+        </div>
+        <div class="konsultasi-button">
+            <a href="/kontak" class="hubungi-kami-btn">Hubungi Kami</a>
+        </div>
+    </div>
+</div>
 
     <script>
         // Mengisi waktu_pendaftaran secara otomatis

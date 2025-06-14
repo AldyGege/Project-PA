@@ -13,12 +13,12 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const jalur = req.body.jalur_daftar || req.query.jalur_daftar || 'offline';
 
-    let folder = 'images/siswa';
+    let folder = 'public/images/siswa';
     if (file.fieldname === 'file_kk') {
-      folder = jalur === 'online' ? 'files/daftar_ulang_kk' : 'images/siswa';
+      folder = jalur === 'online' ? 'files/daftar_ulang_kk' : 'public/images/siswa';
     }
     if (file.fieldname === 'file_akta') {
-      folder = jalur === 'online' ? 'files/daftar_ulang_akta' : 'images/siswa';
+      folder = jalur === 'online' ? 'files/daftar_ulang_akta' : 'public/images/siswa';
     }
 
     // Buat folder jika belum ada

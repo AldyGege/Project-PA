@@ -42,6 +42,7 @@
                                       <th class="no-export">KK</th>
                                       <th class="no-export">Akta</th>
                                       <th>Jalur Daftar</th>
+                                      <th>No. Daftar Ulang</th>
                                       <th>Nama Ortu</th>
                                       <th>No Telp Ortu</th>
                                       <th>Pekerjaan Ortu</th>
@@ -110,6 +111,7 @@
                                             </td>
 
                                             <td><%= siswa.jalur_daftar %></td>
+                                            <td><%= siswa.no_daftar_ulang %></td>
                                             <td><%= siswa.nama_ortu_siswa %></td>
                                             <td><%= siswa.no_telp_ortu_siswa %></td>
                                             <td><%= siswa.pekerjaan_ortu_siswa %></td>
@@ -117,10 +119,15 @@
 
                                             <td>
                                               <a href="/siswa/edit/<%= siswa.id_siswa %>" class="btn btn-sm btn-warning">Edit</a>
-                                              <a href="/siswa/delete/<%= siswa.id_siswa %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data siswa ini?')">
+                                              <button
+                                                class="btn btn-sm btn-danger btn-hapus"
+                                                data-id="<%= siswa.id_siswa %>"
+                                                data-url="/siswa/delete/<%= siswa.id_siswa %>"
+                                              >
                                                 <%= siswa.jalur_daftar === 'offline' ? 'Hapus' : 'Batalkan' %>
-                                              </a>
+                                              </button>
                                             </td>
+
                                           </tr>
                                         <% }) %>
                                       <% } else { %>
@@ -151,38 +158,63 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 $(document).ready(function () {
-    $('#tabelSiswa').DataTable({
-        autoWidth: false,
-        responsive: true,
-        scrollX: true,
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                title: 'Data Siswa',
-                text: 'Download Excel',
-                exportOptions: {
-                    columns: function (idx, data, node) {
-                        return $(node).is(':visible') && !$(node).hasClass('no-export');
-                    }
-                }
-            },
-            {
-                extend: 'colvis',
-                text: 'Tampilkan/Sembunyikan Kolom',
-                columns: ':not(.no-export)'
-            }
-        ],
-        columnDefs: [
-            {
-                targets: [7, 8, 9, 15], // Gambar, KK, Akta, Aksi
-                orderable: false,
-                searchable: false,
-                className: 'no-export'
-            }
-        ]
+  $('#tabelSiswa').DataTable({
+    autoWidth: false,
+    responsive: true,
+    scrollX: true,
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excelHtml5',
+        title: 'Data Siswa',
+        text: 'Download Excel',
+        exportOptions: {
+          columns: function (idx, data, node) {
+            return $(node).is(':visible') && !$(node).hasClass('no-export');
+          }
+        }
+      },
+      {
+        extend: 'colvis',
+        text: 'Tampilkan/Sembunyikan Kolom',
+        columns: ':not(.no-export)'
+      }
+    ],
+    columnDefs: [
+      {
+        targets: [7, 8, 9, 15],
+        orderable: false,
+        searchable: false,
+        className: 'no-export'
+      }
+    ]
+  });
+
+  // SweetAlert2 Hapus
+  $('.btn-hapus').on('click', function () {
+    const id = $(this).data('id');
+    const url = $(this).data('url');
+
+    Swal.fire({
+      title: 'Yakin ingin melanjutkan?',
+      text: "Tindakan ini tidak bisa dibatalkan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Ya, lanjutkan!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to URL
+        window.location.href = url;
+      }
     });
+  });
 });
 </script>
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

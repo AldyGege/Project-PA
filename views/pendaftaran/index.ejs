@@ -24,9 +24,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="pendaftaran-proses-list">
-                                            <% 
-                                            const prosesData = data.filter(item => item.status_pendaftaran === "proses");
-                                            if (prosesData.length > 0) { %>
+                                            <% const prosesData = data.filter(item => item.status_pendaftaran === "proses"); if (prosesData.length > 0) { %>
                                                 <% for(var i = 0; i < prosesData.length; i++) { %>
                                                     <tr data-id="<%= prosesData[i].id_pendaftaran %>">
                                                         <td><%= i + 1 %></td>
@@ -47,9 +45,7 @@
                                                     </tr>
                                                 <% } %>
                                             <% } else { %>
-                                                <tr>
-                                                    <td colspan="6" class="text-center">Tidak ada data pendaftaran dalam proses</td>
-                                                </tr>
+                                                <tr><td colspan="6" class="text-center">Tidak ada data pendaftaran dalam proses</td></tr>
                                             <% } %>
                                         </tbody>
                                     </table>
@@ -91,7 +87,7 @@
                                             <% if (data.length > 0) { %>
                                                 <% for(var i = 0; i < data.length; i++) { %>
                                                     <tr data-id="<%= data[i].id_pendaftaran %>">
-                                                        <th scope="row"><%= (i + 1) %></th>
+                                                        <td><%= i + 1 %></td>
                                                         <td class="py-1">
                                                             <% if (data[i].gambar_pendaftar) { %>
                                                                 <img src="/images/pendaftaran/<%= data[i].gambar_pendaftar %>" height="60" width="80" alt="Gambar Pendaftar"/>
@@ -103,13 +99,7 @@
                                                         <td><%= data[i].nama_users %></td>
                                                         <td><%= data[i].nik %></td>
                                                         <td><%= data[i].alamat_pendaftar %></td>
-                                                        <td>
-                                                        <% 
-                                                            const t = new Date(data[i].ttl);
-                                                            const tanggal = ("0" + t.getDate()).slice(-2) + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + t.getFullYear();
-                                                        %>
-                                                        <%= tanggal %>
-                                                        </td>
+                                                        <td><%= new Date(data[i].ttl).toLocaleDateString('id-ID') %></td>
                                                         <td><%= data[i].gender %></td>
                                                         <td><%= data[i].nama_ortu_pendaftar %></td>
                                                         <td><%= data[i].no_telp_ortu_pendaftar %></td>
@@ -126,10 +116,7 @@
                                                             <% } %>
                                                         </td>
                                                         <td class="action-cell">
-                                                            <% 
-                                                                const sudahDaftarUlang = daftarUlangIds.includes(data[i].id_pendaftaran); 
-                                                            %>
-                                                        
+                                                            <% const sudahDaftarUlang = daftarUlangIds.includes(data[i].id_pendaftaran); %>
                                                             <% if (data[i].status_pendaftaran === "proses") { %>
                                                                 <button class="btn btn-sm btn-success btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="diterima">Terima</button>
                                                                 <button class="btn btn-sm btn-danger btn-update-status" data-id="<%= data[i].id_pendaftaran %>" data-status="ditolak">Tolak</button>
@@ -140,9 +127,7 @@
                                                     </tr>
                                                 <% } %>
                                             <% } else { %>
-                                                <tr>
-                                                    <td colspan="15" class="text-center">Tidak ada data pendaftaran</td>
-                                                </tr>
+                                                <tr><td colspan="15" class="text-center">Tidak ada data pendaftaran</td></tr>
                                             <% } %>
                                         </tbody>
                                     </table>
@@ -157,72 +142,105 @@
 </div>
 <%- include('../partials/__foot.ejs') %>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+function showSwal(type, message) {
+    Swal.fire({
+        icon: type === "success" ? "success" : "error",
+        title: type === "success" ? "Berhasil" : "Gagal",
+        text: message,
+        showConfirmButton: false,
+        timer: 2000
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Event delegation untuk kedua tabel
+    let selectedId = null;
+    let selectedStatus = null;
+
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-update-status")) {
-            const button = event.target;
-            const id = button.getAttribute("data-id");
-            const status = button.getAttribute("data-status");
-            const row = button.closest("tr");
+            selectedId = event.target.getAttribute("data-id");
+            selectedStatus = event.target.getAttribute("data-status");
 
-            // Tampilkan konfirmasi sesuai jenis status
-            let confirmText = "";
-            if (status === "proses") {
-                confirmText = "Apakah Anda yakin ingin membatalkan status dan mengembalikannya ke 'proses'?";
-            } else {
-                confirmText = `Apakah Anda yakin ingin mengubah status menjadi "${status}"?`;
-            }
+            const bodyText = selectedStatus === "proses" ?
+                "Apakah Anda yakin ingin membatalkan status dan mengembalikannya ke 'proses'?" :
+                `Apakah Anda yakin ingin mengubah status menjadi "${selectedStatus}"?`;
 
-            if (confirm(confirmText)) {
-                fetch(`/pendaftaran/update_status/${id}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status_pendaftaran: status }) 
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("✅ Status berhasil diperbarui!");
-
-                        // Update semua baris dengan ID yang sama di kedua tabel
-                        document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
-                            const statusCell = row.querySelector(".status-cell");
-                            const actionCell = row.querySelector(".action-cell");
-
-                            if (statusCell) {
-                                statusCell.innerHTML = 
-                                    status === "diterima" ? '<span class="badge badge-success">Diterima</span>' :
-                                    status === "ditolak" ? '<span class="badge badge-danger">Ditolak</span>' :
-                                    '<span class="badge badge-warning">Proses</span>';
-                            }
-
-                            if (actionCell) {
-                                actionCell.innerHTML = 
-                                    status === "proses" ? 
-                                        `<button class="btn btn-sm btn-success btn-update-status" data-id="${id}" data-status="diterima">Diterima</button>
-                                         <button class="btn btn-sm btn-danger btn-update-status" data-id="${id}" data-status="ditolak">Ditolak</button>` :
-                                    `<button class="btn btn-sm btn-warning btn-update-status" data-id="${id}" data-status="proses">Batalkan</button>`;
-                            }
-
-                            // Jika di tabel proses dan status diubah, sembunyikan baris
-                            if (row.closest('#pendaftaran-proses-list') && status !== "proses") {
-                                row.style.display = "none";
-                            }
-                        });
-
-                    } else {
-                        alert("❌ Gagal memperbarui status. " + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Terjadi kesalahan saat memperbarui status.");
-                });
-            }
+            document.getElementById("modalKonfirmasiBody").textContent = bodyText;
+            $('#modalKonfirmasi').modal('show');
         }
+    });
+
+    document.getElementById("konfirmasiBtn").addEventListener("click", function () {
+        fetch(`/pendaftaran/update_status/${selectedId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status_pendaftaran: selectedStatus }) 
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showSwal("success", "✅ Status berhasil diperbarui!");
+
+                document.querySelectorAll(`tr[data-id="${selectedId}"]`).forEach(row => {
+                    const statusCell = row.querySelector(".status-cell");
+                    const actionCell = row.querySelector(".action-cell");
+
+                    if (statusCell) {
+                        statusCell.innerHTML =
+                            selectedStatus === "diterima" ? '<span class="badge badge-success">Diterima</span>' :
+                            selectedStatus === "ditolak" ? '<span class="badge badge-danger">Ditolak</span>' :
+                            '<span class="badge badge-warning">Proses</span>';
+                    }
+
+                    if (actionCell) {
+                        actionCell.innerHTML =
+                            selectedStatus === "proses" ? 
+                                `<button class="btn btn-sm btn-success btn-update-status" data-id="${selectedId}" data-status="diterima">Diterima</button>
+                                 <button class="btn btn-sm btn-danger btn-update-status" data-id="${selectedId}" data-status="ditolak">Ditolak</button>` :
+                            `<button class="btn btn-sm btn-warning btn-update-status" data-id="${selectedId}" data-status="proses">Batalkan</button>`;
+                    }
+
+                    if (row.closest('#pendaftaran-proses-list') && selectedStatus !== "proses") {
+                        row.style.display = "none";
+                    }
+                });
+
+                $('#modalKonfirmasi').modal('hide');
+
+            } else {
+                showSwal("error", "❌ Gagal memperbarui status. " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showSwal("error", "❌ Terjadi kesalahan saat memperbarui status.");
+        });
     });
 });
 </script>
+
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="modalKonfirmasi" tabindex="-1" role="dialog" aria-labelledby="modalKonfirmasiLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalKonfirmasiLabel">Konfirmasi Perubahan Status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalKonfirmasiBody">
+        Apakah Anda yakin ingin mengubah status?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="konfirmasiBtn">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>

@@ -1,4 +1,5 @@
 <%- include('../partials/__head.ejs') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 <div class="container-scroller">
     <%- include('../partials/__nav.ejs') %>
@@ -150,14 +151,12 @@
 <%- include('../partials/__foot.ejs') %>
 
 <!-- Modal Alasan Penolakan -->
-<div class="modal fade" id="modalAlasan" tabindex="-1" role="dialog" aria-labelledby="modalAlasanLabel" aria-hidden="true">
+<div class="modal fade" id="modalAlasan" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <form id="formAlasan" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAlasanLabel">Alasan Penolakan</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Alasan Penolakan</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="idDaftarUlangModal">
@@ -171,16 +170,36 @@
   </div>
 </div>
 
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="modalKonfirmasi" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body" id="konfirmasiMessage">
+        Apakah Anda yakin?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="btnKonfirmasiAksi">Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let selectedId = null;
+    let selectedRow = null;
+    let selectedStatus = null;
 
-    // Gunakan event delegation untuk seluruh dokumen
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-update-status")) {
             const id = event.target.dataset.id;
             const status = event.target.dataset.status;
-            const row = event.target.closest("tr"); // Dapatkan baris yang diklik
+            const row = event.target.closest("tr");
 
             if (status === "ditolak") {
                 selectedId = id;
@@ -188,10 +207,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("alasanInput").value = "";
                 $('#modalAlasan').modal('show');
             } else {
-                if (confirm(`Yakin ingin ubah status menjadi "${status}"?`)) {
-                    updateStatus(id, status, "", row); // Kirim referensi baris
-                }
+                selectedId = id;
+                selectedRow = row;
+                selectedStatus = status;
+                document.getElementById("konfirmasiMessage").textContent =
+                    `Yakin ingin mengubah status menjadi "${status}"?`;
+                $('#modalKonfirmasi').modal('show');
             }
+        }
+    });
+
+    document.getElementById("btnKonfirmasiAksi").addEventListener("click", function () {
+        if (selectedId && selectedStatus && selectedRow) {
+            updateStatus(selectedId, selectedStatus, "", selectedRow);
+            $('#modalKonfirmasi').modal('hide');
         }
     });
 
@@ -199,16 +228,26 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         const id = document.getElementById("idDaftarUlangModal").value;
         const alasan = document.getElementById("alasanInput").value.trim();
-        const row = document.querySelector(`tr[data-id="${id}"]`); // Dapatkan baris dari modal
+        const row = document.querySelector(`tr[data-id="${id}"]`);
 
         if (!alasan) {
-            alert("⚠️ Alasan tidak boleh kosong.");
+            showNotifikasi("Alasan tidak boleh kosong.", "warning");
             return;
         }
 
         updateStatus(id, "ditolak", alasan, row);
         $('#modalAlasan').modal('hide');
     });
+
+    function showNotifikasi(pesan, icon = 'success') {
+        Swal.fire({
+            title: pesan,
+            icon: icon,
+            timer: 2000,
+            showConfirmButton: false,
+            position: 'center'
+        });
+    }
 
     function updateStatus(id, status, alasan, row) {
         fetch(`/daftar_ulang/update_status/${id}`, {
@@ -217,41 +256,51 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ status_daftar_ulang: status, alasan: alasan })
         })
         .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("✅ Status berhasil diperbarui!");
-                
-                // Update semua baris dengan ID yang sama (untuk kedua tabel)
-                document.querySelectorAll(`tr[data-id="${id}"]`).forEach(row => {
-                    // Update status
-                    const statusCell = row.querySelector(".status-cell");
-                    if (statusCell) {
-                        statusCell.innerHTML = status === "diterima"
-                            ? '<span class="badge badge-success">Diterima</span>'
-                            : '<span class="badge badge-danger">Ditolak</span>';
-                    }
-                    
-                    // Hapus tombol aksi
-                    const actionCell = row.querySelector(".action-cell");
-                    if (actionCell) {
-                        actionCell.innerHTML = "";
-                    }
-                });
+.then(data => {
+    if (data.success) {
+        showNotifikasi("Status berhasil diperbarui!");
 
-                // Jika di tabel proses, sembunyikan baris setelah update
-                if (status !== "proses" && row.closest('.table-responsive')) {
-                    row.style.display = "none";
-                }
-                
-            } else {
-                alert("❌ Gagal memperbarui status: " + data.message);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Terjadi kesalahan saat update.");
-        });
+        // Jika data dihapus (ditolak)
+        if (data.deletedId) {
+            document.querySelectorAll(`tr[data-id="${data.deletedId}"]`).forEach(row => row.remove());
+        }
+
+        // Jika ada data baris baru yang diperbarui
+        if (data.updatedRow) {
+            document.querySelectorAll(`tr[data-id="${data.updatedRow.id_daftar_ulang}"]`).forEach(row => {
+                const html = `
+                    <td>${row.rowIndex}</td>
+                    <td>${data.updatedRow.nama_pendaftar}</td>
+                    <td>${data.updatedRow.nama_users}</td>
+                    <td>${data.updatedRow.nik}</td>
+                    <td>
+                        ${data.updatedRow.file_kk 
+                            ? `<a href="/files/daftar_ulang_kk/${data.updatedRow.file_kk}" target="_blank">Lihat KK</a>`
+                            : '<span class="text-muted">Tidak ada</span>'}
+                    </td>
+                    <td>
+                        ${data.updatedRow.file_akta 
+                            ? `<a href="/files/daftar_ulang_akta/${data.updatedRow.file_akta}" target="_blank">Lihat Akta</a>`
+                            : '<span class="text-muted">Tidak ada</span>'}
+                    </td>
+                    <td>${new Date(data.updatedRow.waktu_daftar_ulang).toLocaleString('id-ID')}</td>
+                    <td class="status-cell">
+                        ${data.updatedRow.status_daftar_ulang === "diterima" 
+                            ? '<span class="badge badge-success">Diterima</span>' 
+                            : '<span class="badge badge-danger">Ditolak</span>'}
+                    </td>
+                    <td class="action-cell"></td>
+                `;
+                row.innerHTML = html;
+            });
+        }
+    } else {
+        showNotifikasi("Gagal memperbarui status: " + data.message, 'error');
+    }
+})
+;
     }
 });
 </script>
+
 </body>
