@@ -63,7 +63,13 @@
                                         <td><%= item.nama_admin %></td>
                                         <td class="no-export">
                                         <a href="/keuangan/edit/<%= item.id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="/keuangan/delete/<%= item.id_keuangan %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                                        <button
+                                        class="btn btn-sm btn-danger btn-hapus"
+                                        data-id="<%= item.id_keuangan %>"
+                                        data-url="/keuangan/delete/<%= item.id_keuangan %>"
+                                        >
+                                        Hapus
+                                        </button>
                                         </td>
                                     </tr>
                                     <% }) %>
@@ -109,7 +115,6 @@ $(document).ready(function () {
                 text: 'Download Excel',
                 exportOptions: {
                     columns: function (idx, data, node) {
-                        // Ekspor hanya kolom yang visible dan bukan yang punya class no-export
                         return $(node).is(':visible') && !$(node).hasClass('no-export');
                     }
                 }
@@ -117,19 +122,40 @@ $(document).ready(function () {
             {
                 extend: 'colvis',
                 text: 'Tampilkan/Sembunyikan Kolom',
-                columns: ':not(.no-export)' // Optional: jangan beri toggle pada kolom aksi
+                columns: ':not(.no-export)'
             }
         ],
         columnDefs: [
             {
-                targets: [7], // kolom aksi
+                targets: [7],
                 orderable: false,
                 searchable: false
             }
         ]
     });
+
+    // SweetAlert2 Hapus
+    $('.btn-hapus').on('click', function () {
+        const url = $(this).data('url');
+
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: "Data akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 </html>

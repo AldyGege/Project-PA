@@ -7,6 +7,18 @@
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="container mt-5">
+                <% if (messages.success) { %>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: '<%= messages.success %>',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    </script>
+                <% } %>
+
                 <div class="row">
                     <div class="col-lg-12 grid-margin stretch-card">
                         <div class="card">
@@ -37,7 +49,7 @@
                                                 <td><%= data[i].nama_admin %></td>
                                                 <td>
                                                     <a href="/mapel/edit/<%= data[i].id_mapel %>" class="btn btn-sm btn-warning">Edit</a>
-                                                    <a href="/mapel/delete/<%= data[i].id_mapel %>" class="btn btn-sm btn-danger">Delete</a>
+                                                    <a href="javascript:void(0)" data-url="/mapel/delete/<%= data[i].id_mapel %>" class="btn btn-sm btn-danger btn-delete">Delete</a>
                                                 </td>
                                             </tr>
                                             <% } %>
@@ -55,4 +67,32 @@
 </div>
 <!-- container-scroller ends -->
 <%- include('../partials/__foot.ejs') %>
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // Konfirmasi sebelum hapus
+  document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+      const url = this.dataset.url;
+
+      Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Data yang dihapus tidak bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = url;
+        }
+      });
+    });
+  });
+</script>
 </body>
+</html>
