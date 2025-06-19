@@ -181,58 +181,140 @@
       }
     }
 
-function showDetail(id) {
-  fetch(`/get-pendaftaran/${id}`)
-      .then(response => response.json())
-      .then(data => {
-          let content = `
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <tr><th>Nama</th><td>${data.nama_pendaftar}</td></tr>
-              <tr><th>No. Induk Keluarga</th><td>${data.nik}</td></tr>
-              <tr><th>Alamat</th><td>${data.alamat_pendaftar}</td></tr>
-              <tr><th>TTL</th><td>${new Date(data.ttl).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td></tr>
-              <tr><th>Gender</th><td>${data.gender}</td></tr>
-              <tr><th>Nama Orang Tua</th><td>${data.nama_ortu_pendaftar}</td></tr>
-              <tr><th>Pekerjaan Orang Tua</th><td>${data.pekerjaan_ortu_pendaftar}</td></tr>
-              <tr><th>Alamat Orang Tua</th><td>${data.alamat_ortu_pendaftar}</td></tr>
-              <tr><th>Status Pendaftaran</th><td><strong>${data.status_pendaftaran}</strong></td></tr>
-              <tr>
-                <th>Gambar</th>
-                <td><img src="/images/pendaftaran/${data.gambar_pendaftar}" class="img-fluid" style="max-width: 150px;"></td>
-              </tr>
-            </table>
+async function showDetail(id) {
+  try {
+    const [pendaftaranRes, masaRes] = await Promise.all([
+      fetch(`/get-pendaftaran/${id}`),
+      fetch(`/pendaftaran/masa_pendaftaran`)
+    ]);
+
+    const data = await pendaftaranRes.json();
+    const masa = await masaRes.json();
+
+    const now = new Date();
+    const tanggalAkhir = new Date(masa.tanggal_akhir);
+    const dalamMasaPendaftaran = now <= tanggalAkhir;
+
+    let formContent = '';
+    let editButton = '';
+
+    if (data.status_pendaftaran === 'proses') {
+      if (dalamMasaPendaftaran) {
+        editButton = `
+          <div class="mb-3">
+            <button class="btn btn-primary" id="btnShowEditForm">Edit Pendaftaran</button>
+            <p class="text-muted mt-2 mb-0">✏️ Anda masih bisa mengedit pendaftaran karena masih dalam masa pendaftaran.</p>
           </div>
-          `;
+        `;
+      } else {
+        editButton = `
+          <div class="alert alert-secondary">
+            ⛔ Masa pendaftaran telah berakhir. Anda tidak dapat mengedit data lagi.
+          </div>
+        `;
+      }
 
-          if (data.status_pendaftaran === "diterima") {
-            content += `
-              <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>✅ Pendaftaran anda diterima.</strong> Silakan lanjutkan dengan melakukan daftar ulang.
-                </div>
-                <a href="/daftar_ulang/create" class="btn btn-success btn-sm">Daftar Ulang</a>
+      // Form disembunyikan dulu
+      formContent += `
+        <div id="editFormContainer" style="display: none;">
+          <form action="/pendaftaran/update/${data.id_pendaftaran}" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6">
+                <label>Nama</label>
+                <input type="text" name="nama_pendaftar" class="form-control mb-2" value="${data.nama_pendaftar}" required>
+                <label>NIK</label>
+                <input type="text" name="nik" class="form-control mb-2" value="${data.nik}" required>
+                <label>Alamat</label>
+                <input type="text" name="alamat_pendaftar" class="form-control mb-2" value="${data.alamat_pendaftar}" required>
+                <label>Tempat, Tanggal Lahir</label>
+                <input type="date" name="ttl" class="form-control mb-2" value="${data.ttl.split('T')[0]}" required>
+                <label>Jenis Kelamin</label>
+                <select name="gender" class="form-control mb-2">
+                  <option value="Pria" ${data.gender === 'Pria' ? 'selected' : ''}>Laki-laki</option>
+                  <option value="Wanita" ${data.gender === 'Wanita' ? 'selected' : ''}>Perempuan</option>
+                </select>
               </div>
-            `;
-          } else if (data.status_pendaftaran === "proses") {
-            content += `
-              <div class="alert alert-warning mt-3">
-                <strong>⏳ Pendaftaran anda sedang diproses.</strong> Mohon tunggu konfirmasi dari admin.
+              <div class="col-md-6">
+                <label>Nama Orang Tua</label>
+                <input type="text" name="nama_ortu_pendaftar" class="form-control mb-2" value="${data.nama_ortu_pendaftar}" required>
+                <label>Pekerjaan Orang Tua</label>
+                <input type="text" name="pekerjaan_ortu_pendaftar" class="form-control mb-2" value="${data.pekerjaan_ortu_pendaftar}" required>
+                <label>Alamat Orang Tua</label>
+                <input type="text" name="alamat_ortu_pendaftar" class="form-control mb-2" value="${data.alamat_ortu_pendaftar}" required>
+                <label>Ganti Gambar (opsional)</label>
+                <input type="file" name="gambar_pendaftar" class="form-control mb-2">
+                <input type="hidden" name="gambar_lama" value="${data.gambar_pendaftar}">
+                <button type="submit" class="btn btn-warning mt-2 w-100">Simpan Perubahan</button>
               </div>
-            `;
-          } else if (data.status_pendaftaran === "ditolak") {
-            content += `
-              <div class="alert alert-danger mt-3">
-                <strong>❌ Pendaftaran anda ditolak karena tidak valid.</strong> 
-              </div>
-            `;
-          }
+            </div>
+          </form>
+          <hr>
+        </div>
+      `;
+    }
 
-          document.getElementById("detailContent").innerHTML = content;
-          new bootstrap.Modal(document.getElementById("detailModal")).show();
-      })
-      .catch(error => console.error("❌ Error fetching details:", error));
+    let content = `
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <tr><th>Nama</th><td>${data.nama_pendaftar}</td></tr>
+          <tr><th>No. Induk Keluarga</th><td>${data.nik}</td></tr>
+          <tr><th>Alamat</th><td>${data.alamat_pendaftar}</td></tr>
+          <tr><th>TTL</th><td>${new Date(data.ttl).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td></tr>
+          <tr><th>Gender</th><td>${data.gender}</td></tr>
+          <tr><th>Nama Orang Tua</th><td>${data.nama_ortu_pendaftar}</td></tr>
+          <tr><th>Pekerjaan Orang Tua</th><td>${data.pekerjaan_ortu_pendaftar}</td></tr>
+          <tr><th>Alamat Orang Tua</th><td>${data.alamat_ortu_pendaftar}</td></tr>
+          <tr><th>Status Pendaftaran</th><td><strong>${data.status_pendaftaran}</strong></td></tr>
+          <tr>
+            <th>Gambar</th>
+            <td><img src="/images/pendaftaran/${data.gambar_pendaftar}" class="img-fluid" style="max-width: 150px;"></td>
+          </tr>
+        </table>
+      </div>
+    `;
+
+    if (data.status_pendaftaran === "diterima") {
+      content += `
+        <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center">
+          <div>
+            <strong>✅ Pendaftaran anda diterima.</strong> Silakan lanjutkan dengan melakukan daftar ulang.
+          </div>
+          <a href="/daftar_ulang/create" class="btn btn-success btn-sm">Daftar Ulang</a>
+        </div>
+      `;
+    } else if (data.status_pendaftaran === "proses") {
+      content += `
+        <div class="alert alert-warning mt-3">
+          <strong>⏳ Pendaftaran anda sedang diproses.</strong> Mohon tunggu konfirmasi dari admin.
+        </div>
+      `;
+    } else if (data.status_pendaftaran === "ditolak") {
+      content += `
+        <div class="alert alert-danger mt-3">
+          <strong>❌ Pendaftaran anda ditolak karena tidak valid.</strong> 
+        </div>
+      `;
+    }
+
+    document.getElementById("detailContent").innerHTML = editButton + formContent + content;
+    new bootstrap.Modal(document.getElementById("detailModal")).show();
+
+    // Event listener setelah render
+    const btn = document.getElementById("btnShowEditForm");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        document.getElementById("editFormContainer").style.display = "block";
+        btn.style.display = "none";
+      });
+    }
+
+  } catch (error) {
+    console.error("❌ Error fetching details:", error);
+  }
 }
+
+
+
 
   
     

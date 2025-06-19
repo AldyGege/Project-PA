@@ -250,8 +250,8 @@
     <h2 class="branding-title">Portal Pendaftaran Mandiri Online Madrasah At-Taqwa</h2>
 </div>
 
-    
-<div class="form-container">
+<% if (masaPendaftaran && aktifPendaftaran) { %>
+  <div class="form-container">
     <form action="/pendaftaran/store" method="POST" enctype="multipart/form-data" class="pt-3">
         <h5><b>Informasi Pribadi</b></h5>
         <%- include('../partials/__messagess.ejs') %>
@@ -327,6 +327,21 @@
         </div>
     </form>
 </div>
+<% } else { %>
+  <div class="form-container text-center">
+    <h4>Pendaftaran belum dibuka atau Sudah Ditutup</h4>
+    <% if (masaPendaftaran) { %>
+      <p>Jadwal Pendaftaran:</p>
+      <p><strong>
+        <%= new Date(masaPendaftaran.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %>
+      </strong> sampai <strong>
+        <%= new Date(masaPendaftaran.tanggal_akhir).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %>
+      </strong></p>
+    <% } else { %>
+      <p>Jadwal pendaftaran belum tersedia.</p>
+    <% } %>
+  </div>
+<% } %>
 
 <!-- Section Konsultasi (Horizontal Layout) -->
 <div class="konsultasi-section">

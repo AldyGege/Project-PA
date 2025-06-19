@@ -15,6 +15,7 @@ var Model_Guru = require('../model/Model_Guru.js');
 var Model_Album = require('../model/Model_Album.js');
 var Model_Fasilitas = require('../model/Model_Fasilitas.js');
 var Model_Berita = require('../model/Model_Berita.js');
+var Model_Masa_Pendaftaran = require('../model/Model_Masa_Pendaftaran.js');
 
 
 const storage = multer.diskStorage({
@@ -53,23 +54,36 @@ async function sendWhatsappMessage(no_telp, message) {
 }
 
 
-/* GET home page. */
 router.get('/', async function (req, res, next) {
   try {
-      let mapel = await Model_Mapel.getAll();
-      let guru = await Model_Guru.getAll();
-      let album = await Model_Album.getAll();
-      res.render('index', {
-        data2: mapel,
-        data3: guru,
-        data4: album,
-      });
+    const masaPendaftaran = await Model_Masa_Pendaftaran.get();
+    let mapel = await Model_Mapel.getAll();
+    let guru = await Model_Guru.getAll();
+    let album = await Model_Album.getAll();
+
+    // Cek apakah pendaftaran masih aktif
+    let aktifPendaftaran = false;
+    if (masaPendaftaran) {
+      const now = new Date();
+      const mulai = new Date(masaPendaftaran.tanggal_mulai);
+      const akhir = new Date(masaPendaftaran.tanggal_akhir);
+      aktifPendaftaran = now >= mulai && now <= akhir;
+    }
+
+    res.render('index', {
+      data2: mapel,
+      data3: guru,
+      data4: album,
+      masaPendaftaran,
+      aktifPendaftaran
+    });
   } catch (error) {
-      console.error("Error:", error);
-      req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
-      res.redirect('/login');
+    console.error("Error:", error);
+    req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
+    res.redirect('/login_users');
   }
 });
+
 
 router.get('/fasilitaslogin', async (req, res, next) => {
     try {
@@ -366,24 +380,25 @@ router.post("/updateusers/:id",  upload.single("gambar_users"), async (req, res,
   }
 });
 
-router.post('/logadmin', async (req,res) => {
-  let {email_admin, password_admin } = req.body;
+router.post('/logadmin', async (req, res) => {
+  let { email_admin, password_admin } = req.body;
   try {
     let Data = await Model_Admin.Login(email_admin);
-    if(Data.length > 0) {
+    if (Data.length > 0) {
       let enkripsi = Data[0].password_admin;
       let cek = await bcrypt.compare(password_admin, enkripsi);
-      if(cek) {
+      if (cek) {
+        // Simpan semua data penting ke dalam session, termasuk role
         req.session.adminId = Data[0].id_admin;
-        req.session.gambar_admin= Data[0].gambar_admin;
+        req.session.gambar_admin = Data[0].gambar_admin;
         req.session.nama_admin = Data[0].nama_admin;
         req.session.alamat_admin = Data[0].alamat_admin;
         req.session.no_telp_admin = Data[0].no_telp_admin;
         req.session.email_admin = Data[0].email_admin;
-        // tambahkan kondisi pengecekan level pada user yang logi
-          req.flash('success','Berhasil login');
-          res.redirect('/superusers');
-          //console.log(Data[0]);
+        req.session.role_admin = Data[0].role; // <-- tambah baris ini
+
+        req.flash('success', 'Berhasil login');
+        res.redirect('/superusers');
       } else {
         req.flash('failure', 'Email atau password salah');
         res.redirect('/login');
@@ -393,11 +408,12 @@ router.post('/logadmin', async (req,res) => {
       res.redirect('/login');
     }
   } catch (err) {
-    res.redirect('/login_admin');
-    req.flash('failure', 'Error pada fungsi');
     console.log(err);
+    req.flash('failure', 'Terjadi kesalahan pada server');
+    res.redirect('/login');
   }
-})
+});
+
 
 router.post('/logusers', async (req,res) => {
   let {email_users, password_users } = req.body;

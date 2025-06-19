@@ -9,7 +9,7 @@ var router = express.Router();
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
   try {
-    let id = req.session.adminId; // Pastikan menggunakan adminId yang benar
+    let id = req.session.adminId;
     if (!id) {
       req.flash('failure', 'Silakan login terlebih dahulu');
       return res.redirect('/login');
@@ -21,7 +21,13 @@ router.get('/', async function (req, res, next) {
     let Data_Siswa = await Model_Siswa.getAll();
     let SaldoSaatIni = await Model_Keuangan.getSaldoSaatIni();
     let tahunSekarang = new Date().getFullYear();
-    let GrafikKeuangan = await Model_Keuangan.getGrafikKeuanganPerBulan(tahunSekarang); 
+    
+    // Get available years for financial data
+    let tahunKeuangan = await Model_Keuangan.getDistinctYears();
+    // Use the latest available year or current year if available
+    let tahunUntukGrafik = tahunKeuangan.includes(tahunSekarang) ? tahunSekarang : (tahunKeuangan[0] || tahunSekarang);
+    
+    let GrafikKeuangan = await Model_Keuangan.getGrafikKeuanganPerBulan(tahunUntukGrafik); 
     let totalPendaftar = Data_Pendaftar.length;
     let totalDaftarUlang = Data_Daftar_Ulang.length;
     let totalSiswa = Data_Siswa.length;
@@ -29,12 +35,10 @@ router.get('/', async function (req, res, next) {
     let pendaftaranBaru = Data_Pendaftar.filter(p => p.status_pendaftaran === 'proses');
     let jumlahPendaftaranBaru = pendaftaranBaru.length;
 
-
-
     if (Data.length > 0) {
       res.render("users/superusers", {
         title: "Admin Home",
-        email: Data[0].email_admin, // Perbaiki agar sesuai dengan database
+        email: Data[0].email_admin,
         nama_admin: Data[0].nama_admin,
         data2: Data,
         data_pendaftar: Data_Pendaftar,
@@ -46,7 +50,10 @@ router.get('/', async function (req, res, next) {
         saldo: SaldoSaatIni,
         grafikKeuangan: GrafikKeuangan,
         jumlahDaftarUlangBaru: jumlahDaftarUlangBaru,
-        jumlahPendaftaranBaru: jumlahPendaftaranBaru, 
+        jumlahPendaftaranBaru: jumlahPendaftaranBaru,
+        tahunKeuangan: tahunKeuangan, // Pass available years to view
+        tahunSekarang: tahunSekarang,
+        tahunUntukGrafik: tahunUntukGrafik // Pass the selected year for initial chart
       });
     } else {
       res.status(401).json({ error: "User tidak ditemukan" });
@@ -71,6 +78,16 @@ router.get('/grafik-keuangan/:tahun', async function(req, res, next) {
   }
 });
 
+router.get('/tahun-keuangan', async function(req, res, next) {
+  try {
+    const data = await Model_Keuangan.getDistinctYears();
+    res.json(data);
+  } catch (error) {
+    console.error('Error ambil data tahun keuangan:', error);
+    res.status(500).json({ error: 'Gagal mengambil data tahun keuangan' });
+  }
+});
+
 router.get('/grafik-siswa-per-tahun', async function (req, res, next) {
   try {
     const data = await Model_Siswa.getStatistikPerTahun(); // Fungsi ini perlu kamu buat di model
@@ -80,6 +97,8 @@ router.get('/grafik-siswa-per-tahun', async function (req, res, next) {
     res.status(500).json({ error: 'Gagal mengambil data siswa' });
   }
 });
+
+
 
 router.get('/profil_admin', async function (req, res, next) {
   try {

@@ -266,75 +266,102 @@ footer .social-links a:hover {
   <main>
 
    <!-- Hero Section -->
-   <section id="hero" class="hero section">
+<!-- Hero Section -->
+<section id="hero" class="hero section position-relative">
     <img src="images/beranda_foto3.jpg" alt="" data-aos="fade-in" class="hero-image">
 
-    <div class="container">
-      <div class="row justify-content-center" data-aos="zoom-out">
-        <div class="col-xl-7 col-lg-9 text-center">
-          <h1 class="text-white">Selamat Datang di Madrasah At-Taqwa</h1>
-          <p class="text-white">lembaga pendidikan Islam yang berkomitmen untuk membentuk generasi yang berakhlak mulia dan berwawasan luas</p>
-        </div>
-      </div>
+  <div class="container">
+    <div class="row justify-content-center" data-aos="zoom-out">
+      <div class="col-xl-7 col-lg-9 text-center">
+        <h1 class="text-white">Selamat Datang di Madrasah At-Taqwa</h1>
+        <p class="text-white">
+          Lembaga pendidikan Islam yang berkomitmen untuk membentuk generasi yang berakhlak mulia dan berwawasan luas
+        </p>
 
-      <div class="text-center mt-3" data-aos="zoom-out" data-aos-delay="100">
-        <!-- Tombol Selengkapnya -->
-        <a href="users/petunjuk" class="btn"
-           style="background-color: #4F4533; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; margin-right: 10px;"
-           onmouseover="this.style.backgroundColor='#3D3628'"
-           onmouseout="this.style.backgroundColor='#4F4533'">
-           Petunjuk Pendaftaran
-        </a>
-      
-        <!-- Tombol Daftar Sekarang -->
-        <a href="pendaftaran/create" class="btn"
-           style="background-color: #F4F1E6; color: black; padding: 12px 25px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;"
-           onmouseover="this.style.backgroundColor='#D9D2C0'"
-           onmouseout="this.style.backgroundColor='#F4F1E6'">
-           Daftar Sekarang
-        </a>
-      </div>
-      
-      <div class="row gy-4 mt-5">
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="100">
-          <a href="#mapel" class="card-link">
-            <div class="icon-box">
-              <div class="icon" style="color: #8E6A07;"><i class="bi bi-easel"></i></div>
-              <h4 class="title">Program Pendidikan</h4>
-              <p class="description">Komitmen Menuju Generasi Berakhlak Mulia</p>
+        <% if (masaPendaftaran && masaPendaftaran.tanggal_mulai && masaPendaftaran.tanggal_akhir) { %>
+          <% const mulai = new Date(masaPendaftaran.tanggal_mulai); %>
+          <% const akhir = new Date(masaPendaftaran.tanggal_akhir); %>
+          <% const options = { day: '2-digit', month: 'long', year: 'numeric' }; %>
+          <% if (aktifPendaftaran) { %>
+            <div class="alert alert-success mt-4">
+              📢 <strong>Pendaftaran Sedang Dibuka!</strong><br>
+              Periode: <strong><%= mulai.toLocaleDateString('id-ID', options) %></strong> sampai 
+              <strong><%= akhir.toLocaleDateString('id-ID', options) %></strong>
             </div>
-          </a>
-        </div><!--End Icon Box -->
+          <% } else { %>
+            <div class="alert alert-secondary mt-4">
+              ⚠️ <strong>Pendaftaran belum dibuka atau sudah ditutup.</strong><br>
+              Jadwal: <strong><%= mulai.toLocaleDateString('id-ID', options) %></strong> sampai 
+              <strong><%= akhir.toLocaleDateString('id-ID', options) %></strong>
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="alert alert-warning mt-4">
+            ⚠️ Informasi masa pendaftaran belum tersedia.
+          </div>
+        <% } %>
 
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="200">
-          <a href="#guru" class="icon-box text-decoration-none">
-            <div class="icon" style="color: #8E6A07;"><i class="bi bi-person"></i></div>
-            <h4 class="title">Pengajar</h4>
-            <p class="description">Tim Pengajar Berkualitas dan Berpengalaman</p>
+        <div class="text-center mt-4" data-aos="zoom-out" data-aos-delay="100">
+          <a href="/users/petunjuk" class="btn"
+             style="background-color: #4F4533; color: white; padding: 12px 25px; border-radius: 6px; font-weight: bold; margin-right: 10px;"
+             onmouseover="this.style.backgroundColor='#3D3628'"
+             onmouseout="this.style.backgroundColor='#4F4533'">
+             Petunjuk Pendaftaran
           </a>
-        </div><!--End Icon Box -->
-        
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="300">
-          <a href="" class="icon-box text-decoration-none">
-            <div class="icon" style="color: #8E6A07;"><i class="bi bi-image"></i></div>
-            <h4 class="title">Album</h4>
-            <p class="description">Momen Tak Terlupakan Bersama Madrasah</p>
+          <a href="/pendaftaran/create" class="btn"
+             style="background-color: #F4F1E6; color: black; padding: 12px 25px; border-radius: 6px; font-weight: bold;"
+             onmouseover="this.style.backgroundColor='#D9D2C0'"
+             onmouseout="this.style.backgroundColor='#F4F1E6'">
+             Daftar Sekarang
           </a>
-        </div><!--End Icon Box -->
-        
-        <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="400">
-          <a href="#kontak" class="icon-box text-decoration-none">
-            <div class="icon" style="color: #8E6A07;"><i class="bi bi-geo-alt"></i></div>
-            <h4 class="title">Lokasi & Kontak</h4>
-            <p class="description">Temukan Kami dengan Mudah</p>
-          </a>
-        </div><!--End Icon Box -->
-        
+        </div>
       </div>
     </div>
 
-  </section><!-- /Hero Section -->
-  
+    <div class="row gy-4 mt-5">
+      <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="100">
+        <a href="#mapel" class="card-link text-decoration-none w-100">
+          <div class="icon-box text-center">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-easel"></i></div>
+            <h4 class="title">Program Pendidikan</h4>
+            <p class="description">Komitmen Menuju Generasi Berakhlak Mulia</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="200">
+        <a href="#guru" class="card-link text-decoration-none w-100">
+          <div class="icon-box text-center">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-person"></i></div>
+            <h4 class="title">Pengajar</h4>
+            <p class="description">Tim Pengajar Berkualitas dan Berpengalaman</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="300">
+        <a href="#album" class="card-link text-decoration-none w-100">
+          <div class="icon-box text-center">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-image"></i></div>
+            <h4 class="title">Album</h4>
+            <p class="description">Momen Tak Terlupakan Bersama Madrasah</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-6 d-flex align-items-stretch" data-aos="zoom-out" data-aos-delay="400">
+        <a href="#kontak" class="card-link text-decoration-none w-100">
+          <div class="icon-box text-center">
+            <div class="icon" style="color: #8E6A07;"><i class="bi bi-geo-alt"></i></div>
+            <h4 class="title">Lokasi & Kontak</h4>
+            <p class="description">Temukan Kami dengan Mudah</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <section id="mapel" class="services section light-background">
   <!-- Section Title -->

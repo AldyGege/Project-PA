@@ -4,6 +4,7 @@ const Model_Pendaftaran = require('../model/Model_Pendaftaran.js');
 const Model_Users = require('../model/Model_Users.js');
 const Model_Admin = require('../model/Model_Admin.js');
 const Model_Daftar_Ulang = require('../model/Model_Daftar_Ulang.js');
+const Model_Masa_Pendaftaran = require('../model/Model_Masa_Pendaftaran.js');
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
@@ -55,11 +56,13 @@ router.get('/', async (req, res, next) => {
         let rows = await Model_Pendaftaran.getAll();
         let daftarUlangList = await Model_Daftar_Ulang.getAll(); // ambil semua daftar ulang
         let daftarUlangIds = daftarUlangList.map(d => d.id_pendaftaran); // ambil id_pendaftaran-nya
+        let masaPendaftaran = await Model_Masa_Pendaftaran.get();
         res.render('pendaftaran/index', {
             data: rows,
             data2: Data,
             data3: Data2,
             daftarUlangIds: daftarUlangIds,
+            masaPendaftaran
         });
     } catch (error) {
         next(error);
@@ -68,25 +71,57 @@ router.get('/', async (req, res, next) => {
 
 router.get('/create', async function (req, res, next) {
     try {
-        // let level_users = req.session.level;
         let id = req.session.userId;
         let user = await Model_Users.getId(id);
-        let Data = await Model_Pendaftaran.getAll();
-        // if(Data[0].level_users == "2") {
+        let masaPendaftaran = await Model_Masa_Pendaftaran.get();
+        let dataPendaftaran = await Model_Pendaftaran.getAll();
+
+        // Cek apakah masa pendaftaran aktif
+        let aktifPendaftaran = false;
+        if (masaPendaftaran && masaPendaftaran.tanggal_mulai && masaPendaftaran.tanggal_akhir) {
+            const now = new Date();
+            const mulai = new Date(masaPendaftaran.tanggal_mulai);
+            const akhir = new Date(masaPendaftaran.tanggal_akhir);
+            aktifPendaftaran = now >= mulai && now <= akhir;
+        }
+
         res.render('pendaftaran/create', {
             nama_service: '',
-            data: Data,
-            data2:user[0],
-        })
-        // }
-        // else if (Data[0].level_users == "1"){
-        //     req.flash('failure', 'Anda bukan admin');
-        //     res.redirect('/sevice')
-        // }
+            data: dataPendaftaran,
+            data2: user[0],
+            masaPendaftaran,
+            aktifPendaftaran
+        });
+
     } catch (error) {
         console.log(error);
+        res.status(500).send("Terjadi kesalahan server");
     }
-})
+});
+
+
+router.post('/atur_masa_pendaftaran', async (req, res) => {
+    try {
+        const { tanggal_mulai, tanggal_akhir } = req.body;
+        await Model_Masa_Pendaftaran.update(tanggal_mulai, tanggal_akhir);
+        req.flash('success', 'Masa pendaftaran berhasil diperbarui');
+        res.redirect('/pendaftaran');
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'Gagal memperbarui masa pendaftaran');
+        res.redirect('/pendaftaran');
+    }
+});
+
+router.get('/masa_pendaftaran', async (req, res) => {
+  try {
+    const data = await Model_Masa_Pendaftaran.get();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Gagal mengambil masa pendaftaran' });
+  }
+});
+
 
 router.post('/store', upload.single("gambar_pendaftar"), async function (req, res, next) {
     try {
@@ -171,6 +206,48 @@ router.post('/update_status/:id', async function (req, res, next) {
         return res.status(500).json({ success: false, message: "Terjadi kesalahan saat mengubah status" });
     }
 });
+
+router.post('/update/:id', upload.single("gambar_pendaftar"), async (req, res) => {
+  try {
+    const id = req.params.id;
+    let {
+      nama_pendaftar, nik, alamat_pendaftar, ttl, gender,
+      nama_ortu_pendaftar, pekerjaan_ortu_pendaftar, alamat_ortu_pendaftar,
+      gambar_lama
+    } = req.body;
+
+    let gambar_pendaftar = gambar_lama;
+    if (req.file) {
+      // Hapus gambar lama jika ada
+      const oldPath = path.join(__dirname, '../public/images/pendaftaran/', gambar_lama);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+      gambar_pendaftar = req.file.filename;
+    }
+
+    const dataUpdate = {
+      nama_pendaftar,
+      nik,
+      alamat_pendaftar,
+      ttl,
+      gender,
+      nama_ortu_pendaftar,
+      pekerjaan_ortu_pendaftar,
+      alamat_ortu_pendaftar,
+      gambar_pendaftar
+    };
+
+    await Model_Pendaftaran.Update(id, dataUpdate); // pastikan method ini tersedia di model
+
+    req.flash("success", `Data Pendaftaran (${nama_pendaftar}) berhasil diperbarui`);
+    res.redirect('/users/profil');
+  } catch (error) {
+    console.error("Update error:", error);
+    req.flash("error", "Gagal memperbarui data pendaftaran");
+    res.redirect('/users/profil');
+  }
+});
+
 
 
 

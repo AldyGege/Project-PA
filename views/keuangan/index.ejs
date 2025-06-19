@@ -1,161 +1,380 @@
 <%- include('../partials/__head.ejs') %>
-<body>
-<div class="container-scroller">
-    <%- include('../partials/__nav.ejs') %>
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <div class="container mt-5">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Data Keuangan</h4>
-                                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                    <a href="/keuangan/create" class="btn btn-sm btn-success">Tambah Keuangan</a>
 
-                    <form method="GET" action="/keuangan" class="d-flex align-items-center gap-2">
-                        <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="">Pilih Tahun</option>
-                            <% tahunList.forEach(t => { %>
-                                <option value="<%= t %>" <%= selectedTahun == t ? 'selected' : '' %>><%= t %></option>
-                            <% }); %>
-                        </select>
+    <body>
+        <div class="container-scroller">
+            <%- include('../partials/__nav.ejs') %>
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="container mt-5">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                        <a href="/keuangan/create" class="btn btn-sm btn-success">Tambah Keuangan</a>
+                                    </div>
+                                    <!-- Card Tabel Proses -->
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Data Keuangan - Proses</h5>
+                                            <div class="table-responsive">
+                                                <table id="tabelKeuanganProses" class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Jenis</th>
+                                                            <th>Nama</th>
+                                                            <th>Deskripsi</th>
+                                                            <th>Nominal</th>
+                                                            <th>Waktu</th>
+                                                            <th>Uploader</th>
+                                                            <th>Bukti</th>
+                                                            <th>Status Validasi</th>
+                                                            <th>Aksi</th>
+                                                            <th>Validasi</th>
+                                                        </tr>
+                                                    </thead>
+                                                        <tbody>
+                                                            <% let noProses = 1; %>
+                                                            <% data.filter(d => d.status_validasi === 'proses').forEach(item => { %>
+                                                                <tr>
+                                                                    <td><%= noProses++ %></td>
+                                                                    <td>
+                                                                    <% if (item.jenis_keuangan.toLowerCase() === 'pemasukan') { %>
+                                                                        <span class="badge bg-success">Pemasukan</span>
+                                                                    <% } else if (item.jenis_keuangan.toLowerCase() === 'pengeluaran') { %>
+                                                                        <span class="badge bg-danger">Pengeluaran</span>
+                                                                    <% } else { %>
+                                                                        <span class="badge bg-secondary"><%= item.jenis_keuangan %></span>
+                                                                    <% } %>
+                                                                    </td>
+                                                                    <td><%= item.nama_keuangan %></td>
+                                                                    <td><%= item.deskripsi_keuangan.length > 100 ? item.deskripsi_keuangan.substring(0, 100) + '...' : item.deskripsi_keuangan %></td>
+                                                                    <td><%= item.nominal.toLocaleString('id-ID') %></td>
+                                                                    <td><%= new Date(item.waktu_keuangan).toLocaleDateString('id-ID') %></td>
+                                                                    <td><%= item.nama_admin %></td>
+                                                                    <td>
+                                                                        <% if (item.gambar_keuangan) { %>
+                                                                            <a href="/images/keuangan/<%= item.gambar_keuangan %>" target="_blank">
+                                                                                <img src="/images/keuangan/<%= item.gambar_keuangan %>" alt="bukti" style="max-height: 60px;">
+                                                                            </a>
+                                                                        <% } else { %>
+                                                                            <span class="text-muted">-</span>
+                                                                        <% } %>
+                                                                    </td>
+                                                                    <td><span class="badge bg-warning text-dark">Proses</span></td>
+                                                                    <td class="no-export">
+                                                                        <% if (adminLogin.role === 'staff') { %>
+                                                                        <a href="/keuangan/edit/<%= item.id_keuangan %>"
+                                                                            class="btn btn-sm btn-warning">Edit</a>
+                                                                        <!-- <button class="btn btn-sm btn-danger btn-hapus"
+                                                                            data-id="<%= item.id_keuangan %>"
+                                                                            data-url="/keuangan/delete/<%= item.id_keuangan %>">Hapus</button> -->
+                                                                            <% } else { %>
+                                                                             <span class="text-muted fst-italic">-</span>
+                                                                             <% } %>
+                                                                    </td>
 
-                        <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
-                        <option value="">Pilih Bulan</option>
-                        <% bulanList.forEach(b => { 
-                            const namaBulan = new Date(2000, b - 1).toLocaleString('id-ID', { month: 'long' });
-                        %>
-                            <option value="<%= b %>" <%= selectedBulan == b ? 'selected' : '' %>><%= namaBulan %></option>
-                        <% }) %>
-                        </select>
+                                                                    <!-- Kolom Validasi -->
+                                                                    <td>
+                                                                        <% if (adminLogin.role === 'kepala') { %>
+                                                                            <button type="button" class="btn btn-sm btn-success mt-1 btn-validasi"
+                                                                                    data-id="<%= item.id_keuangan %>"
+                                                                                    data-aksi="setuju"
+                                                                                    data-url="/keuangan/validasi/<%= item.id_keuangan %>?aksi=setuju">
+                                                                                Setuju
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-sm btn-secondary mt-1 btn-validasi"
+                                                                                    data-id="<%= item.id_keuangan %>"
+                                                                                    data-aksi="tolak"
+                                                                                    data-url="/keuangan/validasi/<%= item.id_keuangan %>?aksi=tolak">
+                                                                                Tolak
+                                                                            </button>
+                                                                        <% } else { %>
+                                                                             <span class="text-muted fst-italic">Anda tidak memiliki akses validasi</span>
+                                                                        <% } %>
+                                                                    </td>
+                                                                </tr>
+                                                            <% }); %>
+                                                        </tbody>
 
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Tabel untuk status_validasi: disetujui/ditolak -->
+                                    <!-- Card Tabel Diterima/Ditolak -->
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="card-title mb-0">Data Keuangan - Disetujui</h5>
+                                            
+                                            <form method="GET" action="/keuangan" class="d-flex align-items-center gap-2">
+                                                <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                    <option value="">Pilih Tahun</option>
+                                                    <% tahunList.forEach(t=> { %>
+                                                        <option value="<%= t %>" <%=selectedTahun==t ? 'selected' : '' %>>
+                                                            <%= t %>
+                                                        </option>
+                                                    <% }); %>
+                                                </select>
 
-                        <% if (selectedTahun || selectedBulan) { %>
-                            <a href="/keuangan" class="btn btn-outline-secondary btn-sm">Reset</a>
-                        <% } %>
+                                                <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                    <option value="">Pilih Bulan</option>
+                                                    <% bulanList.forEach(b=> {
+                                                        const namaBulan = new Date(2000, b - 1).toLocaleString('id-ID', { month: 'long' });
+                                                    %>
+                                                        <option value="<%= b %>" <%=selectedBulan==b ? 'selected' : '' %>>
+                                                            <%= namaBulan %>
+                                                        </option>
+                                                    <% }) %>
+                                                </select>
 
-                        <!-- <a href="/keuangan/download?tahun=<%= selectedTahun %>&bulan=<%= selectedBulan %>" class="btn btn-sm btn-primary">Download Excel</a> -->
-                    </form>
-                </div>
-                        <div class="table-responsive">
-                            <table id="tabelKeuangan" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Jenis</th>
-                                        <th>Nama</th>
-                                        <th>Deskripsi</th>
-                                        <th>Nominal</th>
-                                        <th>Waktu</th>
-                                        <th>Uploader</th>
-                                        <th class="no-export">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <% if (data.length > 0) { %>
-                                    <% data.forEach((item, i) => { %>
-                                    <tr>
-                                        <td><%= i + 1 %></td>
-                                        <td><%= item.jenis_keuangan %></td>
-                                        <td><%= item.nama_keuangan %></td>
-                                        <td><%= item.deskripsi_keuangan.length > 100 ? item.deskripsi_keuangan.substring(0, 100) + '...' : item.deskripsi_keuangan %></td>
-                                        <td><%= item.nominal.toLocaleString('id-ID') %></td>
-                                        <td><%= new Date(item.waktu_keuangan).toLocaleDateString('id-ID') %></td>
-                                        <td><%= item.nama_admin %></td>
-                                        <td class="no-export">
-                                        <a href="/keuangan/edit/<%= item.id_keuangan %>" class="btn btn-sm btn-warning">Edit</a>
-                                        <button
-                                        class="btn btn-sm btn-danger btn-hapus"
-                                        data-id="<%= item.id_keuangan %>"
-                                        data-url="/keuangan/delete/<%= item.id_keuangan %>"
-                                        >
-                                        Hapus
-                                        </button>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                    <td colspan="8" class="text-center text-muted">Data keuangan untuk bulan ini tidak tersedia</td>
-                                    </tr>
-                                <% } %>
-                                </tbody>
+                                                <% if (selectedTahun || selectedBulan) { %>
+                                                    <a href="/keuangan" class="btn btn-outline-secondary btn-sm">Reset</a>
+                                                <% } %>
+                                            </form>
+                                        </div>
+        
+                                            <div class="table-responsive">
+                                                <table id="tabelKeuanganFinal" class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Jenis</th>
+                                                            <th>Nama</th>
+                                                            <th>Deskripsi</th>
+                                                            <th>Nominal</th>
+                                                            <th>Waktu</th>
+                                                            <th>Uploader</th>
+                                                            <th>Bukti</th>
+                                                            <th>Status Validasi</th>
+                                                            <th class="no-export">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% let noFinal=1; %>
+                                                            <% data.filter(d=> d.status_validasi !==
+                                                                'proses').forEach(item => { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <%= noFinal++ %>
+                                                                    </td>
+                                                                        <td>
+                                                                        <% if (item.jenis_keuangan.toLowerCase() === 'pemasukan') { %>
+                                                                            <span class="badge bg-success">Pemasukan</span>
+                                                                        <% } else if (item.jenis_keuangan.toLowerCase() === 'pengeluaran') { %>
+                                                                            <span class="badge bg-danger">Pengeluaran</span>
+                                                                        <% } else { %>
+                                                                            <span class="badge bg-secondary"><%= item.jenis_keuangan %></span>
+                                                                        <% } %>
+                                                                        </td>
 
-                            </table>
+                                                                    <td>
+                                                                        <%= item.nama_keuangan %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= item.deskripsi_keuangan.length> 100 ?
+                                                                            item.deskripsi_keuangan.substring(0, 100) +
+                                                                            '...' : item.deskripsi_keuangan %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= item.nominal.toLocaleString('id-ID') %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= new
+                                                                            Date(item.waktu_keuangan).toLocaleDateString('id-ID')
+                                                                            %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= item.nama_admin %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <% if (item.gambar_keuangan) { %>
+                                                                            <a href="/images/keuangan/<%= item.gambar_keuangan %>"
+                                                                                target="_blank">
+                                                                                <img src="/images/keuangan/<%= item.gambar_keuangan %>"
+                                                                                    alt="bukti"
+                                                                                    style="max-height: 60px;">
+                                                                            </a>
+                                                                            <% } else { %>
+                                                                                <span class="text-muted">-</span>
+                                                                                <% } %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <% if (item.status_validasi==='disetujui' ) { %>
+                                                                            <span
+                                                                                class="badge bg-success">Disetujui</span>
+                                                                            <% } else { %>
+                                                                                <span
+                                                                                    class="badge bg-danger">Ditolak</span>
+                                                                                <% } %>
+                                                                    </td>
+                                                                    <td class="no-export">
+                                                                        <% if (adminLogin.role === 'kepala') { %>
+                                                                        <!-- <a href="/keuangan/edit/<%= item.id_keuangan %>"
+                                                                            class="btn btn-sm btn-warning">Edit</a> -->
+                                                                        <button class="btn btn-sm btn-danger btn-hapus"
+                                                                            data-id="<%= item.id_keuangan %>"
+                                                                            data-url="/keuangan/delete/<%= item.id_keuangan %>">Hapus</button>
+                                                                            <% } else { %>
+                                                                             <span class="text-muted fst-italic">-</span>
+                                                                             <% } %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% }); %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-
-            </div>
         </div>
-    </div>
-</div>
 
-<%- include('../partials/__foot.ejs') %>
+        <%- include('../partials/__foot.ejs') %>
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            <script>
+                $(document).ready(function () {
+                    ['#tabelKeuanganProses'].forEach(selector => {
+                        $(selector).DataTable({
+                            autoWidth: false,
+                            responsive: true,
+                            scrollX: true,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    extend: 'colvis',
+                                    text: 'Atur Kolom',
+                                    columns: ':not(.no-export)'
+                                }
+                            ],
+                            columnDefs: [
+                                {
+                                    targets: [7],
+                                    orderable: false,
+                                    searchable: false
+                                }
+                            ]
+                        });
+                    });
+                    ['#tabelKeuanganFinal'].forEach(selector => {
+                        $(selector).DataTable({
+                            autoWidth: false,
+                            responsive: true,
+                            scrollX: true,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    extend: 'excelHtml5',
+                                    title: 'Data Keuangan',
+                                    text: 'Download Excel',
+                                    exportOptions: {
+                                        columns: function (idx, data, node) {
+                                            return $(node).is(':visible') && !$(node).hasClass('no-export');
+                                        }
+                                    }
+                                },
+                                {
+                                    extend: 'colvis',
+                                    text: 'Tampilkan/Sembunyikan Kolom',
+                                    columns: ':not(.no-export)'
+                                }
+                            ],
+                            columnDefs: [
+                                {
+                                    targets: [7],
+                                    orderable: false,
+                                    searchable: false
+                                }
+                            ]
+                        });
+                    });
+
+                    // SweetAlert2 Hapus
+                    $('.btn-hapus').on('click', function () {
+                        const url = $(this).data('url');
+                        Swal.fire({
+                            title: 'Yakin ingin menghapus?',
+                            text: "Data akan dihapus secara permanen!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, hapus!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+
+            </script>
 
 <script>
-$(document).ready(function () {
-    $('#tabelKeuangan').DataTable({
-        autoWidth: false,
-        responsive: true,
-        scrollX: true,
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'excelHtml5',
-                title: 'Data Keuangan',
-                text: 'Download Excel',
-                exportOptions: {
-                    columns: function (idx, data, node) {
-                        return $(node).is(':visible') && !$(node).hasClass('no-export');
+    document.querySelectorAll('.btn-validasi').forEach(button => {
+        button.addEventListener('click', function () {
+            const aksi = this.dataset.aksi;
+            const url = this.dataset.url;
+            const id = this.dataset.id;
+
+            if (aksi === 'setuju') {
+                // Proses persetujuan (tetap seperti semula)
+                Swal.fire({
+                    title: 'Setujui data ini?',
+                    text: 'Data akan disetujui dan tidak bisa diubah kembali!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, setujui',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = url;
+                        document.body.appendChild(form);
+                        form.submit();
                     }
-                }
-            },
-            {
-                extend: 'colvis',
-                text: 'Tampilkan/Sembunyikan Kolom',
-                columns: ':not(.no-export)'
-            }
-        ],
-        columnDefs: [
-            {
-                targets: [7],
-                orderable: false,
-                searchable: false
-            }
-        ]
-    });
-
-    // SweetAlert2 Hapus
-    $('.btn-hapus').on('click', function () {
-        const url = $(this).data('url');
-
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: "Data akan dihapus secara permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
+                });
+            } else if (aksi === 'tolak') {
+                // Proses penolakan dengan penghapusan
+                Swal.fire({
+                    title: 'Tolak dan Hapus data ini?',
+                    text: 'Data akan dihapus secara permanen!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect ke endpoint penghapusan
+                        window.location.href = `/keuangan/delete/${id}`;
+                    }
+                });
             }
         });
     });
-});
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-</body>
-</html>
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+            <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    </body>
+
+    </html>

@@ -4,8 +4,19 @@ const Model_Keuangan = require('../model/Model_Keuangan.js');
 const Model_Admin = require('../model/Model_Admin.js');
 const moment = require('moment');
 const ExcelJS = require('exceljs'); 
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
 
-
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images/keuangan')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+});
+const upload = multer({ storage: storage });
 
 router.get('/', async (req, res, next) => {
   try {
@@ -16,6 +27,8 @@ router.get('/', async (req, res, next) => {
     const bulan = req.query.bulan;
 
     let rows = await Model_Keuangan.getAll();
+    const dataProses = rows.filter(k => k.status_validasi === 'proses');
+    const dataDisetujui = rows.filter(k => k.status_validasi === 'disetujui');
 
     // Filter berdasarkan bulan dan tahun (jika diberikan)
     if (tahun || bulan) {
@@ -39,12 +52,15 @@ router.get('/', async (req, res, next) => {
     }
 
     res.render('keuangan/index', {
+      dataProses,
+      dataDisetujui,
       data: rows,
       data2: Data,
       tahunList,
       bulanList,
       selectedTahun: tahun || '',
-      selectedBulan: bulan || ''
+      selectedBulan: bulan || '',
+      adminLogin: Data[0]
     });
 
   } catch (error) {
@@ -68,7 +84,7 @@ router.get('/create', async function (req, res, next) {
     }
 })
 
-router.post('/store', async function (req, res, next) {
+router.post('/store', upload.single("gambar_keuangan"), async function (req, res, next) {
     try {
         let { id_admin, nama_keuangan, jenis_keuangan, deskripsi_keuangan, nominal, waktu_keuangan } = req.body;
         
@@ -79,6 +95,8 @@ router.post('/store', async function (req, res, next) {
             deskripsi_keuangan,
             nominal,
             waktu_keuangan,
+            status_validasi: 'proses',
+            gambar_keuangan: req.file ? req.file.filename : null
         }
         await Model_Keuangan.Store(Data);
         req.flash('success', 'Berhasil Menyimpan Data!');
@@ -114,34 +132,42 @@ router.get("/edit/:id", async (req, res, next) => {
     }
 });
 
-router.post("/update/:id", async (req, res, next) => {
-    try {
-        const id = req.params.id;
+router.post("/update/:id", upload.single("gambar_keuangan"), async (req, res, next) => {
+    const id = req.params.id;
+    let fileBaru = req.file ? req.file.filename : null;
+    let rows = await Model_Keuangan.getId(id);
+    const namaFileLama = rows[0].gambar_keuangan;
 
-        let {
-            nama_keuangan,
-            jenis_keuangan,
-            deskripsi_keuangan,
-            nominal,
-            waktu_keuangan,
-        } = req.body;
-
-        let Data = {
-            nama_keuangan,
-            jenis_keuangan,
-            deskripsi_keuangan,
-            nominal,
-            waktu_keuangan,
-        }
-        console.log(req.body);
-        console.log(Data);
-        await Model_Keuangan.Update(id, Data);
-        req.flash("success", "Berhasil mengupdate data dokter");
-        res.redirect("/keuangan");
-    } catch (error) {
-        console.log(error);
+    // Hapus file lama jika ada file baru
+    if (fileBaru && namaFileLama) {
+        const pathFileLama = path.join(__dirname, '../public/images/keuangan', namaFileLama);
+        if (fs.existsSync(pathFileLama)) fs.unlinkSync(pathFileLama);
     }
+
+    let {
+        nama_keuangan,
+        jenis_keuangan,
+        deskripsi_keuangan,
+        nominal,
+        waktu_keuangan,
+    } = req.body;
+
+    let gambar_keuangan = fileBaru || namaFileLama;
+
+    let Data = {
+        nama_keuangan,
+        jenis_keuangan,
+        deskripsi_keuangan,
+        nominal,
+        waktu_keuangan,
+        gambar_keuangan
+    };
+
+    await Model_Keuangan.Update(id, Data);
+    req.flash("success", "Berhasil mengupdate data keuangan");
+    res.redirect("/keuangan");
 });
+
 
 router.get('/delete/:id', async (req, res, next) => {
     try {
@@ -153,6 +179,21 @@ router.get('/delete/:id', async (req, res, next) => {
         req.flash("error", "Gagal menghapus data keuangan");
         res.redirect("/keuangan");
     }
+});
+
+router.post('/validasi/:id', async (req, res) => {
+  try {
+    const { aksi } = req.query; // 'setuju' atau 'tolak'
+    const id = req.params.id;
+    const status_validasi = aksi === 'setuju' ? 'disetujui' : 'ditolak';
+    await Model_Keuangan.UpdateStatusValidasi(id, status_validasi);
+    req.flash("success", `Data berhasil divalidasi sebagai "${status_validasi}"`);
+    res.redirect('/keuangan');
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Terjadi kesalahan saat memvalidasi data.");
+    res.redirect('/keuangan');
+  }
 });
 
 router.get('/download', async (req, res, next) => {

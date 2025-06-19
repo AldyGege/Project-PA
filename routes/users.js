@@ -4,28 +4,43 @@ const Model_Mapel = require("../model/Model_Mapel");
 const Model_Pendaftaran = require("../model/Model_Pendaftaran");
 const Model_Guru = require("../model/Model_Guru");
 const Model_Album = require("../model/Model_Album");
+const Model_Masa_Pendaftaran = require("../model/Model_Masa_Pendaftaran");
 var router = express.Router();
 
 
 router.get('/', async function (req, res, next) {
   try {
     let id = req.session.userId;
+    const masaPendaftaran = await Model_Masa_Pendaftaran.get();
     let users = await Model_Users.getId(id);
-      let mapel = await Model_Mapel.getAll();
-      let guru = await Model_Guru.getAll();
-      let album = await Model_Album.getAll();
-      res.render('users/index', {
-        data1: users,
-        data2: mapel,
-        data3: guru,
-        data4: album,
-      });
+    let mapel = await Model_Mapel.getAll();
+    let guru = await Model_Guru.getAll();
+    let album = await Model_Album.getAll();
+
+    // Cek apakah pendaftaran masih aktif
+    let aktifPendaftaran = false;
+    if (masaPendaftaran) {
+      const now = new Date();
+      const mulai = new Date(masaPendaftaran.tanggal_mulai);
+      const akhir = new Date(masaPendaftaran.tanggal_akhir);
+      aktifPendaftaran = now >= mulai && now <= akhir;
+    }
+
+    res.render('users/index', {
+      data1: users,
+      data2: mapel,
+      data3: guru,
+      data4: album,
+      masaPendaftaran,
+      aktifPendaftaran
+    });
   } catch (error) {
-      console.error("Error:", error);
-      req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
-      res.redirect('/login_users');
+    console.error("Error:", error);
+    req.flash('invalid', 'Terjadi kesalahan saat memuat data pengguna');
+    res.redirect('/login_users');
   }
 });
+
 
 router.get('/profil', async function (req, res, next) {
   try {

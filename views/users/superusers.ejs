@@ -134,9 +134,11 @@
           <div class="form-group">
             <label for="tahun-select">Pilih Tahun:</label>
             <select id="tahun-select" class="form-control" style="width:150px;">
-              <% const tahunSekarang = new Date().getFullYear(); for(let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) { %>
-                <option value="<%= t %>" <%= t === tahunSekarang ? 'selected' : '' %>><%= t %></option>
-              <% } %>
+              <% tahunKeuangan.forEach(tahun => { %>
+                <option value="<%= tahun %>" <%= tahun === tahunUntukGrafik ? 'selected' : '' %>>
+                  <%= tahun %>
+                </option>
+              <% }); %>
             </select>
           </div>
           <canvas id="chart-keuangan" height="200"></canvas>
@@ -243,28 +245,27 @@
 
   // Render chart awal
   renderChart(initialDataKeuangan);
+// Event listener untuk select tahun
+document.getElementById('tahun-select').addEventListener('change', async function() {
+  const tahun = this.value;
 
-  // Event listener untuk select tahun
-  document.getElementById('tahun-select').addEventListener('change', async function() {
-    const tahun = this.value;
+  try {
+    const response = await fetch(`/superusers/grafik-keuangan/${tahun}`);
+    if (!response.ok) throw new Error('Gagal mengambil data');
 
-    try {
-      const response = await fetch(`/superusers/grafik-keuangan/${tahun}`);
-      if (!response.ok) throw new Error('Gagal mengambil data');
+    const dataBaru = await response.json();
 
-      const dataBaru = await response.json();
-
-      if (dataBaru.length === 0) {
-        alert('Data untuk tahun ' + tahun + ' tidak tersedia.');
-        return;
-      }
-
-      renderChart(dataBaru);
-    } catch (error) {
-      console.error('Error saat fetch data grafik:', error);
-      alert('Gagal memuat data grafik untuk tahun tersebut.');
+    if (dataBaru.length === 0) {
+      alert('Data untuk tahun ' + tahun + ' tidak tersedia.');
+      return;
     }
-  });
+
+    renderChart(dataBaru);
+  } catch (error) {
+    console.error('Error saat fetch data grafik:', error);
+    alert('Gagal memuat data grafik untuk tahun tersebut.');
+  }
+});
 </script>
 
 <script>
